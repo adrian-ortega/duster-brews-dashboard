@@ -1,0 +1,1 @@
+console.log('we have frontend JS')
