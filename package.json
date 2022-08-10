@@ -1,0 +1,37 @@
+{
+  "name": "duster-brews-dashboard",
+  "version": "1.0.0",
+  "description": "A web-app designed to display data from DIY I/O devices for beer monitoring and production.",
+  "main": "server.js",
+  "scripts": {
+    "test": "node ./test.js",
+    "serve": "node ./server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrian-ortega/duster-brews-dashboard.git"
+  },
+  "keywords": [
+    "Duster",
+    "Brews",
+    "Beer",
+    "Dashboard"
+  ],
+  "contributors": [
+    {
+      "name" : "Adrian Ortega",
+      "email" : "hello@adrianortega.dev",
+      "url" : "http://adrianortega.dev/"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adrian-ortega/duster-brews-dashboard/issues"
+  },
+  "homepage": "https://github.com/adrian-ortega/duster-brews-dashboard#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1"
+  }
+}
