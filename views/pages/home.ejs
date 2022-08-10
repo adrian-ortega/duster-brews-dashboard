@@ -1,9 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <%- include('../partials/head'); %>
-</head>
-<body>
-<p>Welcome to the <strong><%= APP_NAME; %></strong> Home</h2>
-</body>
-</html>
+<%- include('../partials/header') %>
+
+<div class="dashboard">
+    <div class="widgets">
+        <%- include('../partials/dashboard/status') %>
+        <%- include('../partials/dashboard/status') %>
+        <%- include('../partials/dashboard/status') %>
+        <%- include('../partials/dashboard/status') %>
+        <%- include('../partials/dashboard/status') %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

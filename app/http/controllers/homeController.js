@@ -1,6 +1,11 @@
 const { APP_NAME } = require('../../../config')
-module.exports = function (req, res) {
+
+const dashboardView = (req, res) => {
     res.render('pages/home', {
         APP_NAME
     });
+}
+
+module.exports = {
+    dashboardView
 }
