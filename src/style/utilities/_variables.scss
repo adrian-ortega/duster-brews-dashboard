@@ -1,0 +1,64 @@
+@charset "UTF-8";
+
+$primary: #FF2F4A;
+
+$secondary-dark: #020B16;
+$secondary-muted: #15181e;
+$secondary: #171f29;
+$secondary-light: #212d3b;
+$secondary-light-muted: #657C9C;
+
+$black: #000000;
+$black-bis: #2a2a2a;
+$black-ter: #101010;
+
+$white: #ffffff;
+$white-bis: #fefefe;
+$white-ter: #e8e8e8;
+
+// Typography
+$family-sans-serif: sans-serif;
+$family-headings: $family-sans-serif;
+$family-monospace: Consolas, monospace;
+
+$weight-light: 300;
+$weight-normal: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+
+// Body
+$body-font-size: 16px;
+$body-background-color: #0a1524;
+$body-font-color: #E9F2FF;
+
+// Responsiveness
+
+// The container horizontal gap, which acts as the offset for breakpoints
+$gap: 32px;
+
+// 960, 1152, and 1344 have been chosen because they are divisible by both 12 and 16
+$tablet: 769px;
+
+// 960px container + 4rem
+$desktop: 960px + (2 * $gap);
+
+// 1152px container + 4rem
+$widescreen: 1152px + (2 * $gap);
+$widescreen-enabled: true;
+
+// 1344px container + 4rem
+$fullhd: 1344px + (2 * $gap);
+$fullhd-enabled: true;
+
+$twok: 1920px + (2 * $gap);
+$twok-enabled: true;
+
+// Miscellaneous
+
+$easing: ease-out;
+$radius-small: 2px;
+$radius: 4px;
+$radius-large: 6px;
+$radius-rounded: 290486px;
+$speed: 86ms;

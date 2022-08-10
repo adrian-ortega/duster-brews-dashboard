@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+.widgets {
+  display: grid;
+  grid-gap: 0.25em;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 49vh);
+  padding: .5vh;
+}
+
+.widget {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 55px 1fr;
+  grid-template-areas: "header"
+                       "content";
+  background: scale-color($body-background-color, $lightness: -10%);
+
+  &__header {
+    grid-area: header;
+    background: scale-color($body-background-color, $lightness: 15%);
+    padding: 0.5em 1em;
+  }
+
+  &__content {
+    grid-area: content;
+
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+
+    padding: 2em;
+  }
+
+  &--status {}
+}
