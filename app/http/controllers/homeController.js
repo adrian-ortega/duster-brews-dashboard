@@ -1,9 +1,5 @@
-const { APP_NAME } = require('../../../config')
-
 const dashboardView = (req, res) => {
-    res.render('pages/home', {
-        APP_NAME
-    });
+    res.sendFile('index.html')
 }
 
 module.exports = {

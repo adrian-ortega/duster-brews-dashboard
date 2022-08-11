@@ -100,6 +100,7 @@ const getValue = (valueOrFunc, defaultValue = null) => {
 }
 
 module.exports = {
+  NOOP: () => {},
   isUndefined,
   isString,
   isFunction,

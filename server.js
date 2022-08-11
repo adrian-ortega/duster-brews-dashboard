@@ -8,10 +8,6 @@ const app = express();
 
 app.use(express.static(__dirname + '/public'));
 
-// Set the view engine to EJS:
-// @src https://github.com/mde/ejs
-app.set('view engine', 'ejs');
-
 // Middleware
 require('./app/router')(app);
 
