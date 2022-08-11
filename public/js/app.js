@@ -3,23 +3,22 @@ const parseJson = (str, defaultValue = null) => {
   try {
     return JSON.parse(str);
   } catch (e) {
-    console.log('Invalid JSON');
+    console.log('Invalid JSON', str);
     return defaultValue;
   }
 }
-const createWebSocket = ({ namespace = 'DBDAPP', onopen = NOOP, onmessage = NOOP, onerror = NOOP }) => {
+const createWebSocket = ({ namespace = 'DBDAPP', onmessage = NOOP, onerror = NOOP }) => {
   return new Promise((resolve) => {
     const ws = new WebSocket('ws://localhost:8080/websockets');
-    ws.onopen = () => onopen();
     ws.onerror = (error) => onerror(error);
-    ws.onmessage = (message) => onmessage(parseJson(message));
+    ws.onmessage = ({ data }) => onmessage(parseJson(data));
     window[namespace].WebSocket = ws;
     resolve(ws);
   });
 };
 const heartbeat = (timestamp) => {
-  if ((timestamp - window[window.APP_NAMESPACE].lastTimestamp) > window[window.APP_NAMESPACE].interval) {
-    window[window.APP_NAMESPACE].lastTimestamp = timestamp
+  if ((timestamp - window[window.APP_NS].lastTimestamp) > window[window.APP_NS].interval) {
+    window[window.APP_NS].lastTimestamp = timestamp
     return;
   }
 
@@ -45,48 +44,29 @@ const createWidgetElement = (item) => createElementFromTemplate(`
         </div>
     </div>    
 `);
-
-const createWidgets = async (container, app) => {
-  const $container = document.querySelector(container)
+const getDomContainer = () => document.querySelector(window[window.APP_NS].selector || '#app');
+const renderWidgets = async (items) => {
+  const $container = getDomContainer();
   if (!$container) {
     // Display something went wrong message?
     return;
   }
 
-  const items = [ {
-    style: 'Lager',
-    name: 'Beer One',
-    abv: '8.5% ABV',
-    status: 'Idle',
-    remaining: '48%',
-    created_at: '11/11/2022',
-    last_pour: '12.2oz'
-  } ];
-
   $container.innerHTML = '';
 
-  app.$widgets = items.map((item) => {
+  window[window.APP_NS].$widgets = items.map((item) => {
     const $el = createWidgetElement(item);
     $el.dataset.item = item
     $container.appendChild($el);
     return $el;
   });
 }
-
-const updateWidgets = (...args) => {
-  console.log('UPDATE WIDGETS')
-  console.log(args)
+const updateWidgets = ({ items }) => {
+  renderWidgets(items)
 }
-
 const initialize = async () => {
-  const ns = window.APP_NAMESPACE;
-  const app = window[ns];
-  await createWebSocket({ namespace: ns, onmessage: updateWidgets });
-  await createWidgets('#app', app);
-  console.log('app')
+  window[window.APP_NS].selector = '#app'
+  await createWebSocket({ onmessage: updateWidgets });
   heartbeat();
 }
-
-(async () => {
-  await initialize();
-})();
+(async () => { await initialize(); })();

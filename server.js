@@ -18,8 +18,4 @@ const server = app.listen(PORT, () => {
     console.log(`Server Running at http://${HOST}:${PORT}`)
 });
 
-websockets(server)
-
-process.on('message', message => {
-    console.log('process message', message)
-})
+websockets(server);

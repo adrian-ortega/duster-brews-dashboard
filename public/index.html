@@ -16,8 +16,8 @@
 <script type="text/javascript">
   ((n, ns) => {
     window.APP_NAME = n;
-    window.APP_NAMESPACE = ns;
-    window[window.APP_NAMESPACE] = {
+    window.APP_NS = ns;
+    window[window.APP_NS] = {
       lastTimestamp: performance.now(),
       updateInterval: 3000,
       state: {}

@@ -1,5 +1,6 @@
 const Websocket = require('ws');
-const queryString = require('query-string')
+const queryString = require('query-string');
+const { getWidgetItems } = require('../api')
 
 const onConnection = function (websocketConnection, connectionRequest) {
     const [_path, params] = connectionRequest?.url?.split('?');
@@ -7,12 +8,23 @@ const onConnection = function (websocketConnection, connectionRequest) {
 
     // NOTE: connectParams are not used here but good to understand how to get
     // to them if you need to pass data with the connection to identify it (e.g., a userId).
-    console.log({ connectionParams });
+    console.log({ _path, connectionParams });
+
+    const sendStatefulResponse = () => {
+        getWidgetItems().then((items) => {
+            websocketConnection.send(JSON.stringify({
+                items
+            }))
+        })
+    }
 
     websocketConnection.on('message', (message) => {
         const parsedMessage = JSON.parse(message);
         console.log({ parsedMessage });
+        sendStatefulResponse();
     });
+
+    sendStatefulResponse();
 };
 
 module.exports = (expressServer) => {
