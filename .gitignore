@@ -74,8 +74,8 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
-./storage/credentials.json
-./storage/token.json
+/storage/credentials.json
+/storage/token.json
 
 
 # parcel-bundler cache (https://parceljs.org/)
