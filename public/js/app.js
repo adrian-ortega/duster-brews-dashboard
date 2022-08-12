@@ -25,11 +25,11 @@ const heartbeat = (timestamp) => {
   const ns = window.APP_NS
   const app = window[ns]
   if ((timestamp - app.lastTimestamp) > app.interval) {
+    if (app.ws) {
+      app.WebSocket.send(JSON.stringify({timestamp}))
+    }
     app.lastTimestamp = timestamp
     return;
-  }
-  if (app.ws) {
-    app.WebSocket.send(JSON.stringify({timestamp}))
   }
   window.requestAnimationFrame(heartbeat)
 }
