@@ -1,40 +1,34 @@
 const { google } = require('googleapis');
 const { authorize } = require('./google/auth');
 const { getKegsFromGoogleSheets } = require('./plaato')
-const SAMPLE_WIDGET = {
-  // style: 'Lager',
-  // name: 'Beer One',
-  abv: '8.5% ABV',
-  status: 'Idle',
-  remaining: '48%',
-  created_at: '11/11/2022',
-  last_pour: '12.2oz'
-};
+const { wait } = require("../util/helpers");
 
-const getBeersFromGoogleSheets = () => new Promise((resolve, reject) => {
-  authorize().then((auth) => {
-    const sheets = google.sheets({ version: 'v4', auth });
-    sheets.spreadsheets.values.get({
-      spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
-      range: 'Brews!A2:E'
-    }, (err, res) => {
-      if (err) {
-        reject(err);
-        return console.log('The API returned an error:', err);
-      }
+let fetchingBeersFromGoogleSheets = false;
+const getBeersFromGoogleSheets = async () => {
+  if(fetchingBeersFromGoogleSheets) {
+    await wait(10);
+    return getBeersFromGoogleSheets();
+  }
 
-      const transformer = ([ id, brewery = null, style = null, name = null, background_image = null ]) => ({
-        id,
-        brewery,
-        style,
-        name,
-        background_image
-      });
-      const filter = (item) => item.id && item.brewery && item.style && item.name
-      resolve(res.data.values ? res.data.values.map(transformer).filter(filter) : []);
-    });
+  fetchingBeersFromGoogleSheets = true;
+  const auth = await authorize();
+  const sheets = google.sheets({ version: 'v4', auth });
+  const sheetsResponse = sheets.spreadsheets.values.get({
+    spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
+    range: 'Brews!A2:E'
   });
-});
+  fetchingBeersFromGoogleSheets = false;
+  const transformer = async (row) => ({
+    id: row[0],
+    brewery: row[1],
+    style: row[2],
+    name: row[3],
+    background_image: row[4]
+  });
+  const filter = (row) => row[0] && row[1] && row[2] && row[3];
+  const { data } = sheetsResponse
+  return (data.values ? await Promise.all(data.values.filter(filter).map(transformer)) : []);
+};
 
 const getWidgetItems = async () => {
   const kegs = await getKegsFromGoogleSheets();

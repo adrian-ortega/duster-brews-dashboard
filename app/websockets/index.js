@@ -13,9 +13,7 @@ const onConnection = function (websocketConnection, connectionRequest) {
 
     const sendStatefulResponse = () => {
         getWidgetItems().then((items) => {
-            websocketConnection.send(JSON.stringify({
-                items
-            }))
+            websocketConnection.send(JSON.stringify({items}));
         })
     }
 

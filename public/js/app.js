@@ -9,19 +9,28 @@ const parseJson = (str, defaultValue = null) => {
 }
 const createWebSocket = ({ namespace = 'DBDAPP', onmessage = NOOP, onerror = NOOP }) => {
   return new Promise((resolve) => {
-    const ws = new WebSocket('ws://localhost:8080/websockets');
+    const { port, hostname } = window.location
+    const ws = new WebSocket(`ws://${hostname}:${port}/websockets`);
+    ws.onopen = () => {
+      window[namespace].ws = true
+    }
     ws.onerror = (error) => onerror(error);
     ws.onmessage = ({ data }) => onmessage(parseJson(data));
+
     window[namespace].WebSocket = ws;
     resolve(ws);
   });
 };
 const heartbeat = (timestamp) => {
-  if ((timestamp - window[window.APP_NS].lastTimestamp) > window[window.APP_NS].interval) {
-    window[window.APP_NS].lastTimestamp = timestamp
+  const ns = window.APP_NS
+  const app = window[ns]
+  if ((timestamp - app.lastTimestamp) > app.interval) {
+    app.lastTimestamp = timestamp
     return;
   }
-
+  if (app.ws) {
+    app.WebSocket.send(JSON.stringify({timestamp}))
+  }
   window.requestAnimationFrame(heartbeat)
 }
 const createElementFromTemplate = (template) => {
@@ -66,6 +75,7 @@ const updateWidgets = ({ items }) => {
 }
 const initialize = async () => {
   window[window.APP_NS].selector = '#app'
+  window[window.APP_NS].ws = false
   await createWebSocket({ onmessage: updateWidgets });
   heartbeat();
 }

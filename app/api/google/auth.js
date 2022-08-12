@@ -2,7 +2,7 @@ const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
 const { parseJson, isFunction } = require('../../util/helpers');
-const path = require('path')
+const path = require('path');
 
 let GoogleAuth;
 

@@ -1,5 +1,6 @@
 const axios = require('axios')
 const { authorize, google } = require('../google/auth');
+const {wait} = require("../../util/helpers");
 
 const PLAATO_API_BASE_URI = 'https://plaato.blynk.cc'
 // https://intercom.help/plaato/en/articles/5004722-pins-plaato-keg
@@ -33,27 +34,34 @@ const PINS = {
   firmware_version: 'v93',
 }
 
-const plaatoGet = (token, pin) => axios.get(`${PLAATO_API_BASE_URI}/${token}/get/${pin}`)
-  .then(({ data }) => data[0]).catch(() => null);
+const plaatoGet = (token, pin, keg, key) => axios.get(`${PLAATO_API_BASE_URI}/${token}/get/${pin}`)
+  .then(({ data }) => {keg[key] = data[0]}).catch(() => { keg[key] = null });
 
+let fetchingFromGoogleSheets = false
 const getKegsFromGoogleSheets = async () => {
+  if (fetchingFromGoogleSheets) {
+    await wait(10);
+    return getKegsFromGoogleSheets();
+  }
+
+  fetchingFromGoogleSheets = true
   const auth = await authorize();
   const sheets = google.sheets({ version: 'v4', auth })
   const sheetsResponse = await sheets.spreadsheets.values.get({
     spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
     range: 'Plaato Keg Auth_Tokens!A2:B'
   });
-
+  fetchingFromGoogleSheets = false
   const transformer = async ([ keg_name, token ]) => {
     const keg = { keg_name, token };
     await Promise.all([
-      plaatoGet(token, PINS.beer_style).then(value => {keg.id = value}),
-      plaatoGet(token, PINS.abv).then(value=> {keg.abv = value}),
-      plaatoGet(token, PINS.volume_unit).then(value => { keg.volume_unit = value }),
-      plaatoGet(token, PINS.keg_date).then(value => { keg.created_at = value }),
-      plaatoGet(token, PINS.amount_left).then(value => { keg.remaining = value }),
-      plaatoGet(token, PINS.max_keg_volume).then(value => { keg.max = value }),
-      plaatoGet(token, PINS.last_pour).then(value => { keg.las_pour = value })
+      plaatoGet(token, PINS.beer_style, keg, 'id'),
+      plaatoGet(token, PINS.abv, keg, 'abv').then(value=> {keg.abv = value}),
+      plaatoGet(token, PINS.volume_unit, keg, 'volume_unit'),
+      plaatoGet(token, PINS.keg_date, keg, 'created_at'),
+      plaatoGet(token, PINS.amount_left, keg, 'remaining'),
+      plaatoGet(token, PINS.max_keg_volume, keg, 'max_keg_volume'),
+      plaatoGet(token, PINS.last_pour, keg, 'last_pour')
     ]);
     return keg;
   };

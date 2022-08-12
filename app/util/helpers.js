@@ -113,8 +113,18 @@ const parseJson = (str, defaultValue = null) => {
   }
 }
 
+/**
+ * Will return a promise with a true value after x microsecs
+ * @param ms
+ * @returns {Promise<unknown>}
+ */
+const wait = (ms = 10) => new Promise((a) => {
+  setTimeout(() => { a(true); }, ms);
+});
+
 module.exports = {
   NOOP: () => {},
+  wait,
   parseJson,
 
   isUndefined,
