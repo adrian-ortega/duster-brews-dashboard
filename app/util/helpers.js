@@ -99,8 +99,24 @@ const getValue = (valueOrFunc, defaultValue = null) => {
       : defaultValue
 }
 
+/**
+ * @param {string} str
+ * @param {null|*} defaultValue
+ * @return {null|*}
+ */
+const parseJson = (str, defaultValue = null) => {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    console.log('Invalid JSON', str);
+    return defaultValue;
+  }
+}
+
 module.exports = {
   NOOP: () => {},
+  parseJson,
+
   isUndefined,
   isString,
   isFunction,

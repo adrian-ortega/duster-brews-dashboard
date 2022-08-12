@@ -1,5 +1,6 @@
 const Websocket = require('ws');
 const queryString = require('query-string');
+const { parseJson } = require('../util/helpers')
 const { getWidgetItems } = require('../api')
 
 const onConnection = function (websocketConnection, connectionRequest) {
@@ -18,11 +19,7 @@ const onConnection = function (websocketConnection, connectionRequest) {
         })
     }
 
-    websocketConnection.on('message', (message) => {
-        const parsedMessage = JSON.parse(message);
-        console.log({ parsedMessage });
-        sendStatefulResponse();
-    });
+    websocketConnection.on('message', (message) => sendStatefulResponse(parseJson(message)));
 
     sendStatefulResponse();
 };
