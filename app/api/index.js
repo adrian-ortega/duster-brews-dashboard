@@ -12,6 +12,7 @@ const beerTransformer = async (row) => ({
   name: row[3],
   background_image: row[4]
 });
+
 const beerFilter = (row) => row[0] && row[1] && row[2] && row[3];
 
 const getBeersFromGoogleSheets = async () => {

@@ -41,16 +41,21 @@ const createElementFromTemplate = (template) => {
 const createWidgetElement = (item) => createElementFromTemplate(`
     <div class="widget widget--status">
         <div class="widget__header">
+            <span class="led led--pour"></span>
             <span class="beer-style">${item.style}</span>
             <span class="beer-name">${item.name}</span>
-            <span class="beer-abv">${item.abv}</span>
-            <span class="beer-status">${item.status}</span>
+            ${item.keg && item.keg.abv ? `
+            <span class="beer-abv">${item?.keg?.abv}</span>`
+            : ''}
         </div>
+        ${ item.keg ? `
         <div class="widget__content">
-            <p><strong>Beer Left:</strong> ${item.remaining}</p>
-            <p><strong>Keg Tapped Date:</strong> ${item.created_at}<p>
-            <p><strong>Las Pour Volume:</strong> ${item.last_pour}</p>
-        </div>
+            <h4>${item.keg.keg_name}</h4>
+            <p><strong>Beer Left:</strong> ${item.keg.remaining} ${item.keg.volume_unit}</p>
+            <p><strong>Keg Tapped Date:</strong> ${item.keg.created_at}<p>
+            <p><strong>Las Pour Volume:</strong> ${item.keg.last_pour} OZ</p>
+        </div>`
+        :''}
     </div>    
 `);
 const getDomContainer = () => document.querySelector(window[window.APP_NS].selector || '#app');
@@ -64,6 +69,7 @@ const renderWidgets = async (items) => {
   $container.innerHTML = '';
 
   window[window.APP_NS].$widgets = items.map((item) => {
+    console.log(item)
     const $el = createWidgetElement(item);
     $el.dataset.item = item
     $container.appendChild($el);
