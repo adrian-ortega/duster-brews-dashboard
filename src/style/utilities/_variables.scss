@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-$primary: #FF2F4A;
+$primary: #FC9700;
 
 $secondary-dark: #020B16;
 $secondary-muted: #15181e;
@@ -16,8 +16,10 @@ $white: #ffffff;
 $white-bis: #fefefe;
 $white-ter: #e8e8e8;
 
+$yellow: #EBB854  ;
+
 // Typography
-$family-sans-serif: sans-serif;
+$family-sans-serif: 'Bayon', sans-serif;
 $family-headings: $family-sans-serif;
 $family-monospace: Consolas, monospace;
 
@@ -29,8 +31,8 @@ $weight-bold: 700;
 
 // Body
 $body-font-size: 16px;
-$body-background-color: #0a1524;
-$body-font-color: #E9F2FF;
+$body-background-color: #223227;
+$body-font-color: #FFFFFF;
 
 // Responsiveness
 

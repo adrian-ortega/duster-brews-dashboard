@@ -56,9 +56,9 @@ const getKegsFromGoogleSheets = async () => {
     const keg = { keg_name, token };
     await Promise.all([
       plaatoGet(token, PINS.beer_style, keg, 'id'),
-      plaatoGet(token, PINS.abv, keg, 'abv').then(value=> {keg.abv = value}),
+      plaatoGet(token, PINS.abv, keg, 'abv'),
       plaatoGet(token, PINS.volume_unit, keg, 'volume_unit'),
-      plaatoGet(token, PINS.keg_date, keg, 'created_at'),
+      plaatoGet(token, PINS.keg_date, keg, 'keg_date'),
       plaatoGet(token, PINS.amount_left, keg, 'remaining'),
       plaatoGet(token, PINS.max_keg_volume, keg, 'max_keg_volume'),
       plaatoGet(token, PINS.last_pour, keg, 'last_pour')
