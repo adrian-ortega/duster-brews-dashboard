@@ -61,7 +61,8 @@ const getKegsFromGoogleSheets = async () => {
       plaatoGet(token, PINS.keg_date, keg, 'keg_date'),
       plaatoGet(token, PINS.amount_left, keg, 'remaining'),
       plaatoGet(token, PINS.max_keg_volume, keg, 'max_keg_volume'),
-      plaatoGet(token, PINS.last_pour, keg, 'last_pour')
+      plaatoGet(token, PINS.last_pour, keg, 'last_pour'),
+      plaatoGet(token, PINS.pouring, keg, 'pouring')
     ]);
     return keg;
   };
