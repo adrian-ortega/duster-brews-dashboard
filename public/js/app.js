@@ -61,11 +61,11 @@ const createWebSocket = ({namespace = 'DBDAPP', onmessage = NOOP, onerror = NOOP
  */
 const heartbeat = (timestamp) => {
     const app = window[window.APP_NS]
-    if ((timestamp - app.lastTimestamp) > app.updateInterval) {
+    if ((timestamp - app.heartbeat.timestamp) > app.heartbeat.interval) {
         if (app.ws) {
             app.WebSocket.send(JSON.stringify({timestamp}));
         }
-        app.lastTimestamp = timestamp
+        app.heartbeat.timestamp = timestamp
     }
     window.requestAnimationFrame(heartbeat);
 };
@@ -143,10 +143,6 @@ const createWidgetElement = (item) => {
  */
 const getDomContainer = () => document.querySelector(window[window.APP_NS].selector || '#app');
 
-let widgetOrder = [];
-let widgetOrderTimestamp;
-let widgetOrderInterval = 300000;
-
 /**
  * Walks through every widget item returned and creates a widget
  * DOM Element from it.
@@ -162,15 +158,16 @@ const renderWidgets = async (items, timestamp) => {
     }
 
     $container.innerHTML = '';
-    if(!widgetOrderTimestamp || ((timestamp - widgetOrderTimestamp) > widgetOrderInterval)) {
-        widgetOrder = Object.keys(items).map((o,i) => i).sort(() => Math.random() > 0.5 ? 1 : -1);
-        widgetOrderTimestamp = timestamp
+    const app = window[window.APP_NS]
+    if(!app.widgets.timestamp || ((timestamp - app.widgets.timestamp) > app.widgets.interval)) {
+        app.widgets.order = Object.keys(items).map((o,i) => i).sort(() => Math.random() > 0.5 ? 1 : -1);
+        app.widgets.timestamp = timestamp
     }
 
-    if(widgetOrder.length) {
+    if(app.widgets.order.length) {
         let tempItems = [];
-        for(let i in widgetOrder) {
-            tempItems.push(items[widgetOrder[i]]);
+        for(let i in app.widgets.order) {
+            tempItems.push(items[app.widgets.order[i]]);
         }
         items = tempItems;
     }
@@ -199,7 +196,7 @@ const initialize = async () => {
     window[window.APP_NS].selector = '#app'
     window[window.APP_NS].ws = false
     await createWebSocket({onmessage: updateWidgets});
-    heartbeat();
+    heartbeat(window[window.APP_NS].heartbeat.timestamp);
 }
 
 // Go baby go

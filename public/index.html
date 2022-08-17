@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Duster Brews</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,12 +19,15 @@
 </div>
 <script type="text/javascript">
   ((n, ns) => {
+    const ONE_SECOND = 1000
+    const ONE_MINUTE = ONE_SECOND * 60;
+    const timestamp = performance.now();
     window.APP_NAME = n;
     window.APP_NS = ns;
     window[window.APP_NS] = {
-      lastTimestamp: performance.now(),
-      updateInterval: 3000,
-      state: {}
+      state: {},
+      heartbeat: { timestamp, interval: ONE_SECOND * 3 },
+      widgets: { order: [], timestamp, interval: ONE_MINUTE * 5 }
     }
   })('<%= APP_NAME; %>', 'DBDAPP');
 </script>
