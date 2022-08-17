@@ -4,12 +4,12 @@ const respondWithJSON = (res, data, meta = {}) => {
   res.json({ data, meta })
 }
 
-const widgetsView = (req, res) => {
+const widgetsApiView = (req, res) => {
   getWidgetItems().then((items) => {
     respondWithJSON(res, items)
   });
 };
 
 module.exports = {
-  widgetsView
+  widgetsApiView
 }

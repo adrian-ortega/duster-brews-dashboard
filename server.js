@@ -1,12 +1,17 @@
 'use strict';
 
 const { PORT, HOST } = require('./config');
-const websockets = require('./app/websockets')
+const websockets = require('./app/websockets');
+const es6Renderer = require('express-es6-template-engine');
 
 const express = require('express');
 const app = express();
 
 app.use(express.static(__dirname + '/public'));
+
+app.engine('html', es6Renderer);
+app.set('views', 'views');
+app.set('view engine', 'html');
 
 // Middleware
 require('./app/router')(app);

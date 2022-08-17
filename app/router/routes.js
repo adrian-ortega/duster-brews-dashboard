@@ -1,5 +1,5 @@
 const { dashboardView } = require('../http/controllers/homeController')
-const { widgetsView } = require('../http/controllers/apiController')
+const { widgetsApiView } = require('../http/controllers/apiController')
 
 module.exports = [
   {
@@ -8,6 +8,6 @@ module.exports = [
   },
   {
     path: '/api/widgets',
-    handler: widgetsView
+    handler: widgetsApiView
   }
 ]
