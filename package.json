@@ -7,6 +7,7 @@
     "scss-watch": "sass --no-source-map --watch src/style/app.scss public/css/app.css",
     "nodemon-watch": "nodemon ./server.js -e *",
     "start": "npm-run-all --parallel scss-watch nodemon-watch",
+    "dev": "npm run start",
     "serve": "node ./server.js"
   },
   "repository": {

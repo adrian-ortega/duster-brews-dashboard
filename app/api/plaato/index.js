@@ -1,6 +1,6 @@
 const axios = require('axios')
 const { authorize, google } = require('../google/auth');
-const {wait} = require("../../util/helpers");
+const { wait, isArray } = require("../../util/helpers");
 
 const PLAATO_API_BASE_URI = 'https://plaato.blynk.cc'
 // https://intercom.help/plaato/en/articles/5004722-pins-plaato-keg
@@ -35,7 +35,16 @@ const PINS = {
 }
 
 const plaatoGet = (token, pin, keg, key) => axios.get(`${PLAATO_API_BASE_URI}/${token}/get/${pin}`)
-  .then(({ data }) => {keg[key] = data[0]}).catch(() => { keg[key] = null });
+  .then(({ data }) => {
+    if (isArray(data)) {
+      keg[key] = data.length === 1 ? data[0] : data;
+    } else {
+      keg[key] = data;
+    }
+  }).catch((e) => {
+    console.log(e)
+    keg[key] = null
+  });
 
 let fetchingFromGoogleSheets = false
 const getKegsFromGoogleSheets = async () => {
@@ -56,6 +65,7 @@ const getKegsFromGoogleSheets = async () => {
     const keg = { keg_name, token };
     await Promise.all([
       plaatoGet(token, PINS.beer_style, keg, 'id'),
+      plaatoGet(token, PINS.percent_beer_left, keg, 'percent_beer_left'),
       plaatoGet(token, PINS.abv, keg, 'abv'),
       plaatoGet(token, PINS.volume_unit, keg, 'volume_unit'),
       plaatoGet(token, PINS.keg_date, keg, 'keg_date'),
@@ -66,7 +76,7 @@ const getKegsFromGoogleSheets = async () => {
     ]);
     return keg;
   };
-  const filter = ([name, token]) => name && token;
+  const filter = ([ name, token ]) => name && token;
   const { data } = sheetsResponse
   return (data.values ? await Promise.all(data.values.filter(filter).map(transformer)) : []);
 };

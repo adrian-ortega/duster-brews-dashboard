@@ -74,7 +74,7 @@ const objectHasKey = (object, key) => {
 const objectToFormData = (object, fd = null, parent = null) => {
   const formData = fd || new FormData();
   let formKey
-  Object.entries(object).forEach(([property, value]) => {
+  Object.entries(object).forEach(([ property, value ]) => {
     formKey = parent ? `${parent}[${property}]` : property;
     if (isObject(value)) {
       objectToFormData(value, formData, property)
@@ -119,11 +119,14 @@ const parseJson = (str, defaultValue = null) => {
  * @returns {Promise<unknown>}
  */
 const wait = (ms = 10) => new Promise((a) => {
-  setTimeout(() => { a(true); }, ms);
+  setTimeout(() => {
+    a(true);
+  }, ms);
 });
 
 module.exports = {
-  NOOP: () => {},
+  NOOP: () => {
+  },
   wait,
   parseJson,
 

@@ -51,7 +51,7 @@ const getNewToken = (oAuth2Client, callback) => new Promise((resolve, reject) =>
         console.log('Token stored to', tokenFullPath);
       });
 
-      if(callback && isFunction(callback)) callback(oAuth2Client);
+      if (callback && isFunction(callback)) callback(oAuth2Client);
       resolve(oAuth2Client);
     });
   });
@@ -68,10 +68,10 @@ const attemptToAuthorize = (credentials, callback) => new Promise((resolve) => {
 
   // Check for previously stored Token
   fs.readFile(`${STORAGE_PATH}/${TOKEN_PATH}`, (err, token) => {
-    if (err) return getNewToken (oAuth2Client, callback);
+    if (err) return getNewToken(oAuth2Client, callback);
     oAuth2Client.setCredentials(parseJson(token));
 
-    if(callback && isFunction(callback)) callback(oAuth2Client);
+    if (callback && isFunction(callback)) callback(oAuth2Client);
 
     resolve(oAuth2Client);
   });
@@ -81,7 +81,7 @@ module.exports = {
   google,
   authorize: () => new Promise((resolve, reject) => {
     fs.readFile(`${STORAGE_PATH}/${CLIENT_CREDENTIALS_PATH}`, (err, content) => {
-      if(err) {
+      if (err) {
         reject(err)
         return console.log('Error loading client credentials file:', err);
       }

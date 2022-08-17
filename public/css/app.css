@@ -95,6 +95,7 @@ html, body {
   min-height: 100%;
   font-family: "Bayon", sans-serif;
   font-size: 16px;
+  line-height: 1;
   font-weight: 400;
   color: #FFFFFF;
 }
@@ -152,18 +153,19 @@ a:hover {
 .widget {
   position: relative;
   display: grid;
-  grid-template-columns: 120px 1fr 120px;
+  grid-template-columns: 9vmax 1fr 6vmax;
   grid-template-rows: 1fr 20%;
   grid-template-areas: "header label label" "header footer indicators";
   background: #1f2d23;
   border-radius: 4px;
-  padding: 0.75vw;
+  padding: 0.775em;
+  font-size: 1.1vmax;
 }
 .widget__header {
   grid-area: header;
   padding: 0 1em 0 0;
   display: grid;
-  grid-template-columns: 55px 1fr;
+  grid-template-columns: 3vmax 1fr;
   grid-template-rows: 1fr;
   grid-template-areas: "title thermometer";
 }
@@ -172,7 +174,7 @@ a:hover {
   position: relative;
 }
 .widget__header .beer-name > div {
-  font-size: 1.5vw;
+  font-size: 1.5em;
   line-height: 1;
   color: #FC9700;
   transform: rotate(270deg);
@@ -190,7 +192,7 @@ a:hover {
   grid-area: thermometer;
   display: flex;
   flex-grow: 1;
-  border: 2px solid #EBB854;
+  border: 0.155em solid #EBB854;
   align-items: stretch;
 }
 .widget__header .thermometer__value, .widget__header .thermometer__bar {
@@ -204,14 +206,14 @@ a:hover {
 .widget__header .thermometer__bar {
   background: #EBB854;
   height: 50%;
-  bottom: 2px;
-  left: 2px;
-  right: 2px;
+  bottom: 0.155em;
+  left: 0.155em;
+  right: 0.155em;
 }
 .widget__header .thermometer__bar:before, .widget__header .thermometer__bar:after {
   display: block;
   content: "";
-  height: 5px;
+  height: 2%;
   width: 100%;
   top: 0;
   left: 0;
@@ -220,15 +222,21 @@ a:hover {
   background: #ffffff;
 }
 .widget__header .thermometer__bar:after {
-  top: 10px;
+  top: 4%;
   background: #f0ca7f;
 }
+.widget__header .thermometer__bar[data-section="8"] .thermometer__value, .widget__header .thermometer__bar[data-section="6"] .thermometer__value, .widget__header .thermometer__bar[data-section="7"] .thermometer__value {
+  top: 50%;
+  color: #000000;
+}
 .widget__label, .widget__footer {
-  border: 2px solid #EBB854;
+  border: 0.155em solid #EBB854;
 }
 .widget__label {
   grid-area: label;
   margin-bottom: 1em;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .widget__footer {
   grid-area: footer;
@@ -237,14 +245,23 @@ a:hover {
   grid-template-rows: repeat(2, 1fr);
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "title title" "abv date";
-  font-size: 18px;
+  font-size: 1.1vw;
 }
 .widget__footer .beer-style {
-  font-size: 20px;
+  font-size: 1.2em;
   grid-area: title;
 }
+.widget__footer .beer-abv,
+.widget__footer .beer-created,
+.widget__footer .beer-no-keg {
+  align-self: flex-end;
+}
+.widget__footer .beer-no-keg,
 .widget__footer .beer-abv {
   grid-area: abv;
+}
+.widget__footer .beer-no-keg {
+  opacity: 0.35;
 }
 .widget__footer .beer-created {
   grid-area: date;
@@ -252,4 +269,31 @@ a:hover {
 }
 .widget__indicators {
   grid-area: indicators;
+}
+.widget__indicators .indicator {
+  display: grid;
+  grid-template-columns: 0.5vmax 1.5vmax 0.5vmax 1fr;
+  grid-template-areas: " . led . label";
+  margin-bottom: 0.5em;
+  align-items: center;
+}
+.widget__indicators .indicator__led {
+  grid-area: led;
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+}
+.widget__indicators .indicator__led > span {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 290486px;
+  border: 0.155em solid #EBB854;
+}
+.widget__indicators .indicator__label {
+  grid-area: label;
 }
