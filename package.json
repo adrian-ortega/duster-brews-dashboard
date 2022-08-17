@@ -8,7 +8,7 @@
     "nodemon-watch": "nodemon ./server.js -e *",
     "start": "SET NODE_ENV=development & npm-run-all --parallel scss-watch nodemon-watch",
     "dev": "npm run start",
-    "serve": "SET NODE_ENV=production & node ./server.js"
+    "serve": "npm install & SET NODE_ENV=production & node ./server.js"
   },
   "repository": {
     "type": "git",
