@@ -174,7 +174,6 @@ const renderWidgets = async (items, timestamp) => {
 
     window[window.APP_NS].$widgets = items.map((item) => {
         const $el = createWidgetElement(item);
-        $el.dataset.item = JSON.stringify(item);
         $container.appendChild($el);
         return $el;
     });
