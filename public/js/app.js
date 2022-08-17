@@ -1,7 +1,28 @@
+/**
+ * Blank PNG
+ * @type {string}
+ */
 const TRANSPARENT_PLACEHOLDER_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+
+/**
+ * An array of values for fractions in eights
+ * @type {Array|Number[]}
+ */
 const BEER_BAR_SECTIONS = (new Array(8)).fill(0).map((v, i) => (((i+1)/8) * 100));
 
+/**
+ * Does nothing, No Operation
+ * @constructor
+ */
 const NOOP = () => {};
+
+/**
+ * Will take a JSON string and try to convert it into an object.
+ * On any failure, `defaultValue` will be returned
+ * @param {string} str
+ * @param {*} defaultValue
+ * @return {null|*}
+ */
 const parseJson = (str, defaultValue = null) => {
     try {
         return JSON.parse(str);
@@ -10,12 +31,22 @@ const parseJson = (str, defaultValue = null) => {
         return defaultValue;
     }
 }
+
+/**
+ * Created the app instance of WebSocket and attaches it to
+ * the global instance. passes the message and error functions
+ * to the passed callaback params
+ * @param {string} namespace
+ * @param {function} onmessage
+ * @param {function} onerror
+ * @return {Promise<WebSocket>}
+ */
 const createWebSocket = ({namespace = 'DBDAPP', onmessage = NOOP, onerror = NOOP}) => {
     return new Promise((resolve) => {
-        const {port, hostname} = window.location
+        const {port, hostname} = window.location;
         const ws = new WebSocket(`ws://${hostname}:${port}/websockets`);
         ws.onopen = () => {
-            window[namespace].ws = true
+            window[namespace].ws = true;
         }
         ws.onerror = (error) => onerror(error);
         ws.onmessage = ({data}) => onmessage(parseJson(data));
@@ -24,24 +55,49 @@ const createWebSocket = ({namespace = 'DBDAPP', onmessage = NOOP, onerror = NOOP
         resolve(ws);
     });
 };
+
+/**
+ * @param {DOMHighResTimeStamp} timestamp
+ */
 const heartbeat = (timestamp) => {
     const app = window[window.APP_NS]
     if ((timestamp - app.lastTimestamp) > app.updateInterval) {
         if (app.ws) {
-            app.WebSocket.send(JSON.stringify({timestamp}))
+            app.WebSocket.send(JSON.stringify({timestamp}));
         }
         app.lastTimestamp = timestamp
     }
-    window.requestAnimationFrame(heartbeat)
-}
+    window.requestAnimationFrame(heartbeat);
+};
+
+/**
+ * Helper, creates a DOM element from a string
+ * @param template
+ * @return {ChildNode}
+ */
 const createElementFromTemplate = (template) => {
-    const _div = document.createElement('div')
-    _div.innerHTML = template.trim()
-    return _div.firstChild
-}
+    const _div = document.createElement('div');
+    _div.innerHTML = template.trim();
+    return _div.firstChild;
+};
+
+/**
+ * Wraps an image source and optional title in asemantically
+ * correct HTML string.
+ * @param {string} src
+ * @param {string} alt
+ * @return {`<figure><img src="${string}" alt=""/></figure>`}
+ */
 const imgTemplate = (src, alt = '') => {
     return `<figure><img src="${src}" alt="${alt}"/></figure>`
 }
+
+/**
+ * Creates the main Widget DOM Element that displays the information for
+ * each beer.
+ * @param {object} item
+ * @return {ChildNode}
+ */
 const createWidgetElement = (item) => {
     const beer_left_percent = item.keg ? parseFloat(item.keg.percent_beer_left) : 0
     const beer_bar_current_section = BEER_BAR_SECTIONS.reduce((currSec, curr, i, sections) => {
@@ -51,7 +107,6 @@ const createWidgetElement = (item) => {
         }
         return currSec
     }, 0);
-    console.log({item, section: beer_bar_current_section, sections: BEER_BAR_SECTIONS})
     return createElementFromTemplate(`
 <div class="widget widget--beer">
   <div class="widget__header">
@@ -81,11 +136,24 @@ const createWidgetElement = (item) => {
   </div>
 </div>`)
 };
+
+/**
+ * Returns the main element used to house the app
+ * @return {Element}
+ */
 const getDomContainer = () => document.querySelector(window[window.APP_NS].selector || '#app');
 
 let widgetOrder = [];
 let widgetOrderTimestamp;
 let widgetOrderInterval = 300000;
+
+/**
+ * Walks through every widget item returned and creates a widget
+ * DOM Element from it.
+ * @param {Array|Array<{}>} items
+ * @param {Number} timestamp
+ * @return {Promise<void>}
+ */
 const renderWidgets = async (items, timestamp) => {
     const $container = getDomContainer();
     if (!$container) {
@@ -114,13 +182,27 @@ const renderWidgets = async (items, timestamp) => {
         return $el;
     });
 }
-const updateWidgets = async ({items, timestamp }) => await renderWidgets(items, timestamp || performance.now())
+
+/**
+ * Callback for the websocket onMessage event
+ * @param {Array|Array<{}>} items
+ * @param {Number} timestamp
+ * @return {Promise<void>}
+ */
+const updateWidgets = async ({items, timestamp }) => await renderWidgets(items, timestamp || performance.now());
+
+/**
+ * Main
+ * @return {Promise<void>}
+ */
 const initialize = async () => {
     window[window.APP_NS].selector = '#app'
     window[window.APP_NS].ws = false
     await createWebSocket({onmessage: updateWidgets});
     heartbeat();
 }
+
+// Go baby go
 (async () => {
     await initialize();
 })();
