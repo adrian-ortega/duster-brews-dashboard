@@ -2,11 +2,7 @@
  * @param {Number} interval
  * @return {{interval, items: *[], timestamp: DOMHighResTimeStamp}}
  */
-const createTimedCache = (interval) => ({
-  interval,
-  timestamp: performance.now(),
-  items: []
-});
+const createTimedCache = (interval) => ({ interval, timestamp: 0, items: [] });
 
 /**
  * @param {DOMHighResTimeStamp} ts
