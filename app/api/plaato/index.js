@@ -1,8 +1,10 @@
 const axios = require('axios')
 const { authorize, google } = require('../google/auth');
-const { wait, isArray } = require("../../util/helpers");
+const { wait, isArray } = require('../../util/helpers');
+const { createTimedCache, hasCachedItems } = require('../../util/cache')
+const { FIVE_MINUTES } = require('../../util/time')
 
-const PLAATO_API_BASE_URI = 'https://plaato.blynk.cc'
+const PLAATO_API_BASE_URI = 'https://plaato.blynk.cc';
 // https://intercom.help/plaato/en/articles/5004722-pins-plaato-keg
 const PINS = {
   pour: 'v47',
@@ -32,7 +34,7 @@ const PINS = {
   app_mode: 'v88',
   scale_sensitivity: 'v89',
   firmware_version: 'v93',
-}
+};
 
 const plaatoGet = (token, pin, keg, key) => axios.get(`${PLAATO_API_BASE_URI}/${token}/get/${pin}`)
   .then(({ data }) => {
@@ -46,39 +48,55 @@ const plaatoGet = (token, pin, keg, key) => axios.get(`${PLAATO_API_BASE_URI}/${
     keg[key] = null
   });
 
-let fetchingFromGoogleSheets = false
-const getKegsFromGoogleSheets = async () => {
-  if (fetchingFromGoogleSheets) {
-    await wait(10);
-    return getKegsFromGoogleSheets();
-  }
+let fetchingFromGoogleSheets = false;
+const cache = createTimedCache(FIVE_MINUTES);
 
-  fetchingFromGoogleSheets = true
-  const auth = await authorize();
-  const sheets = google.sheets({ version: 'v4', auth })
-  const sheetsResponse = await sheets.spreadsheets.values.get({
-    spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
-    range: 'Plaato Keg Auth_Tokens!A2:B'
-  });
-  fetchingFromGoogleSheets = false
-  const transformer = async ([ keg_name, token ]) => {
-    const keg = { keg_name, token };
-    await Promise.all([
-      plaatoGet(token, PINS.beer_style, keg, 'id'),
-      plaatoGet(token, PINS.percent_beer_left, keg, 'percent_beer_left'),
-      plaatoGet(token, PINS.abv, keg, 'abv'),
-      plaatoGet(token, PINS.volume_unit, keg, 'volume_unit'),
-      plaatoGet(token, PINS.keg_date, keg, 'keg_date'),
-      plaatoGet(token, PINS.amount_left, keg, 'remaining'),
-      plaatoGet(token, PINS.max_keg_volume, keg, 'max_keg_volume'),
-      plaatoGet(token, PINS.last_pour, keg, 'last_pour'),
-      plaatoGet(token, PINS.pouring, keg, 'pouring')
-    ]);
-    return keg;
-  };
-  const filter = ([ name, token ]) => name && token;
-  const { data } = sheetsResponse
-  return (data.values ? await Promise.all(data.values.filter(filter).map(transformer)) : []);
+const getKegsFromGoogleSheets = async () => {
+  try {
+    if (hasCachedItems(performance.now(), cache)) {
+      return cache.items;
+    }
+
+    if (fetchingFromGoogleSheets) {
+      await wait(10);
+      return getKegsFromGoogleSheets();
+    }
+
+    fetchingFromGoogleSheets = true;
+    const auth = await authorize();
+    const sheets = google.sheets({ version: 'v4', auth });
+    const sheetsResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
+      range: 'Plaato Keg Auth_Tokens!A2:B'
+    });
+    fetchingFromGoogleSheets = false;
+    const transformer = async ([ keg_name, token ]) => {
+      const keg = { keg_name, token };
+      await Promise.all([
+        plaatoGet(token, PINS.beer_style, keg, 'id'),
+        plaatoGet(token, PINS.percent_beer_left, keg, 'percent_beer_left'),
+        plaatoGet(token, PINS.abv, keg, 'abv'),
+        plaatoGet(token, PINS.volume_unit, keg, 'volume_unit'),
+        plaatoGet(token, PINS.keg_date, keg, 'keg_date'),
+        plaatoGet(token, PINS.amount_left, keg, 'remaining'),
+        plaatoGet(token, PINS.max_keg_volume, keg, 'max_keg_volume'),
+        plaatoGet(token, PINS.last_pour, keg, 'last_pour'),
+        plaatoGet(token, PINS.pouring, keg, 'pouring')
+      ]);
+      return keg;
+    };
+    const filter = ([ name, token ]) => name && token;
+    const { data } = sheetsResponse;
+    const kegs = (data.values ? await Promise.all(data.values.filter(filter).map(transformer)) : []);
+
+    cache.timestamp = performance.now();
+    cache.items = kegs;
+
+    return kegs;
+  } catch (e) {
+    console.log('Error happened in getKegsFromGoogleSheets:', e);
+    return [];
+  }
 };
 
 module.exports = {
