@@ -1,6 +1,6 @@
 const Websocket = require('ws');
 // const queryString = require('query-string');
-const { parseJson } = require('../util/helpers')
+const { parseJson, objectHasKey } = require('../util/helpers')
 const { getWidgetItems } = require('../api')
 
 const onConnection = function (websocketConnection, connectionRequest) {
@@ -12,11 +12,9 @@ const onConnection = function (websocketConnection, connectionRequest) {
   // console.log({ _path, connectionParams });
 
   const sendStatefulResponse = (data) => {
-    getWidgetItems().then((items) => {
-      websocketConnection.send(JSON.stringify({
-        items,
-        timestamp: data?.timestamp
-      }));
+    const timestamp = objectHasKey(data, 'timestamp') ? data.timestamp : 0
+    getWidgetItems(timestamp).then((items) => {
+      websocketConnection.send(JSON.stringify({ items, timestamp }));
     })
   }
 

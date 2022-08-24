@@ -18,9 +18,9 @@ const beerTransformer = async (row) => ({
 
 const beerFilter = (row) => row[0] && row[1] && row[2] && row[3];
 
-const getBeersFromGoogleSheets = async () => {
+const getBeersFromGoogleSheets = async (requestTimestamp) => {
   try {
-    if(hasCachedItems(performance.now(), cache)) {
+    if(hasCachedItems(requestTimestamp, cache)) {
       return cache.items;
     }
 
@@ -40,7 +40,7 @@ const getBeersFromGoogleSheets = async () => {
     const { data } = sheetsResponse;
     const beers = (data.values ? await Promise.all(data.values.filter(beerFilter).map(beerTransformer)) : []);
 
-    cache.timestamp = performance.now();
+    cache.timestamp = requestTimestamp;
     cache.items = beers;
 
     return beers;

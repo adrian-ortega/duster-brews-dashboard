@@ -51,9 +51,9 @@ const plaatoGet = (token, pin, keg, key) => axios.get(`${PLAATO_API_BASE_URI}/${
 let fetchingFromGoogleSheets = false;
 const cache = createTimedCache(FIVE_MINUTES);
 
-const getKegsFromGoogleSheets = async () => {
+const getKegsFromGoogleSheets = async (requestTimestamp) => {
   try {
-    if (hasCachedItems(performance.now(), cache)) {
+    if (hasCachedItems(requestTimestamp, cache)) {
       return cache.items;
     }
 
@@ -89,7 +89,7 @@ const getKegsFromGoogleSheets = async () => {
     const { data } = sheetsResponse;
     const kegs = (data.values ? await Promise.all(data.values.filter(filter).map(transformer)) : []);
 
-    cache.timestamp = performance.now();
+    cache.timestamp = requestTimestamp;
     cache.items = kegs;
 
     return kegs;
