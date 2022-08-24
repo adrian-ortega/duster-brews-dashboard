@@ -1,8 +1,12 @@
 const { wait } = require('../../util/helpers');
+const { FIVE_MINUTES } = require('../../util/time');
+const { createTimedCache, hasCachedItems } = require('../../util/cache')
 const { authorize } = require('./auth');
 const { google } = require('googleapis');
 
 let fetchingBeersFromGoogleSheets = false;
+
+const cache = createTimedCache(FIVE_MINUTES)
 
 const beerTransformer = async (row) => ({
   id: row[0],
@@ -16,6 +20,10 @@ const beerFilter = (row) => row[0] && row[1] && row[2] && row[3];
 
 const getBeersFromGoogleSheets = async () => {
   try {
+    if(hasCachedItems(performance.now(), cache)) {
+      return cache.items;
+    }
+
     if (fetchingBeersFromGoogleSheets) {
       await wait(10);
       return getBeersFromGoogleSheets();
@@ -29,8 +37,13 @@ const getBeersFromGoogleSheets = async () => {
       range: 'Brews!A2:E'
     });
     fetchingBeersFromGoogleSheets = false;
-    const { data } = sheetsResponse
-    return (data.values ? await Promise.all(data.values.filter(beerFilter).map(beerTransformer)) : []);
+    const { data } = sheetsResponse;
+    const beers = (data.values ? await Promise.all(data.values.filter(beerFilter).map(beerTransformer)) : []);
+
+    cache.timestamp = performance.now();
+    cache.items = beers;
+
+    return beers;
   } catch (e) {
     console.log('Error happened in getBeersFromGoogleSheets:', e);
     return [];
