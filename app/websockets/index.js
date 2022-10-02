@@ -1,41 +1,62 @@
 const Websocket = require('ws');
-// const queryString = require('query-string');
-const { parseJson, objectHasKey } = require('../util/helpers')
-const { getWidgetItems } = require('../api')
+const {performance} = require('perf_hooks');
+const {getWidgetItems} = require('../api');
+const {ONE_HOUR, FIFTEEN_MINUTES} = require("../util/time");
+const {wait} = require("../util/helpers");
 
-const onConnection = function (websocketConnection, connectionRequest) {
-  // const [ _path, params ] = connectionRequest?.url?.split('?');
-  // const connectionParams = queryString.parse(params);
+let wss;
+let widgetHeartbeatId = 0;
+let widgetHeartbeatTries = 0;
 
-  // NOTE: connectParams are not used here but good to understand how to get
-  // to them if you need to pass data with the connection to identify it (e.g., a userId).
-  // console.log({ _path, connectionParams });
+const widgetHeartbeat = async (timestamp) => {
+    clearTimeout(widgetHeartbeatId);
+    try {
+        const data = await getWidgetItems(timestamp)
+        broadcast(data.items);
+        widgetHeartbeatTries = 0;
+        setTimeout(() => widgetHeartbeat(timestamp + ONE_HOUR), ONE_HOUR);
+    } catch (e) {
+        if (widgetHeartbeatTries++ < 5) {
+            await wait(10);
+            return widgetHeartbeat(timestamp + 10)
+        }
+    }
+}
 
-  const sendStatefulResponse = (data) => {
-    const timestamp = objectHasKey(data, 'timestamp') ? data.timestamp : 0
-    getWidgetItems(timestamp).then((items) => {
-      websocketConnection.send(JSON.stringify({ items, timestamp }));
+let burnInGuardId = 0;
+const burnInGuard = async (timestamp) => {
+    try {
+        broadcast({burnInGuard: true})
+    } catch (e) {
+    }
+
+    clearTimeout(burnInGuardId);
+    burnInGuardId = setTimeout(() => burnInGuard(timestamp + FIFTEEN_MINUTES), FIFTEEN_MINUTES)
+}
+
+const onConnection = function (ws) {
+    getWidgetItems().then((items) => {
+        ws.send(JSON.stringify({items}));
     })
-  }
-
-  websocketConnection.on('message', (message) => sendStatefulResponse(parseJson(message)));
-
-  sendStatefulResponse();
 };
 
+const broadcast = (data) => wss.clients.forEach(client => { client.send(JSON.stringify(data)) })
+
 module.exports = (expressServer) => {
-  const webSocketServer = new Websocket.Server({
-    noServer: true,
-    path: '/websockets'
-  })
+    const now = performance.now();
+    wss = new Websocket.Server({
+        noServer: true,
+        path: '/websockets'
+    })
 
-  expressServer.on('upgrade', (request, socket, head) => {
-    webSocketServer.handleUpgrade(request, socket, head, (websocket) => {
-      webSocketServer.emit('connection', websocket, request);
+    expressServer.on('upgrade', (request, socket, head) => {
+        wss.handleUpgrade(request, socket, head, (websocket) => {
+            wss.emit('connection', websocket, request);
+        });
     });
-  });
 
-  webSocketServer.on('connection', onConnection)
-
-  return webSocketServer
+    wss.on('connection', onConnection)
+    widgetHeartbeat(now);
+    burnInGuard(now);
+    return wss
 }

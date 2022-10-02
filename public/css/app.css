@@ -297,3 +297,43 @@ a:hover {
 .widget__indicators .indicator__label {
   grid-area: label;
 }
+
+@keyframes burnGuardAnimate {
+  from { transform: translateX(calc((100vw + 3em) * -1)); }
+  50% { transform: translateX(0)}
+  75% { transform: translateX(0) }
+  to { transform: translateX(calc((100vw + 3em) * -1))}
+}
+
+.burn-in-guard {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transform: translateX(calc((100vw + 3em) * -1));
+  background: #101010;
+}
+
+.burn-in-guard__logo {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 3000em;
+  width: 128px;
+  height: 128px;
+  background-color: rgba(255, 255, 255, 0.2);
+  background-image: url('/images/favicon.svg');
+  background-size: 90%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.burn-in-guard.animate {
+  animation-name: burnGuardAnimate;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}

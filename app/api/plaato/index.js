@@ -2,7 +2,7 @@ const axios = require('axios')
 const { authorize, google } = require('../google/auth');
 const { wait, isArray } = require('../../util/helpers');
 const { createTimedCache, hasCachedItems } = require('../../util/cache')
-const { FIVE_MINUTES } = require('../../util/time')
+const { FIVE_MINUTES, ONE_HOUR} = require('../../util/time');
 
 const PLAATO_API_BASE_URI = 'https://plaato.blynk.cc';
 // https://intercom.help/plaato/en/articles/5004722-pins-plaato-keg
@@ -44,17 +44,18 @@ const plaatoGet = (token, pin, keg, key) => axios.get(`${PLAATO_API_BASE_URI}/${
       keg[key] = data;
     }
   }).catch((e) => {
-    console.log(e)
+    console.log('Plaato Error:', e)
     keg[key] = null
   });
 
 let fetchingFromGoogleSheets = false;
+const sheetsCache = createTimedCache(ONE_HOUR)
 const cache = createTimedCache(FIVE_MINUTES);
 
 const getKegsFromGoogleSheets = async (requestTimestamp) => {
   try {
-    if (hasCachedItems(requestTimestamp, cache)) {
-      return cache.items;
+    if (hasCachedItems(requestTimestamp, sheetsCache)) {
+      return sheetsCache.data;
     }
 
     if (fetchingFromGoogleSheets) {
@@ -65,11 +66,21 @@ const getKegsFromGoogleSheets = async (requestTimestamp) => {
     fetchingFromGoogleSheets = true;
     const auth = await authorize();
     const sheets = google.sheets({ version: 'v4', auth });
-    const sheetsResponse = await sheets.spreadsheets.values.get({
+    const sheet = await sheets.spreadsheets.values.get({
       spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
       range: 'Plaato Keg Auth_Tokens!A2:B'
     });
+    sheetsCache.items = sheet.data
     fetchingFromGoogleSheets = false;
+    return sheetsCache.items
+  } catch (e) {
+    return [];
+  }
+}
+
+const getKegs = async (requestTimestamp) => {
+  try {
+    const kegSheetData = await getKegsFromGoogleSheets();
     const transformer = async ([ keg_name, token ]) => {
       const keg = { keg_name, token };
       await Promise.all([
@@ -86,8 +97,7 @@ const getKegsFromGoogleSheets = async (requestTimestamp) => {
       return keg;
     };
     const filter = ([ name, token ]) => name && token;
-    const { data } = sheetsResponse;
-    const kegs = (data.values ? await Promise.all(data.values.filter(filter).map(transformer)) : []);
+    const kegs = (kegSheetData.values ? await Promise.all(kegSheetData.values.filter(filter).map(transformer)) : []);
 
     cache.timestamp = requestTimestamp;
     cache.items = kegs;
@@ -100,5 +110,5 @@ const getKegsFromGoogleSheets = async (requestTimestamp) => {
 };
 
 module.exports = {
-  getKegsFromGoogleSheets
+  getKegs
 }

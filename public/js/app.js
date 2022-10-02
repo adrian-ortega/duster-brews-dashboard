@@ -57,20 +57,6 @@ const createWebSocket = ({namespace = 'DBDAPP', onmessage = NOOP, onerror = NOOP
 };
 
 /**
- * @param {DOMHighResTimeStamp} timestamp
- */
-const heartbeat = (timestamp) => {
-    const app = window[window.APP_NS]
-    if ((timestamp - app.heartbeat.timestamp) > app.heartbeat.interval) {
-        if (app.ws) {
-            app.WebSocket.send(JSON.stringify({timestamp}));
-        }
-        app.heartbeat.timestamp = timestamp
-    }
-    window.requestAnimationFrame(heartbeat);
-};
-
-/**
  * Helper, creates a DOM element from a string
  * @param template
  * @return {ChildNode}
@@ -187,6 +173,16 @@ const renderWidgets = async (items, timestamp) => {
  */
 const updateWidgets = async ({items, timestamp }) => await renderWidgets(items, timestamp || performance.now());
 
+const burnInGuard = () => {
+    const $el = document.createElement('div');
+    $el.innerHTML = '<div class="burn-in-guard__logo"></div>';
+    $el.classList.add('burn-in-guard');
+    document.body.appendChild($el);
+
+    setTimeout(() => $el.classList.add('animate'), 100);
+    setTimeout(() => $el.parentNode.removeChild($el), 3000);
+}
+
 /**
  * Main
  * @return {Promise<void>}
@@ -194,8 +190,15 @@ const updateWidgets = async ({items, timestamp }) => await renderWidgets(items, 
 const initialize = async () => {
     window[window.APP_NS].selector = '#app'
     window[window.APP_NS].ws = false
-    await createWebSocket({onmessage: updateWidgets});
-    heartbeat(window[window.APP_NS].heartbeat.timestamp);
+    await createWebSocket({
+        onmessage: (data) => {
+            if(data.burnInGuard) {
+                burnInGuard()
+            } else {
+                updateWidgets(data)
+            }
+        }
+    });
 }
 
 // Go baby go

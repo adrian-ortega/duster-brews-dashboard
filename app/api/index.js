@@ -1,4 +1,4 @@
-const { getKegsFromGoogleSheets } = require('./plaato');
+const { getKegs } = require('./plaato');
 const { getBeersFromGoogleSheets } = require('./google');
 
 const EMPTY_BEER_ID = 'EMPTY'
@@ -8,7 +8,7 @@ const EMPTY_BEER_ID = 'EMPTY'
  */
 const getWidgetItems = async (timestamp = 0) => {
   const [ kegs, beers ] = await Promise.all([
-    getKegsFromGoogleSheets(timestamp),
+    getKegs(timestamp),
     getBeersFromGoogleSheets(timestamp)
   ]);
 
