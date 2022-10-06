@@ -121,6 +121,13 @@ body {
   }
 }
 
+.dashboard {
+  display: flex;
+}
+.dashboard > div {
+  width: 100%;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: "Bayon", sans-serif;
   font-weight: normal;
@@ -138,6 +145,41 @@ a:hover {
   border-bottom: 1px dotted currentColor;
 }
 
+.nav {
+  font-size: 0.9em;
+  height: 55px;
+  background: transparent;
+}
+
+.nav,
+.nav-right,
+.nav-left,
+.nav-item {
+  display: flex;
+}
+
+.nav-right {
+  margin-left: auto;
+}
+
+.nav-item {
+  padding: 0 1em;
+}
+.nav-item figure, .nav-item img {
+  display: block;
+}
+.nav-item figure {
+  display: flex;
+  align-items: center;
+}
+.nav-item img {
+  height: 100%;
+  width: auto;
+}
+.nav-item.logo img {
+  height: 80%;
+}
+
 .dashboard {
   min-height: 100%;
 }
@@ -146,7 +188,8 @@ a:hover {
   display: grid;
   grid-gap: 0.25em;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 49vh);
+  grid-template-rows: repeat(2, 49%);
+  height: calc(100% - 55px);
   padding: 0.5vh;
 }
 

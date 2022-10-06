@@ -34,3 +34,18 @@ body {
     min-height: 100vh;
   }
 }
+
+.dashboard {
+  display: flex;
+
+  > div {
+    width: 100%;
+  }
+}
+
+//#app {
+//  @include tablet {
+//    height: 100%;
+//    min-height: 100%;
+//  }
+//}

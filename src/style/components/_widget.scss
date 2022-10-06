@@ -6,7 +6,8 @@ $twopx: 0.155em;
   display: grid;
   grid-gap: 0.25em;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 49vh);
+  grid-template-rows: repeat(2, 49%);
+  height: calc(100% - #{$nav-height});
   padding: .5vh;
 }
 

@@ -11,28 +11,6 @@ const TRANSPARENT_PLACEHOLDER_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUh
 const BEER_BAR_SECTIONS = (new Array(8)).fill(0).map((v, i) => (((i+1)/8) * 100));
 
 /**
- * Wraps an image source and optional title in asemantically
- * correct HTML string.
- * @param {string} src
- * @param {string} alt
- * @return {`<figure><img src="${string}" alt=""/></figure>`}
- */
-const imgTemplate = (src, alt = '') => {
-    return `<figure><img src="${src}" alt="${alt}"/></figure>`
-}
-
-/**
- * Helper, creates a DOM element from a string
- * @param template
- * @return {ChildNode}
- */
-const createElementFromTemplate = (template) => {
-    const _div = document.createElement('div');
-    _div.innerHTML = template.trim();
-    return _div.firstChild;
-};
-
-/**
  * Creates the main Widget DOM Element that displays the information for
  * each beer.
  * @param {object} item

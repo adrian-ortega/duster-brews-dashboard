@@ -12,7 +12,13 @@ const renderWidgets = async (items, timestamp) => {
         return;
     }
 
-    $container.innerHTML = '';
+    let $widgetsContainer = $container.querySelector('.widgets');
+    if(!$widgetsContainer) {
+        $widgetsContainer = createElementFromTemplate('<div class="widgets"></div>');
+        $container.appendChild($widgetsContainer);
+    }
+
+    $widgetsContainer.innerHTML = '';
     const app = window[window.APP_NS]
     if(!app.widgets.timestamp || ((timestamp - app.widgets.timestamp) > app.widgets.interval)) {
         app.widgets.order = Object.keys(items).map((o,i) => i).sort(() => Math.random() > 0.5 ? 1 : -1);
@@ -29,7 +35,7 @@ const renderWidgets = async (items, timestamp) => {
 
     window[window.APP_NS].$widgets = items.map((item) => {
         const $el = createWidgetElement(item);
-        $container.appendChild($el);
+        $widgetsContainer.appendChild($el);
         return $el;
     });
 }
@@ -60,6 +66,10 @@ const initialize = async () => {
     window[window.APP_NS].selector = '#app'
     window[window.APP_NS].ws = false
 
+    const $container = getDomContainer();
+    if($container) $container.innerHTML = ''
+
+    initializeNav();
     await createWebSocket({
         onmessage: (data) => {
             if(data.burnInGuard) {
