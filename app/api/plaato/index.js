@@ -68,7 +68,7 @@ const getKegsFromGoogleSheets = async (requestTimestamp) => {
     const sheets = google.sheets({ version: 'v4', auth });
     const sheet = await sheets.spreadsheets.values.get({
       spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
-      range: 'Plaato Keg Auth_Tokens!A2:B'
+      range: 'Plaato Keg Auth_Tokens!A2:C'
     });
     sheetsCache.items = sheet.data
     fetchingFromGoogleSheets = false;
@@ -81,8 +81,8 @@ const getKegsFromGoogleSheets = async (requestTimestamp) => {
 const getKegs = async (requestTimestamp) => {
   try {
     const kegSheetData = await getKegsFromGoogleSheets();
-    const transformer = async ([ keg_name, token ]) => {
-      const keg = { keg_name, token };
+    const transformer = async ([ keg_name, token, keg_location ]) => {
+      const keg = { keg_name, token, keg_location };
       await Promise.all([
         plaatoGet(token, PINS.beer_style, keg, 'id'),
         plaatoGet(token, PINS.percent_beer_left, keg, 'percent_beer_left'),

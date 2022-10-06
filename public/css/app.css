@@ -269,71 +269,15 @@ a:hover {
 }
 .widget__indicators {
   grid-area: indicators;
-}
-.widget__indicators .indicator {
-  display: grid;
-  grid-template-columns: 0.5vmax 1.5vmax 0.5vmax 1fr;
-  grid-template-areas: " . led . label";
-  margin-bottom: 0.5em;
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
-.widget__indicators .indicator__led {
-  grid-area: led;
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-bottom: 100%;
+.widget .tap-no {
+  text-align: center;
+  align-content: center;
 }
-.widget__indicators .indicator__led > span {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 290486px;
-  border: 0.155em solid #EBB854;
-}
-.widget__indicators .indicator__label {
-  grid-area: label;
-}
-
-@keyframes burnGuardAnimate {
-  from { transform: translateX(calc((100vw + 3em) * -1)); }
-  50% { transform: translateX(0)}
-  75% { transform: translateX(0) }
-  to { transform: translateX(calc((100vw + 3em) * -1))}
-}
-
-.burn-in-guard {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  transform: translateX(calc((100vw + 3em) * -1));
-  background: #101010;
-}
-
-.burn-in-guard__logo {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translate(-50%, -50%);
-  border-radius: 3000em;
-  width: 128px;
-  height: 128px;
-  background-color: rgba(255, 255, 255, 0.2);
-  background-image: url('/images/favicon.svg');
-  background-size: 90%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.burn-in-guard.animate {
-  animation-name: burnGuardAnimate;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease-out;
+.widget .tap-no__value {
+  grid-area: value;
+  font-size: 2em;
 }
