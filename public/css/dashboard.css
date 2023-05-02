@@ -1,0 +1,11 @@
+.dashboard {
+    display: flex;
+}
+
+.dashboard>div {
+    width: 100%;
+}
+
+.dashboard {
+    min-height: 100%;
+}

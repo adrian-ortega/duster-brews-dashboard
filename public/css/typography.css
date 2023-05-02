@@ -1,0 +1,28 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Bayon", sans-serif;
+    font-weight: normal;
+}
+
+h1:not(.is-normal),
+h2:not(.is-normal),
+h3:not(.is-normal),
+h4:not(.is-normal),
+h5:not(.is-normal),
+h6:not(.is-normal) {
+    text-transform: uppercase;
+}
+
+a {
+    display: inline-flex;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+}
+
+a:hover {
+    border-bottom: 1px dotted currentColor;
+}

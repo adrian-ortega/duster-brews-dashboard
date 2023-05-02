@@ -1,0 +1,39 @@
+.nav {
+    font-size: 0.9em;
+    height: 55px;
+    background: transparent;
+}
+
+.nav,
+.nav-right,
+.nav-left,
+.nav-item {
+    display: flex;
+}
+
+.nav-right {
+    margin-left: auto;
+}
+
+.nav-item {
+    padding: 0 1em;
+}
+
+.nav-item figure,
+.nav-item img {
+    display: block;
+}
+
+.nav-item figure {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item img {
+    height: 100%;
+    width: auto;
+}
+
+.nav-item.logo img {
+    height: 80%;
+}
