@@ -1,0 +1,24 @@
+:root {
+    /* Colors */
+    --white: #ffffff;
+    --black: #000911;
+    --black-bis: #000C17;
+  
+    --success: #026027;
+    --error: #830214;
+    --warning: #ddaa22;
+
+    --background: #223227;
+
+    /* Font families and options */
+    --font-base: 16px;
+    --font-family-body: "Bayon", sans-serif;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Responsiveness */
+    --mobile-width: 480px;
+    --tablet-width: 768px;
+    --desktop-width: 1024px;
+}

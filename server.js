@@ -20,7 +20,8 @@ require('./app/router')(app);
 app.use(require('./app/http/middleware/exceptionHandler'));
 
 const server = app.listen(PORT, () => {
-    console.log(`Server Running at http://${HOST}:${PORT}`)
+    console.clear();
+    console.log(`Server Running at http://${HOST}:${PORT}`);
 });
 
 websockets(server);

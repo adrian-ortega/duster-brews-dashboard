@@ -51,7 +51,9 @@ html {
   box-sizing: border-box;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
@@ -81,6 +83,7 @@ td,
 th {
   padding: 0;
 }
+
 td:not([align]),
 th:not([align]) {
   text-align: left;

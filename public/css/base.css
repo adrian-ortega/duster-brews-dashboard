@@ -8,15 +8,15 @@ html,
 body {
     height: 100%;
     min-height: 100%;
-    font-family: "Bayon", sans-serif;
-    font-size: 16px;
+    font-family: var(--font-family-body);
+    font-size: var(--font-base);
     line-height: 1;
-    font-weight: 400;
-    color: #FFFFFF;
+    font-weight: var(--font-weigt-normal);
+    color: var(--white);
 }
 
 body {
-    background: #223227;
+    background: var(--background);
 }
 
 .main-content {
