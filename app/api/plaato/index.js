@@ -1,8 +1,11 @@
-const axios = require('axios')
+const axios = require('axios');
+const log = require('../../util/log');
 const { authorize, google } = require('../google/auth');
 const { wait, isArray } = require('../../util/helpers');
 const { createTimedCache, hasCachedItems } = require('../../util/cache')
 const { FIVE_MINUTES, ONE_HOUR} = require('../../util/time');
+const { PLAATO_SPREADSHEET_ID, PLAATO_SPREADSHEET_RANGE } = require('../../../config');
+const { createNullProtoObjWherePossible } = require('ejs/lib/utils');
 
 const PLAATO_API_BASE_URI = 'https://plaato.blynk.cc';
 // https://intercom.help/plaato/en/articles/5004722-pins-plaato-keg
@@ -67,14 +70,14 @@ const getKegsFromGoogleSheets = async (requestTimestamp) => {
     const auth = await authorize();
     const sheets = google.sheets({ version: 'v4', auth });
     const sheet = await sheets.spreadsheets.values.get({
-      spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
-      range: 'Plaato Keg Auth_Tokens!A2:C'
+      spreadsheetId: PLAATO_SPREADSHEET_ID,
+      range: PLAATO_SPREADSHEET_RANGE
     });
     sheetsCache.items = sheet.data
     fetchingFromGoogleSheets = false;
     return sheetsCache.items
   } catch (e) {
-    return [];
+    return null;
   }
 }
 
@@ -97,7 +100,7 @@ const getKegs = async (requestTimestamp) => {
       return keg;
     };
     const filter = ([ name, token ]) => name && token;
-    const kegs = (kegSheetData.values ? await Promise.all(kegSheetData.values.filter(filter).map(transformer)) : []);
+    const kegs = (kegSheetData && kegSheetData.values ? await Promise.all(kegSheetData.values.filter(filter).map(transformer)) : []);
 
     cache.timestamp = requestTimestamp;
     cache.items = kegs;

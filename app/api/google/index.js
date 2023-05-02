@@ -3,6 +3,7 @@ const { FIVE_MINUTES } = require('../../util/time');
 const { createTimedCache, hasCachedItems } = require('../../util/cache')
 const { authorize } = require('./auth');
 const { google } = require('googleapis');
+const { BEERS_SPREADSHEET_ID, BEERS_SPREADSHEET_RANGE } = require('../../../config');
 
 let fetchingBeersFromGoogleSheets = false;
 
@@ -33,8 +34,8 @@ const getBeersFromGoogleSheets = async (requestTimestamp) => {
     const auth = await authorize();
     const sheets = google.sheets({ version: 'v4', auth });
     const sheetsResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: '1BxvDhm1t2vnh5vSwpPjEMgBURN6GGVJhDFkpPJPBoHA',
-      range: 'Brews!A2:E'
+      spreadsheetId: BEERS_SPREADSHEET_ID,
+      range: BEERS_SPREADSHEET_RANGE
     });
     fetchingBeersFromGoogleSheets = false;
     const { data } = sheetsResponse;
@@ -45,8 +46,7 @@ const getBeersFromGoogleSheets = async (requestTimestamp) => {
 
     return beers;
   } catch (e) {
-    console.log('Error happened in getBeersFromGoogleSheets:', e);
-    return [];
+    return null;
   }
 };
 

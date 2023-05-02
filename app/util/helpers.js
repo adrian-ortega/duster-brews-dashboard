@@ -124,6 +124,26 @@ const wait = (ms = 10) => new Promise((a) => {
   }, ms);
 });
 
+const isEmpty = (mixedValue) => {
+  const emptyValues = [undefined, null, false, 0, '', '0'];
+  for (let i = 0, len = emptyValues.length; i < len; i++) {
+      if (mixedValue === emptyValues[i]) {
+          return true;
+      }
+  }
+
+  if (isObject(mixedValue)) {
+      for (let key in mixedValue) {
+          if (objectHasKey(mixedValue, key)) {
+              return false;
+          }
+      }
+      return true;
+  }
+
+  return false;
+};
+
 module.exports = {
   NOOP: () => {
   },
@@ -135,6 +155,7 @@ module.exports = {
   isFunction,
   isObject,
   isArray,
+  isEmpty,
 
   objectHasMethod,
   objectHasKey,

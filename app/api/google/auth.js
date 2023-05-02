@@ -1,5 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
+const chalk = require('chalk');
+const log = require('../../util/log');
 const { google } = require('googleapis');
 const { parseJson, isFunction } = require('../../util/helpers');
 const path = require('path');
@@ -68,7 +70,9 @@ const attemptToAuthorize = (credentials, callback) => new Promise((resolve) => {
 
   // Check for previously stored Token
   fs.readFile(`${STORAGE_PATH}/${TOKEN_PATH}`, (err, token) => {
-    if (err) return getNewToken(oAuth2Client, callback);
+    if (err) {
+      return getNewToken(oAuth2Client, callback);
+    }
     oAuth2Client.setCredentials(parseJson(token));
 
     if (callback && isFunction(callback)) callback(oAuth2Client);
@@ -81,9 +85,19 @@ module.exports = {
   google,
   authorize: () => new Promise((resolve, reject) => {
     fs.readFile(`${STORAGE_PATH}/${CLIENT_CREDENTIALS_PATH}`, (err, content) => {
+      const fileMissing = err && err.code == 'ENOENT';
       if (err) {
-        reject(err)
-        return console.log('Error loading client credentials file:', err);
+        if(fileMissing) {
+          log.clear();
+          log.error(`CREDENTIALS FILE MISSING\n`);
+          log.debug('The rest of the app cannot continue without this file.');
+          log.debug(`Please provide one and save it at: \n\t${chalk.green(err.path)}.\n`)
+          log.error(`APP EXITING 👋\n`);
+          process.exit();
+        } else {
+          log.error('Error loading client credentials file:', err);
+        }
+        return reject(err);
       }
 
       attemptToAuthorize(parseJson(content)).then((oAuth2Client) => {
