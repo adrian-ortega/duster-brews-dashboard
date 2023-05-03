@@ -14,7 +14,8 @@ const beerTransformer = async (row) => ({
   brewery: row[1],
   style: row[2],
   name: row[3],
-  background_image: row[4]
+  background_image: row[4],
+  brewery_image: row[5] || null
 });
 
 const beerFilter = (row) => row[0] && row[1] && row[2] && row[3];

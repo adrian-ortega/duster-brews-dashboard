@@ -27,8 +27,7 @@ let burnInGuardId = 0;
 const burnInGuard = async (timestamp) => {
     try {
         broadcast({burnInGuard: true})
-    } catch (e) {
-    }
+    } catch (e) {}
 
     clearTimeout(burnInGuardId);
     burnInGuardId = setTimeout(() => burnInGuard(timestamp + FIFTEEN_MINUTES), FIFTEEN_MINUTES)

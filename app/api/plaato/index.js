@@ -5,7 +5,6 @@ const { wait, isArray } = require('../../util/helpers');
 const { createTimedCache, hasCachedItems } = require('../../util/cache')
 const { FIVE_MINUTES, ONE_HOUR} = require('../../util/time');
 const { PLAATO_SPREADSHEET_ID, PLAATO_SPREADSHEET_RANGE } = require('../../../config');
-const { createNullProtoObjWherePossible } = require('ejs/lib/utils');
 
 const PLAATO_API_BASE_URI = 'https://plaato.blynk.cc';
 // https://intercom.help/plaato/en/articles/5004722-pins-plaato-keg
@@ -58,7 +57,7 @@ const cache = createTimedCache(FIVE_MINUTES);
 const getKegsFromGoogleSheets = async (requestTimestamp) => {
   try {
     if (hasCachedItems(requestTimestamp, sheetsCache)) {
-      return sheetsCache.data;
+      return sheetsCache.items;
     }
 
     if (fetchingFromGoogleSheets) {
@@ -73,7 +72,7 @@ const getKegsFromGoogleSheets = async (requestTimestamp) => {
       spreadsheetId: PLAATO_SPREADSHEET_ID,
       range: PLAATO_SPREADSHEET_RANGE
     });
-    sheetsCache.items = sheet.data
+    sheetsCache.items = sheet.data;
     fetchingFromGoogleSheets = false;
     return sheetsCache.items
   } catch (e) {

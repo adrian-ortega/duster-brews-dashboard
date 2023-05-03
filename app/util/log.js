@@ -75,6 +75,6 @@ class Logger {
     trace(message, context = {}) {
         this.log({message, context, type: this.levels.trace});
     }
-};
+}
 
 module.exports = new Logger([defaultHandler]);
