@@ -1,11 +1,10 @@
-const $ = createElementFromTemplate
 const createNavLogo = () => {
-    return $(`<div class="nav-item logo">${imgTemplate('/images/logo-duster_brews-dashboard.svg', 'Logo')}</div>`)
+    return createElementFromTemplate(`<div class="nav-item logo">${imgTemplate('/images/logo-duster_brews-dashboard.svg', 'Logo')}</div>`)
 }
 
 const createNavElements = ($nav) => {
-    let $left = $('<div class="nav-left"></div>')
-    let $right = $('<div class="nav-right"></div>')
+    let $left = createElementFromTemplate('<div class="nav-left"></div>')
+    let $right = createElementFromTemplate('<div class="nav-right"></div>')
 
     $left.appendChild(createNavLogo())
 
@@ -22,7 +21,7 @@ const initializeNav = () => {
 
     let $navContainer = $container.querySelector('.nav');
     if(!$navContainer) {
-        $navContainer = $('<nav class="nav"></nav>');
+        $navContainer = createElementFromTemplate('<nav class="nav"></nav>');
         $container.appendChild($navContainer);
     }
 
