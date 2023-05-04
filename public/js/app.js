@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 /**
  * Walks through every widget item returned and creates a widget
  * DOM Element from it.

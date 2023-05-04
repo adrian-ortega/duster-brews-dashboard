@@ -4,8 +4,8 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Bayon", sans-serif;
-    font-weight: normal;
+    font-family: var(--font-family-body);
+    font-weight: var(--font-weight-normal);
 }
 
 h1:not(.is-normal),

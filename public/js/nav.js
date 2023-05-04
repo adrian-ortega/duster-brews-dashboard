@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
+
 const createNavLogo = () => {
     return createElementFromTemplate(`<div class="nav-item logo">${imgTemplate('/images/logo-duster_brews-dashboard.svg', 'Logo')}</div>`)
 }

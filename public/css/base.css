@@ -14,9 +14,17 @@ body {
     font-weight: var(--font-weight-normal);
     color: var(--white);
 }
-
 body {
     background: var(--background);
+}
+
+.icon {
+    display: inline-flex;
+}
+.icon svg {
+    fill: currentColor;
+    width: 1em;
+    height: 1em;
 }
 
 .main-content {

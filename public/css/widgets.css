@@ -2,24 +2,16 @@
     display: grid;
     grid-gap: 2em;
 }
-
 .widget {
     display: grid;
-    grid-template-columns: 12em 1fr;
-    grid-template-rows: 12em;
     padding: 1em 2em;
     column-gap: 3em;
 }
-
-.widget + .widget {
-    border-top: 1px solid red;
-}
-
 .widget__image {
     position: relative;
     overflow: hidden;
+    box-shadow: 0 0 0 0.25em var(--primary);
 }
-
 .widget__image figure {
     position: absolute;
     top: 0;
@@ -28,16 +20,20 @@
     width: 100%;
     padding-bottom: 100%;
 }
-
 .widget__image img {
     width: 100%;
 }
-
 .widget__content {
     display: flex;
     flex-direction: column;
 }
-
+.widget__content-header {
+    display: grid;
+    grid-template-columns: 1fr 2.5em;
+    grid-template-areas: "keg-header keg-image";
+    align-items: center;
+    column-gap: 1em;
+}
 .widget__content-footer {
     margin-top: auto;
     display: flex;
@@ -45,7 +41,12 @@
     align-items: flex-end;
     gap: 2em;
 }
-
+.keg__image {
+    grid-area: keg-image;
+}
+.keg__header {
+    grid-area: keg-header;
+}
 .keg__location,
 .keg__detail p {
     color: var(--secondary);
@@ -61,13 +62,20 @@
 .keg__detail p {
     font-size: .75em;
 }
-
 .keg__name {
     font-size: 2em;
-    color: var(--primary)
+    color: var(--primary);
+    text-shadow: 0.025em 0.025em 0 var(--secondary), 
+                 0.06em 0.06em 0 var(--black), 
+                 -0.025em -0.025em 0 var(--black);
 }
 .keg__brewery {
-font-size: .9em;
+    font-size: .9em;
+}
+.keg__location,
+.keg__brewery,
+.keg__detail {
+    text-shadow: 0.06em 0.06em 0 var(--black);
 }
 .keg__detail {
     display: flex;
@@ -83,6 +91,34 @@ font-size: .9em;
     font-weight: var(--font-weight-bold);
     font-family: var(--font-family-labels);
 }
+.keg__detail .icon {
+    font-size: 2em;
+}
 .keg__detail h3 {
     font-size: 1.25em;
+}
+
+/* Mobile / Small Tablet only */
+@media screen and (max-width: 768px) {
+    .widgets {
+        font-size: calc(var(--font-base) - 2px);
+    }
+
+    .widget {
+        grid-template-columns: 6em 1fr;
+        grid-template-rows: 8em;
+    }
+}
+
+/* Tablet Portrait */
+@media screen and (min-width: 768px) {
+    .widget {
+        grid-template-columns: 12em 1fr;
+        grid-template-rows: 12em;
+    }
+}
+
+/* Desktop / Landscape Tablet */
+@media screen and (min-width: 1024px) {
+
 }
