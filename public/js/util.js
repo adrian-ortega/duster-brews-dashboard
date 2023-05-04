@@ -34,7 +34,7 @@ const getDomContainer = () => document.querySelector(window[window.APP_NS].selec
  * @return {`<figure><img src="${string}" alt=""/></figure>`}
  */
 const imgTemplate = (src, alt = '') => {
-    return `<figure><img src="${src}" alt="${alt}"/></figure>`
+    return `<figure><span><img src="${src}" alt="${alt}"/></span></figure>`
 }
 
 /**

@@ -7,7 +7,7 @@ const { BEERS_SPREADSHEET_ID, BEERS_SPREADSHEET_RANGE } = require('../../../conf
 
 let fetchingBeersFromGoogleSheets = false;
 
-const cache = createTimedCache(FIVE_MINUTES)
+const cache = createTimedCache(FIVE_MINUTES);
 
 const beerTransformer = async (row) => ({
   id: row[0],

@@ -20,6 +20,7 @@
 }
 
 .nav-item figure,
+.nav-item figure span,
 .nav-item img {
     display: block;
 }
@@ -34,6 +35,6 @@
     width: auto;
 }
 
-.nav-item.logo img {
+.nav-item.logo figure span {
     height: 80%;
 }

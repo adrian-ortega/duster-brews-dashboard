@@ -1,13 +1,6 @@
 /* eslint-disable no-undef */
 
-/**
- * Walks through every widget item returned and creates a widget
- * DOM Element from it.
- * @param {Array|Array<{}>} items
- * @param {Number} timestamp
- * @return {Promise<void>}
- */
-const renderWidgets = async (items, timestamp) => {
+const getWidgetContainer = () => {
     const $container = getDomContainer();
     if (!$container) {
         // Display something went wrong message?
@@ -19,9 +12,29 @@ const renderWidgets = async (items, timestamp) => {
         $widgetsContainer = createElementFromTemplate('<div class="widgets"></div>');
         $container.appendChild($widgetsContainer);
     }
+    return $widgetsContainer;
+}
 
-    $widgetsContainer.innerHTML = '';
+const renderPlaceholders = async () => {
+    const $widgetsContainer = getWidgetContainer();
+    window[window.APP_NS].$widgets = (new Array(5)).fill(0).map((_, i) => {
+        const $el = createWidgetPlaceholder(i);
+        $widgetsContainer.appendChild($el);
+        return $el;
+    });
+};
+
+/**
+ * Walks through every widget item returned and creates a widget
+ * DOM Element from it.
+ * @param {Array|Array<{}>} items
+ * @param {Number} timestamp
+ * @return {Promise<void>}
+ */
+const renderWidgets = async (items, timestamp) => {
     const app = window[window.APP_NS]
+    const $widgetsContainer = getWidgetContainer();
+
     if(!app.widgets.timestamp || ((timestamp - app.widgets.timestamp) > app.widgets.interval)) {
         app.widgets.order = Object.keys(items).map((o,i) => i).sort(() => Math.random() > 0.5 ? 1 : -1);
         app.widgets.timestamp = timestamp
@@ -34,6 +47,8 @@ const renderWidgets = async (items, timestamp) => {
         }
         items = tempItems;
     }
+
+    $widgetsContainer.innerHTML = '';
 
     window[window.APP_NS].$widgets = items.map((item) => {
         const $el = createWidgetElement(item);
@@ -65,19 +80,20 @@ const burnInGuard = () => {
  * @return {Promise<void>}
  */
 const initialize = async () => {
-    window[window.APP_NS].selector = '#app'
-    window[window.APP_NS].ws = false
+    window[window.APP_NS].selector = '#app';
+    window[window.APP_NS].ws = false;
 
     const $container = getDomContainer();
-    if($container) $container.innerHTML = ''
+    if($container) $container.innerHTML = '';
 
     initializeNav();
+    renderPlaceholders();
     await createWebSocket({
         onmessage: (data) => {
             if(data.burnInGuard) {
-                burnInGuard()
+                burnInGuard();
             } else {
-                updateWidgets(data)
+                updateWidgets(data);
             }
         }
     });

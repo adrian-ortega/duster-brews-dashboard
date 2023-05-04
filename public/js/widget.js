@@ -3,6 +3,40 @@
 
 const keg_icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>keg</title><path d="M5,22V20H6V16H5V14H6V11H5V7H11V3H10V2H11L13,2H14V3H13V7H19V11H18V14H19V16H18V20H19V22H5M17,9A1,1 0 0,0 16,8H14A1,1 0 0,0 13,9A1,1 0 0,0 14,10H16A1,1 0 0,0 17,9Z" /></svg>`;
 
+const createWidgetPlaceholder = (i) => {
+  const template = `<div id="keg-P${i}" class="widget is-placeholder">
+    <div class="widget__image"><span class="placeholder is-image"></span></div>
+    <div class="widget__content">
+      <div class="widget__content-header">
+        <div class="keg__image"><span class="placeholder is-image"></span></div>
+        <div class="keg__header">
+          <p class="keg__location"><span class="placeholder is-small"></span></p>
+          <h2 class="keg__name">
+            <span class="placeholder is-tiny"></span>
+            <span class="placeholder is-med"></span>
+          </h2>
+          <p class="keg__brewery">
+            <span class="placeholder is-tiny"></span>
+            <span class="placeholder is-small"></span>
+          </p>
+        </div>
+      </div>
+      <div class="widget__content-footer">
+        <div class="keg__detail"><h3><span class="placeholder is-tiny"></span></h3></div>
+        <div class="keg__detail">
+          <p><span class="placeholder is-icon"></span></p>
+          <h3><span class="placeholder is-tiny"></span></h3>
+        </div>
+        <div class="keg__detail"><p><span class="placeholder is-tiny"></span></p><h3><span class="placeholder is-tiny"></span></h3></div>
+        <div class="keg__detail"><p><span class="placeholder is-tiny"></span></p><h3><span class="placeholder is-tiny"></span></h3></div>
+        <div class="keg__detail"><p><span class="placeholder is-small"></span></p><h3><span class="placeholder is-small"></span></h3></div>
+      </div>
+    </div>
+  </div>`;
+
+  return createElementFromTemplate(template);
+};
+
 /**
  * Creates the main Widget DOM Element that displays the information for
  * each beer.
