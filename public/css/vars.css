@@ -1,6 +1,6 @@
 :root {
     /* Colors */
-    --white: #ffffff;
+    --white: #FEEECE;
     --black: #000911;
     --black-bis: #000C17;
   
@@ -8,11 +8,16 @@
     --error: #830214;
     --warning: #ddaa22;
 
-    --background: #223227;
+    --background: #011323;
+
+    --primary: #FC9700;
+    --secondary: #FF2E2E;
+    --tertirary: #ffffff;
 
     /* Font families and options */
     --font-base: 16px;
     --font-family-body: "Bayon", sans-serif;
+    --font-family-labels: Arial, sans-serif;
     --font-weight-normal: 400;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;

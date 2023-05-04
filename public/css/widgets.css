@@ -1,188 +1,88 @@
 .widgets {
-    height: calc(100% - 55px);
-    padding: 0.5vh;
     display: grid;
-    grid-gap: 0.25em;
-    grid-auto-rows: minmax(225px, max-content);
+    grid-gap: 2em;
 }
 
 .widget {
-    position: relative;
     display: grid;
-    grid-template-columns: 9vmax 1fr 6vmax;
-    grid-template-rows: 1fr 20%;
-    grid-template-areas: "header label label" "header footer indicators";
-    background: #1f2d23;
-    border-radius: 4px;
-    padding: 0.775em;
-    font-size: 1.1vmax;
+    grid-template-columns: 12em 1fr;
+    grid-template-rows: 12em;
+    padding: 1em 2em;
+    column-gap: 3em;
 }
 
-@media screen and (min-width: 480px) {
-    .widgets {
-        grid-auto-rows: minmax(225px, 33%);
-    }
+.widget + .widget {
+    border-top: 1px solid red;
 }
 
-@media screen and (min-width: 768px) {
-    .widgets {
-        grid-template-columns: repeat(2, 1fr);
-        height: calc(100% - 55px);
-    }
-}
-
-@media screen and (min-width: 1024px) {
-    .widgets {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 49%);
-        height: calc(100% - 55px);
-    }
-}
-
-
-.widget__header {
-    grid-area: header;
-    padding: 0 1em 0 0;
-    display: grid;
-    grid-template-columns: 3vmax 1fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: "title thermometer";
-}
-
-.widget__header .beer-name {
-    grid-area: title;
+.widget__image {
     position: relative;
-}
-
-.widget__header .beer-name>div {
-    font-size: 1.5em;
-    line-height: 1;
-    color: #FC9700;
-    transform: rotate(270deg);
-    word-break: keep-all;
-    white-space: nowrap;
-    text-align: center;
     overflow: hidden;
+}
+
+.widget__image figure {
     position: absolute;
-    left: 0.5vw;
-    bottom: -1vw;
-    transform-origin: top left;
-}
-
-.widget__header .thermometer {
-    position: relative;
-    grid-area: thermometer;
-    display: flex;
-    flex-grow: 1;
-    border: 0.155em solid #EBB854;
-    align-items: stretch;
-}
-
-.widget__header .thermometer__value,
-.widget__header .thermometer__bar {
-    position: absolute;
-}
-
-.widget__header .thermometer__value {
-    top: -2em;
-    text-align: center;
-    width: 100%;
-}
-
-.widget__header .thermometer__bar {
-    background: #EBB854;
-    height: 50%;
-    bottom: 0.155em;
-    left: 0.155em;
-    right: 0.155em;
-}
-
-.widget__header .thermometer__bar:before,
-.widget__header .thermometer__bar:after {
-    display: block;
-    content: "";
-    height: 2%;
-    width: 100%;
     top: 0;
     left: 0;
+    height: 0;
+    width: 100%;
+    padding-bottom: 100%;
 }
 
-.widget__header .thermometer__bar:before {
-    background: #ffffff;
+.widget__image img {
+    width: 100%;
 }
 
-.widget__header .thermometer__bar:after {
-    top: 4%;
-    background: #f0ca7f;
-}
-
-.widget__header .thermometer__bar[data-section="8"] .thermometer__value,
-.widget__header .thermometer__bar[data-section="6"] .thermometer__value,
-.widget__header .thermometer__bar[data-section="7"] .thermometer__value {
-    top: 50%;
-    color: #000000;
-}
-
-.widget__label,
-.widget__footer {
-    border: 0.155em solid #EBB854;
-}
-
-.widget__label {
-    grid-area: label;
-    margin-bottom: 1em;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.widget__footer {
-    grid-area: footer;
-    padding: 5px;
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas: "title title" "abv date";
-    font-size: 1.1vmax;
-}
-
-.widget__footer .beer-style {
-    font-size: 1.2em;
-    grid-area: title;
-}
-
-.widget__footer .beer-abv,
-.widget__footer .beer-created,
-.widget__footer .beer-no-keg {
-    align-self: flex-end;
-}
-
-.widget__footer .beer-no-keg,
-.widget__footer .beer-abv {
-    grid-area: abv;
-}
-
-.widget__footer .beer-no-keg {
-    opacity: 0.35;
-}
-
-.widget__footer .beer-created {
-    grid-area: date;
-    text-align: right;
-}
-
-.widget__indicators {
-    grid-area: indicators;
+.widget__content {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
 }
 
-.widget .tap-no {
-    text-align: center;
-    align-content: center;
+.widget__content-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 2em;
 }
 
-.widget .tap-no__value {
-    grid-area: value;
+.keg__location,
+.keg__detail p {
+    color: var(--secondary);
+}
+.keg__brewery,
+.keg__location,
+.keg__detail p {
+    text-transform: uppercase;
+    font-weight: var(--font-weight-bold);
+    font-family: var(--font-family-labels);
+}
+.keg__location,
+.keg__detail p {
+    font-size: .75em;
+}
+
+.keg__name {
     font-size: 2em;
+    color: var(--primary)
+}
+.keg__brewery {
+font-size: .9em;
+}
+.keg__detail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.keg__detail:first-child {
+    margin-right: auto;
+}
+.keg__detail p {
+    text-transform: uppercase;
+    font-size: .75em;
+    font-weight: var(--font-weight-bold);
+    font-family: var(--font-family-labels);
+}
+.keg__detail h3 {
+    font-size: 1.25em;
 }

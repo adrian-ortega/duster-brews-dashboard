@@ -11,7 +11,7 @@ body {
     font-family: var(--font-family-body);
     font-size: var(--font-base);
     line-height: 1;
-    font-weight: var(--font-weigt-normal);
+    font-weight: var(--font-weight-normal);
     color: var(--white);
 }
 
@@ -22,7 +22,6 @@ body {
 .main-content {
     position: relative;
     z-index: 3;
-    background: #2a3e30;
 }
 
 @media screen and (max-width: 768px) {
