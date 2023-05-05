@@ -1,8 +1,11 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 
-const keg_icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>keg</title><path d="M5,22V20H6V16H5V14H6V11H5V7H11V3H10V2H11L13,2H14V3H13V7H19V11H18V14H19V16H18V20H19V22H5M17,9A1,1 0 0,0 16,8H14A1,1 0 0,0 13,9A1,1 0 0,0 14,10H16A1,1 0 0,0 17,9Z" /></svg>`;
-
+/**
+ * Creates an element as a placeholder for loading widgets
+ * @param {Number} i 
+ * @returns {ChildNode}
+ */
 const createWidgetPlaceholder = (i) => {
   const template = `<div id="keg-P${i}" class="widget is-placeholder">
     <div class="widget__image"><span class="placeholder is-image"></span></div>
@@ -61,7 +64,7 @@ const createWidgetElement = ({ keg, brewery, brewery_image, style, name, backgro
       <div class="widget__content-footer">
         <div class="keg__detail"><h3>${style}</h3></div>
         <div class="keg__detail">
-          <p><span class="icon">${keg_icon}</span></p>
+          <p><span class="icon">${ICON_KEG}</span></p>
           <h3>${keg_percent}%</h3>
         </div>
         <div class="keg__detail"><p>ABV</p><h3>${abv}%</h3></div>
@@ -71,4 +74,52 @@ const createWidgetElement = ({ keg, brewery, brewery_image, style, name, backgro
     </div>
   </div>`;
   return createElementFromTemplate(template);
+};
+
+/**
+ * Creates five placeholder widgets while the websocket connects and returns a message.
+ * @return {Promise<void>}
+ */
+const renderPlaceholders = async () => {
+  const $widgetsContainer = getWidgetContainer();
+  $widgetsContainer.innerHTML = '';
+
+  window[window.APP_NS].$widgets = (new Array(5)).fill(0).map((_, i) => {
+      const $el = createWidgetPlaceholder(i);
+      $widgetsContainer.appendChild($el);
+      return $el;
+  });
+};
+
+/**
+* Walks through every widget item returned and creates a widget
+* DOM Element from it.
+* @param {Array|Array<{}>} items
+* @param {Number} timestamp
+* @return {Promise<void>}
+*/
+const renderWidgets = async (items, timestamp) => {
+  const app = window[window.APP_NS]
+  const $widgetsContainer = getWidgetContainer();
+
+  if(!app.widgets.timestamp || ((timestamp - app.widgets.timestamp) > app.widgets.interval)) {
+      app.widgets.order = Object.keys(items).map((o,i) => i).sort(() => Math.random() > 0.5 ? 1 : -1);
+      app.widgets.timestamp = timestamp
+  }
+
+  if(app.widgets.order.length) {
+      let tempItems = [];
+      for(let i in app.widgets.order) {
+          tempItems.push(items[app.widgets.order[i]]);
+      }
+      items = tempItems;
+  }
+
+  $widgetsContainer.innerHTML = '';
+
+  window[window.APP_NS].$widgets = items.map((item) => {
+      const $el = createWidgetElement(item);
+      $widgetsContainer.appendChild($el);
+      return $el;
+  });
 };

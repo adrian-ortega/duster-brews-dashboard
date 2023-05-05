@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+
 /**
  * Created the app instance of WebSocket and attaches it to
  * the global instance. passes the message and error functions
@@ -18,6 +21,7 @@ const createWebSocket = ({namespace = 'DBDAPP', onmessage = NOOP, onerror = NOOP
         ws.onmessage = ({data}) => onmessage(parseJson(data));
 
         window[namespace].WebSocket = ws;
+        window[namespace].fireAction = (action, data = null) => ws.send(JSON.stringify({ action, data }));
         resolve(ws);
     });
 };

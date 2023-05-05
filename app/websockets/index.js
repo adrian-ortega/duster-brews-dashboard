@@ -2,7 +2,7 @@ const Websocket = require('ws');
 const {performance} = require('perf_hooks');
 const {getWidgetItems} = require('../api');
 const {ONE_HOUR, FIFTEEN_MINUTES} = require("../util/time");
-const {wait} = require("../util/helpers");
+const {wait, parseJson} = require("../util/helpers");
 
 let wss;
 let widgetHeartbeatId = 0;
@@ -34,9 +34,18 @@ const burnInGuard = async (timestamp) => {
 }
 
 const onConnection = function (ws) {
-    getWidgetItems().then((items) => {
-        ws.send(JSON.stringify({items}));
-    })
+    const refreshWidgets = () => getWidgetItems().then((items) => ws.send(JSON.stringify({items})));
+    
+    ws.on('message', (msg) => {
+        const data = parseJson(msg);
+        if(data.action) {
+            switch(data.action) {
+                case 'refreshWidgets': refreshWidgets();
+            }
+        }
+    });
+
+    refreshWidgets();
 };
 
 const broadcast = (data) => wss.clients.forEach(client => { client.send(JSON.stringify(data)) })
@@ -54,7 +63,8 @@ module.exports = (expressServer) => {
         });
     });
 
-    wss.on('connection', onConnection)
+    wss.on('connection', onConnection);
+    
     widgetHeartbeat(now);
     burnInGuard(now);
     return wss

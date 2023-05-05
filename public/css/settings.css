@@ -1,0 +1,55 @@
+.settings {
+    width: 100%;
+    max-width: 40em;
+    margin: 0 auto;
+    height: calc(100% - var(--header-height));
+    position: relative;
+}
+
+.settings form {
+    padding: 2em 0;
+}
+
+.settings h2 {
+    font-size: 2.1em;
+    margin-bottom: 1em;
+}
+
+.settings__field {
+    display: flex;
+    font-family: var(--font-family-labels);
+}
+
+.settings__field .label,
+.settings__field .input {
+    flex: 1 1 auto;
+}
+.settings__field .label label {
+    font-weight: var(--font-weight-bold);
+}
+.settings__field .label p {
+    margin-top: 0.25em;
+    font-size: 0.8em;
+}
+.settings__footer {
+    display: flex;
+    gap: 0.5em;
+    justify-content: center;
+    width: 100%;
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1em 0;
+}
+
+.settings__footer .button {
+    min-width: 6.5em;
+    font-weight: var(--font-weight-bold);
+    text-shadow: 1px 1px 0 var(--tertiary-bis);
+    text-transform: uppercase;
+    background: var(--button-background);
+    border-radius: var(--button-radius);
+    padding: 0 1em;
+}

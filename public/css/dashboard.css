@@ -9,6 +9,10 @@
 .dashboard {
     min-height: 100%;
 }
+.is-hidden {
+    display: none;;
+}
+
 .placeholder,
 .placeholder::before,
 .placeholder::after {

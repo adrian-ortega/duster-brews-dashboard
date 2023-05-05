@@ -16,6 +16,12 @@
     --tertiary: #C06A5B;
     --tertiary-bis: #AA5D50;
 
+    --header-height: 55px;
+
+    --button-height: 35px;
+    --button-background: var(--tertiary-bis);
+    --button-radius: var(--radius-rounded);
+
     --radius: 4px;
     --radius-rounded: 3000em;
 

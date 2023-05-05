@@ -1,6 +1,6 @@
 .nav {
     font-size: 0.9em;
-    height: 55px;
+    height: var(--header-height);
     background: transparent;
 }
 
@@ -37,4 +37,17 @@
 
 .nav-item.logo figure span {
     height: 80%;
+}
+
+.nav-button {
+    font-family: var(--font-family-labels);
+    font-weight: var(--font-weight-bold);
+    color: var(--tertiary);
+    text-transform: uppercase;
+    font-size: 1.2em;
+}
+
+.nav-button .text,
+.nav-button .icon {
+    
 }

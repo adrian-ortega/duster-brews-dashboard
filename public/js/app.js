@@ -1,62 +1,5 @@
 /* eslint-disable no-undef */
 
-const getWidgetContainer = () => {
-    const $container = getDomContainer();
-    if (!$container) {
-        // Display something went wrong message?
-        return;
-    }
-
-    let $widgetsContainer = $container.querySelector('.widgets');
-    if(!$widgetsContainer) {
-        $widgetsContainer = createElementFromTemplate('<div class="widgets"></div>');
-        $container.appendChild($widgetsContainer);
-    }
-    return $widgetsContainer;
-}
-
-const renderPlaceholders = async () => {
-    const $widgetsContainer = getWidgetContainer();
-    window[window.APP_NS].$widgets = (new Array(5)).fill(0).map((_, i) => {
-        const $el = createWidgetPlaceholder(i);
-        $widgetsContainer.appendChild($el);
-        return $el;
-    });
-};
-
-/**
- * Walks through every widget item returned and creates a widget
- * DOM Element from it.
- * @param {Array|Array<{}>} items
- * @param {Number} timestamp
- * @return {Promise<void>}
- */
-const renderWidgets = async (items, timestamp) => {
-    const app = window[window.APP_NS]
-    const $widgetsContainer = getWidgetContainer();
-
-    if(!app.widgets.timestamp || ((timestamp - app.widgets.timestamp) > app.widgets.interval)) {
-        app.widgets.order = Object.keys(items).map((o,i) => i).sort(() => Math.random() > 0.5 ? 1 : -1);
-        app.widgets.timestamp = timestamp
-    }
-
-    if(app.widgets.order.length) {
-        let tempItems = [];
-        for(let i in app.widgets.order) {
-            tempItems.push(items[app.widgets.order[i]]);
-        }
-        items = tempItems;
-    }
-
-    $widgetsContainer.innerHTML = '';
-
-    window[window.APP_NS].$widgets = items.map((item) => {
-        const $el = createWidgetElement(item);
-        $widgetsContainer.appendChild($el);
-        return $el;
-    });
-}
-
 /**
  * Callback for the websocket onMessage event
  * @param {Array|Array<{}>} items
@@ -90,9 +33,10 @@ const initialize = async () => {
     renderPlaceholders();
     await createWebSocket({
         onmessage: (data) => {
-            if(data.burnInGuard) {
-                burnInGuard();
-            } else {
+            if(objectHasKey(data, 'burnInGuard')) {
+                return burnInGuard();
+            }
+            if(window[APP_NS].route === 'home') {
                 updateWidgets(data);
             }
         }
@@ -102,4 +46,16 @@ const initialize = async () => {
 // Go baby go
 (async () => {
     await initialize();
+    document.addEventListener('ShowSettings', () => {
+        renderSettings();
+        window[APP_NS].route = 'settings';
+        document.querySelector('.nav-buttons').classList.add('is-hidden');
+    });
+    
+    document.addEventListener('ShowWidgets', () => {
+        renderPlaceholders();
+        window[window.APP_NS].route = 'home';
+        window[window.APP_NS].fireAction('refreshWidgets');
+        document.querySelector('.nav-buttons').classList.remove('is-hidden');
+      })
 })();
