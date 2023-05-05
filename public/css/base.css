@@ -1,63 +1,62 @@
 *,
 *:before,
 *:after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html,
 body {
-    height: 100%;
-    min-height: 100%;
-    font-family: var(--font-family-body);
-    font-size: var(--font-base);
-    line-height: 1;
-    font-weight: var(--font-weight-normal);
-    color: var(--white);
+  height: 100%;
+  min-height: 100%;
+  font-family: var(--font-family-body);
+  font-size: var(--font-base);
+  line-height: 1;
+  font-weight: var(--font-weight-normal);
+  color: var(--white);
 }
 body {
-    background: var(--background);
+  background: var(--background);
 }
 
 .icon {
-    display: inline-flex;
+  display: inline-flex;
 }
 .icon svg {
-    fill: currentColor;
-    width: 1em;
-    height: 1em;
+  fill: currentColor;
+  width: 1em;
+  height: 1em;
 }
 .button {
-    display: inline-flex;
-    appearance: none;
-    border: 1px solid transparent;
-    background: none;
-    align-items: center;
-    justify-content: center;
-    min-height: var(--button-height);
-    color: var(--white);
+  display: inline-flex;
+  appearance: none;
+  border: 1px solid transparent;
+  background: none;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--button-height);
+  color: var(--white);
 }
 .button:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 .button .text + .icon,
 .button .icon + .text {
-    margin-left: 0.25em;
+  margin-left: 0.25em;
 }
 .main-content {
-    position: relative;
-    z-index: 3;
+  position: relative;
+  z-index: 3;
 }
 
 @media screen and (max-width: 768px) {
-    .main-content {
-        margin-left: auto;
-        margin-right: auto;
-    }
+  .main-content {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
-@media screen and (min-width: 769px),
-print {
-    .main-content {
-        min-height: 100vh;
-    }
+@media screen and (min-width: 769px), print {
+  .main-content {
+    min-height: 100vh;
+  }
 }

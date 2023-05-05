@@ -1,40 +1,40 @@
 :root {
-    /* Colors */
-    --white: #FEEECE;
-    --black: #000911;
-    --black-bis: #000A12;
-  
-    --success: #026027;
-    --error: #830214;
-    --warning: #ddaa22;
+  /* Colors */
+  --white: #feeece;
+  --black: #000911;
+  --black-bis: #000a12;
 
-    --background: #011323;
-    --background-alt: #463a27;
+  --success: #026027;
+  --error: #830214;
+  --warning: #ddaa22;
 
-    --primary: #FC9700;
-    --secondary: #FF2E2E;
-    --tertiary: #C06A5B;
-    --tertiary-bis: #AA5D50;
+  --background: #011323;
+  --background-alt: #463a27;
 
-    --header-height: 55px;
+  --primary: #fc9700;
+  --secondary: #ff2e2e;
+  --tertiary: #c06a5b;
+  --tertiary-bis: #aa5d50;
 
-    --button-height: 35px;
-    --button-background: var(--tertiary-bis);
-    --button-radius: var(--radius-rounded);
+  --header-height: 55px;
 
-    --radius: 4px;
-    --radius-rounded: 3000em;
+  --button-height: 35px;
+  --button-background: var(--tertiary-bis);
+  --button-radius: var(--radius-rounded);
 
-    /* Font families and options */
-    --font-base: 16px;
-    --font-family-body: "Bayon", sans-serif;
-    --font-family-labels: Arial, sans-serif;
-    --font-weight-normal: 400;
-    --font-weight-semibold: 600;
-    --font-weight-bold: 700;
+  --radius: 4px;
+  --radius-rounded: 3000em;
 
-    /* Responsiveness */
-    --mobile-width: 480px;
-    --tablet-width: 768px;
-    --desktop-width: 1024px;
+  /* Font families and options */
+  --font-base: 16px;
+  --font-family-body: "Bayon", sans-serif;
+  --font-family-labels: Arial, sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Responsiveness */
+  --mobile-width: 480px;
+  --tablet-width: 768px;
+  --desktop-width: 1024px;
 }
