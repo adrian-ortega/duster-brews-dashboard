@@ -26,6 +26,7 @@ const initialize = async () => {
     window[window.APP_NS].selector = '#app';
     window[window.APP_NS].ws = false;
 
+    const isRoute = (route) => window[APP_NS].route === route;
     const $container = getDomContainer();
     if($container) $container.innerHTML = '';
 
@@ -36,8 +37,14 @@ const initialize = async () => {
             if(objectHasKey(data, 'burnInGuard')) {
                 return burnInGuard();
             }
-            if(window[APP_NS].route === 'home') {
-                updateWidgets(data);
+
+            if (objectHasKey(data, 'settings')) {
+                window[APP_NS].state.settings = {...data.settings}
+            }
+
+            if(objectHasKey(data, 'items') ) {
+                window[window.APP_NS].state.items = [...data.items];
+                if (isRoute('home')) updateWidgets(data);
             }
         }
     });
@@ -49,6 +56,7 @@ const initialize = async () => {
     document.addEventListener('ShowSettings', () => {
         renderSettings();
         window[APP_NS].route = 'settings';
+        window[window.APP_NS].fireAction('refreshSettings');
         document.querySelector('.nav-buttons').classList.add('is-hidden');
     });
     

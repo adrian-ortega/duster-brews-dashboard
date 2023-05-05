@@ -20,6 +20,10 @@
   font-family: var(--font-family-labels);
 }
 
+.settings__field + .settings__field {
+  margin-top: 2em;
+}
+
 .settings__field .label,
 .settings__field .input {
   flex: 1 1 auto;

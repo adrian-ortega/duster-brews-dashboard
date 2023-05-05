@@ -17,7 +17,6 @@ const parseJson = (str, defaultValue = null) => {
     try {
         return JSON.parse(str);
     } catch (e) {
-        console.log('Invalid JSON', str);
         return defaultValue;
     }
 }

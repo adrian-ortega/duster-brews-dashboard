@@ -1,7 +1,8 @@
 const Websocket = require("ws");
+const Settings = require("../settings");
 const { performance } = require("perf_hooks");
 const { getWidgetItems } = require("../api");
-const { ONE_HOUR, FIFTEEN_MINUTES } = require("../util/time");
+const { ONE_SECOND } = require("../util/time");
 const { wait, parseJson } = require("../util/helpers");
 
 let wss;
@@ -11,10 +12,12 @@ let widgetHeartbeatTries = 0;
 const widgetHeartbeat = async (timestamp) => {
   clearTimeout(widgetHeartbeatId);
   try {
+    const timeOffset =
+      parseInt(Settings.get("refresh_rate", "60"), 10) * ONE_SECOND;
     const data = await getWidgetItems(timestamp);
     broadcast(data.items);
     widgetHeartbeatTries = 0;
-    setTimeout(() => widgetHeartbeat(timestamp + ONE_HOUR), ONE_HOUR);
+    setTimeout(() => widgetHeartbeat(timestamp + timeOffset), timeOffset);
   } catch (e) {
     if (widgetHeartbeatTries++ < 5) {
       await wait(10);
@@ -32,27 +35,37 @@ const burnInGuard = async (timestamp) => {
   }
 
   clearTimeout(burnInGuardId);
+  const timeOffset =
+    parseInt(Settings.get("burn_in_guard_refresh_rate", "15"), 10) * ONE_SECOND;
   burnInGuardId = setTimeout(
-    () => burnInGuard(timestamp + FIFTEEN_MINUTES),
-    FIFTEEN_MINUTES
+    () => burnInGuard(timestamp + timeOffset),
+    timeOffset
   );
 };
 
-const onConnection = function (ws) {
-  const refreshWidgets = () =>
-    getWidgetItems().then((items) => ws.send(JSON.stringify({ items })));
-
-  ws.on("message", (msg) => {
-    const data = parseJson(msg);
-    if (data.action) {
-      switch (data.action) {
-        case "refreshWidgets":
-          refreshWidgets();
-      }
+const onConnectionMessage = async (data, ws) => {
+  if (data.action) {
+    const response = {};
+    switch (data.action) {
+      case "refreshWidgets":
+        response.items = await getWidgetItems();
+        break;
+      case "refreshSettings":
+        response.settings = Settings.all();
+        break;
     }
-  });
+    ws.send(JSON.stringify(response));
+  }
+};
 
-  refreshWidgets();
+const onConnection = async function (ws) {
+  ws.on("message", (msg) => onConnectionMessage(parseJson(msg), ws));
+  ws.send(
+    JSON.stringify({
+      items: await getWidgetItems(),
+      settings: Settings.all(),
+    })
+  );
 };
 
 const broadcast = (data) =>

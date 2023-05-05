@@ -3,22 +3,19 @@ const fs = require("fs");
 const { parseJson, isArray, objectHasKey, isObject } = require("./helpers");
 
 class JSONFileStorage {
-  constructor(path, data = {}, saveAndLoad = false) {
+  constructor(path, data = {}, autoload = false) {
     this.path = path;
     this.data = data;
-
-    if (saveAndLoad) {
-      this.fileRefresh(data);
-    }
+    if (autoload) this.autoload();
   }
 
   get(id, defaultValue = null) {
-    this.fileRefresh();
+    this.refresh();
     return objectHasKey(this.data, id) ? this.data[id] : defaultValue;
   }
 
   put(id, value) {
-    this.fileRefresh();
+    this.refresh();
     const sanitize = (a) => (isObject(a) ? { ...a } : isArray(a) ? [...a] : a);
     if (isArray(id) && objectHasKey(id[0], "id")) {
       const values = [...id];
@@ -30,16 +27,16 @@ class JSONFileStorage {
       this.data[id] = sanitize(value);
     }
 
-    return this.fileSave();
+    return this.save();
   }
 
   all() {
-    this.fileRefresh();
+    this.refresh();
     return parseJson(JSON.stringify(this.data));
   }
 
   remove(id) {
-    this.fileRefresh();
+    this.refresh();
     if (objectHasKey(this.data, id)) {
       delete this.data[id];
     }
@@ -48,7 +45,7 @@ class JSONFileStorage {
 
   has(id_or_ids) {
     let has;
-    this.fileRefresh();
+    this.refresh();
     if (isArray(id_or_ids)) {
       has = Object.entries(this.data).find((item) =>
         id_or_ids.includes(item.id)
@@ -56,25 +53,36 @@ class JSONFileStorage {
     } else {
       has = objectHasKey(this.data, id_or_ids);
     }
-    this.fileSave();
+    this.save();
     return has;
   }
 
-  fileRefresh(defaultValue = {}) {
-    this.data = this.loadFile(this.path);
+  autoload() {
+    if (!this.autoloaded) {
+      const defaultData = this.data;
+      this.data = JSONFileStorage.loadFile(this.path, defaultData);
+      if (!isObject(this.data) || this.data === null) {
+        this.data = defaultData;
+      }
+      this.autoloaded = true;
+    }
+  }
+
+  refresh(defaultValue = {}) {
+    this.data = JSONFileStorage.loadFile(this.path);
     if (!isObject(this.data) || this.data === null) {
       this.data = defaultValue;
     }
     return true;
   }
 
-  fileSave() {
-    return this.saveFile(this.path, this.data);
+  save() {
+    return JSONFileStorage.saveFile(this.path, this.data);
   }
 
   static fileExists(path) {
     try {
-      if (fs.fileExists(path)) return true;
+      return fs.existsSync(path);
     } catch (err) {
       return false;
     }
@@ -94,10 +102,10 @@ class JSONFileStorage {
     }
   }
 
-  static loadFile(path) {
+  static loadFile(path, defaultValue = {}) {
     try {
       if (!JSONFileStorage.fileExists(path)) {
-        JSONFileStorage.saveFile(path);
+        JSONFileStorage.saveFile(path, defaultValue);
       }
       return parseJson(fs.readFileSync(path, "utf-8"));
     } catch (err) {
