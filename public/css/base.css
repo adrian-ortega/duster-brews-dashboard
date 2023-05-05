@@ -26,6 +26,9 @@ body {
   width: 1em;
   height: 1em;
 }
+.icon.is-spinner {
+  animation: spinner 2.5s linear infinite;
+}
 .button {
   display: inline-flex;
   appearance: none;
@@ -42,6 +45,9 @@ body {
 .button .text + .icon,
 .button .icon + .text {
   margin-left: 0.25em;
+}
+.button[disabled] {
+  opacity: 0.5;
 }
 .main-content {
   position: relative;

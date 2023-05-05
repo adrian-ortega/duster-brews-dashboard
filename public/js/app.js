@@ -39,7 +39,8 @@ const initialize = async () => {
             }
 
             if (objectHasKey(data, 'settings')) {
-                window[APP_NS].state.settings = {...data.settings}
+                window[APP_NS].state.settings = {...data.settings};
+                if(isRoute('settings')) renderSettings();
             }
 
             if(objectHasKey(data, 'items') ) {
