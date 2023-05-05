@@ -76,8 +76,9 @@ class JSONFileStorage {
     return true;
   }
 
-  save() {
-    return JSONFileStorage.saveFile(this.path, this.data);
+  save(data) {
+    if(!data) data = this.data;
+    return JSONFileStorage.saveFile(this.path, data);
   }
 
   static fileExists(path) {
