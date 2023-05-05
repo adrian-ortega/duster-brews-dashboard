@@ -2,30 +2,30 @@
  * @param {*} a
  * @return {boolean}
  */
-const isUndefined = (a) => typeof a === 'undefined';
+const isUndefined = (a) => typeof a === "undefined";
 
 /**
  * @param {string} str
  * @return {boolean}
  */
 const isString = (str) => {
-  return Object.prototype.toString.call(str) === '[object String]';
-}
+  return Object.prototype.toString.call(str) === "[object String]";
+};
 
 /**
  * @param {Array|*} arr
  * @return {arg is any[]}
  */
 const isArray = (arr) => {
-  return Array.isArray(arr)
-}
+  return Array.isArray(arr);
+};
 
 /**
  * @param {Object|*} obj
  * @return {boolean}
  */
 const isObject = (obj) => {
-  return typeof obj === 'object' && obj !== null;
+  return typeof obj === "object" && obj !== null;
 };
 
 /**
@@ -34,7 +34,7 @@ const isObject = (obj) => {
  * @return {boolean}
  */
 const isFunction = (value) => {
-  return value && {}.toString.call(value) === '[object Function]';
+  return value && {}.toString.call(value) === "[object Function]";
 };
 
 /**
@@ -45,13 +45,13 @@ const isFunction = (value) => {
  * @return {boolean}
  */
 const objectHasMethod = (object, method = null) => {
-  console.log(object)
+  console.log(object);
   if (!isObject(object) || isUndefined(object[method])) {
     return false;
   }
 
   return isFunction(object[method]);
-}
+};
 
 /**
  * Wraps the pesky hasOwnProperty call in a helper.
@@ -60,8 +60,8 @@ const objectHasMethod = (object, method = null) => {
  * @return {boolean}
  */
 const objectHasKey = (object, key) => {
-  return isObject(object) && Object.prototype.hasOwnProperty.call(object, key)
-}
+  return isObject(object) && Object.prototype.hasOwnProperty.call(object, key);
+};
 
 /**
  * Creates a FormData (PHP-style notated), object for use with HTTP Requests
@@ -73,17 +73,17 @@ const objectHasKey = (object, key) => {
  */
 const objectToFormData = (object, fd = null, parent = null) => {
   const formData = fd || new FormData();
-  let formKey
-  Object.entries(object).forEach(([ property, value ]) => {
+  let formKey;
+  Object.entries(object).forEach(([property, value]) => {
     formKey = parent ? `${parent}[${property}]` : property;
     if (isObject(value)) {
-      objectToFormData(value, formData, property)
+      objectToFormData(value, formData, property);
     } else {
       formData.append(formKey, value);
     }
   });
   return formData;
-}
+};
 
 /**
  * Will fire a function, return the value or the default if the value is undefined
@@ -95,9 +95,9 @@ const getValue = (valueOrFunc, defaultValue = null) => {
   return isFunction(valueOrFunc)
     ? valueOrFunc()
     : !isUndefined(valueOrFunc)
-      ? valueOrFunc
-      : defaultValue
-}
+    ? valueOrFunc
+    : defaultValue;
+};
 
 /**
  * @param {string} str
@@ -108,45 +108,45 @@ const parseJson = (str, defaultValue = null) => {
   try {
     return JSON.parse(str);
   } catch (e) {
-    console.log('Invalid JSON', str);
+    console.log("Invalid JSON", str);
     return defaultValue;
   }
-}
+};
 
 /**
  * Will return a promise with a true value after x microsecs
  * @param ms
  * @returns {Promise<unknown>}
  */
-const wait = (ms = 10) => new Promise((a) => {
-  setTimeout(() => {
-    a(true);
-  }, ms);
-});
+const wait = (ms = 10) =>
+  new Promise((a) => {
+    setTimeout(() => {
+      a(true);
+    }, ms);
+  });
 
 const isEmpty = (mixedValue) => {
-  const emptyValues = [undefined, null, false, 0, '', '0'];
+  const emptyValues = [undefined, null, false, 0, "", "0"];
   for (let i = 0, len = emptyValues.length; i < len; i++) {
-      if (mixedValue === emptyValues[i]) {
-          return true;
-      }
+    if (mixedValue === emptyValues[i]) {
+      return true;
+    }
   }
 
   if (isObject(mixedValue)) {
-      for (let key in mixedValue) {
-          if (objectHasKey(mixedValue, key)) {
-              return false;
-          }
+    for (let key in mixedValue) {
+      if (objectHasKey(mixedValue, key)) {
+        return false;
       }
-      return true;
+    }
+    return true;
   }
 
   return false;
 };
 
 module.exports = {
-  NOOP: () => {
-  },
+  NOOP: () => {},
   wait,
   parseJson,
 
@@ -162,5 +162,5 @@ module.exports = {
   objectHasProperty: objectHasKey,
   objectToFormData,
 
-  getValue
-}
+  getValue,
+};
