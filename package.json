@@ -4,11 +4,10 @@
   "description": "A web-app designed to display data from DIY I/O devices for beer monitoring and production.",
   "main": "server.js",
   "scripts": {
-    "scss-watch": "sass --no-source-map --watch src/style/app.scss public/css/app.css",
     "nodemon-watch": "nodemon ./server.js -e *",
-    "start": "SET NODE_ENV=development & npm-run-all --parallel scss-watch nodemon-watch",
+    "start": "NODE_ENV=development & npm-run-all --parallel nodemon-watch",
     "dev": "npm run start",
-    "serve": "npm install & SET NODE_ENV=production & node ./server.js"
+    "serve": "npm install & NODE_ENV=production & node ./server.js"
   },
   "repository": {
     "type": "git",
@@ -36,13 +35,9 @@
     "axios": "^0.27.2",
     "chalk": "^4.1.2",
     "dotenv": "^16.0.1",
-    "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-es6-template-engine": "^2.2.3",
     "googleapis": "^39.2.0",
-    "lodash": "^4.17.21",
-    "query-string": "^7.1.1",
-    "sass": "^1.54.4",
     "ws": "^8.8.1"
   },
   "devDependencies": {
