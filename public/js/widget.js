@@ -1,6 +1,10 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 
+const showWidgetEditPopup = (id) => {
+  alert(id);
+}
+
 /**
  * Creates an element as a placeholder for loading widgets
  * @param {Number} i 
@@ -14,14 +18,8 @@ const createWidgetPlaceholder = (i) => {
         <div class="keg__image"><span class="placeholder is-image"></span></div>
         <div class="keg__header">
           <p class="keg__location"><span class="placeholder is-small"></span></p>
-          <h2 class="keg__name">
-            <span class="placeholder is-tiny"></span>
-            <span class="placeholder is-med"></span>
-          </h2>
-          <p class="keg__brewery">
-            <span class="placeholder is-tiny"></span>
-            <span class="placeholder is-small"></span>
-          </p>
+          <h2 class="keg__name"><span class="placeholder is-tiny"></span><span class="placeholder is-med"></span></h2>
+          <p class="keg__brewery"><span class="placeholder is-tiny"></span><span class="placeholder is-small"></span></p>
         </div>
       </div>
       <div class="widget__content-footer">
@@ -46,12 +44,19 @@ const createWidgetPlaceholder = (i) => {
  * @param {object} item
  * @return {ChildNode}
  */
-const createWidgetElement = ({ keg, brewery, brewery_image, style, name, background_image, abv, ibu }) => {
+const createWidgetElement = ({ id, keg, brewery, brewery_image, style, name, background_image, abv, ibu }) => {
   abv = parseFloat(keg.abv > 0 ? keg.abv : abv).toFixed(1);
   ibu = parseInt(ibu, 10)
   const keg_percent = parseFloat(keg.percent_beer_left).toFixed(1);
   const template = `<div id="keg-${keg.id}" class="widget">
-    <div class="widget__image">${imgTemplate(background_image, name)}</div>
+    <div class="widget__image">
+      ${imgTemplate(background_image, name)}
+      <div class="widget__image-controls">
+        <button class="button is-edit" title="Edit">
+          <span class="icon">${ICON_IMAGE_EDIT}</span>
+        </button>
+      </div>
+    </div>
     <div class="widget__content">
       <div class="widget__content-header">
         <div class="keg__image">${imgTemplate(brewery_image, brewery)}</div>
@@ -73,7 +78,58 @@ const createWidgetElement = ({ keg, brewery, brewery_image, style, name, backgro
       </div>
     </div>
   </div>`;
-  return createElementFromTemplate(template);
+  $widget = createElementFromTemplate(template);
+
+  const $widget_image = $widget.querySelector('.widget__image');
+  const active_css_class = 'is-tapped';
+
+  const controlsEscKeyHandler = (e) => {
+    if (e.keyCode === 27) closeControls();
+  };
+
+  const controlsOutsideClickHandler = (e) => {
+    if(!$widget_image.classList.contains('is-tapped')) {
+      return false;
+    }
+
+    if(e.target !== $widget_image && !$widget_image.contains(e.target)) {
+      closeControls();
+    }
+  };
+
+  const openControls = () => {
+    $widget_image.classList.add(active_css_class);
+      document.addEventListener('keyup', controlsEscKeyHandler, true);
+      document.addEventListener('click', controlsOutsideClickHandler, true);
+  }
+  const closeControls = () => {
+    $widget_image.classList.remove(active_css_class);
+    document.removeEventListener('keyup', controlsEscKeyHandler, true);
+    document.removeEventListener('click', controlsOutsideClickHandler, true);
+  }
+
+  let active_timeout;
+  $widget_image.addEventListener('click', (e) => {
+    clearTimeout(active_timeout);
+    $widget_image.classList.contains(active_css_class) ? closeControls() : openControls();
+  });
+
+  $widget_image.addEventListener('mouseenter', (e) => {
+    clearTimeout(active_timeout);
+  });
+
+  $widget_image.addEventListener('mouseleave', (e) => {
+    if ($widget_image.classList.contains(active_css_class)) {
+      active_timeout = setTimeout(closeControls, 3000);
+    }
+  });
+
+  $widget.querySelector('.button.is-edit').addEventListener('click', (e) => {
+    e.preventDefault();
+    showWidgetEditPopup(id);
+  });
+
+  return $widget;
 };
 
 /**
@@ -85,9 +141,9 @@ const renderPlaceholders = async () => {
   $widgetsContainer.innerHTML = '';
 
   window[window.APP_NS].$widgets = (new Array(5)).fill(0).map((_, i) => {
-      const $el = createWidgetPlaceholder(i);
-      $widgetsContainer.appendChild($el);
-      return $el;
+    const $el = createWidgetPlaceholder(i);
+    $widgetsContainer.appendChild($el);
+    return $el;
   });
 };
 
@@ -102,24 +158,24 @@ const renderWidgets = async (items, timestamp) => {
   const app = window[window.APP_NS]
   const $widgetsContainer = getWidgetContainer();
 
-  if(!app.widgets.timestamp || ((timestamp - app.widgets.timestamp) > app.widgets.interval)) {
-      app.widgets.order = Object.keys(items).map((o,i) => i).sort(() => Math.random() > 0.5 ? 1 : -1);
-      app.widgets.timestamp = timestamp
+  if (!app.widgets.timestamp || ((timestamp - app.widgets.timestamp) > app.widgets.interval)) {
+    app.widgets.order = Object.keys(items).map((o, i) => i).sort(() => Math.random() > 0.5 ? 1 : -1);
+    app.widgets.timestamp = timestamp
   }
 
-  if(app.widgets.order.length) {
-      let tempItems = [];
-      for(let i in app.widgets.order) {
-          tempItems.push(items[app.widgets.order[i]]);
-      }
-      items = tempItems;
+  if (app.widgets.order.length) {
+    let tempItems = [];
+    for (let i in app.widgets.order) {
+      tempItems.push(items[app.widgets.order[i]]);
+    }
+    items = tempItems;
   }
 
   $widgetsContainer.innerHTML = '';
 
   window[window.APP_NS].$widgets = items.map((item) => {
-      const $el = createWidgetElement(item);
-      $widgetsContainer.appendChild($el);
-      return $el;
+    const $el = createWidgetElement(item);
+    $widgetsContainer.appendChild($el);
+    return $el;
   });
 };
