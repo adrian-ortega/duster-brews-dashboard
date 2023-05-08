@@ -1,6 +1,7 @@
 const { dashboardView } = require("../http/controllers/homeController");
 const {
   widgetsApiHandler,
+  widgetsImageHandler,
   settingsGetHandler,
   settingsPostHandler,
 } = require("../http/controllers/apiController");
@@ -23,5 +24,10 @@ module.exports = [
   {
     path: "/api/widgets",
     handler: widgetsApiHandler,
+  },
+  {
+    path: "/api/widgets/image",
+    methods: ["POST"],
+    handler: widgetsImageHandler,
   },
 ];

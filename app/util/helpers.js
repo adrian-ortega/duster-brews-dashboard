@@ -45,7 +45,6 @@ const isFunction = (value) => {
  * @return {boolean}
  */
 const objectHasMethod = (object, method = null) => {
-  console.log(object);
   if (!isObject(object) || isUndefined(object[method])) {
     return false;
   }

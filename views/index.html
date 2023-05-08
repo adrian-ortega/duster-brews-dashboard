@@ -19,7 +19,7 @@
       href="https://fonts.googleapis.com/css2?family=Bayon&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" data-autoreload href="css/app.css" />
   </head>
   <body>
     <div class="main-content dashboard">
@@ -38,7 +38,7 @@
           route: "home",
           state: {},
           heartbeat: { timestamp, interval: ONE_SECOND * 3 },
-          widgets: { order: [], timestamp, interval: ONE_MINUTE * 5 },
+          widgets: { order: [], timestamp, interval: ONE_MINUTE * 5, items: [] },
         };
       })("${APP_NAME}", "${APP_NAMESPACE}");
     </script>

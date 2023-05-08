@@ -1,5 +1,7 @@
 const Settings = require("../../settings");
 const formidable = require("formidable");
+const fs = require("fs");
+const path = require("path");
 const { getWidgetItems } = require("../../api");
 const { objectHasKey } = require("../../util/helpers");
 
@@ -17,6 +19,54 @@ const widgetsApiHandler = (req, res) => {
     respondWithJSON(res, items);
   });
 };
+
+const widgetImageFileValidator = (file) => {
+  console.log(file);
+  const type = file.type.split('/').pop();
+  const validTypes = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+  const isValid = validTypes.indexOf(type) !== -1;
+
+  return {
+    isValid
+  }
+}
+
+const widgetsImageHandler = (req, res, next) => {
+  const form = formidable();
+  const upload_folder = path.resolve("public/images/uploads");
+  console.log(upload_folder);
+  const FILE_KEY = 'widget-image';
+
+  form.parse(req, async (err, data, files) => {
+    if(err) {
+      return next(err);
+    }
+
+    if(files[FILE_KEY] && !files[FILE_KEY].length) {
+      try {
+        const newWidgetImage = files[FILE_KEY];
+        if(!widgetImageFileValidator(newWidgetImage).isValid) {
+          return respondWithJSON(res.status(400), { status: "fail", message: "Not a valid file type" });
+        }
+        
+        const upload_file = fs.createWriteStream(`${upload_folder}/${newWidgetImage.originalFilename}`);
+        const temp_folder = fs.createReadStream(newWidgetImage.filepath);
+
+        console.log({ upload_file, temp_folder});
+
+        return respondWithJSON(res, {
+          status: "success",
+          image: `/images/uploads/${newFileName}`
+        })
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      // @TODO multiple?
+    }
+
+  });
+}
 
 const settingsGetHandler = (req, res) => respondWithJSON(res, Settings.all());
 
@@ -53,6 +103,7 @@ const settingsPostHandler = (req, res, next) => {
 
 module.exports = {
   widgetsApiHandler,
+  widgetsImageHandler,
 
   settingsGetHandler,
   settingsPostHandler

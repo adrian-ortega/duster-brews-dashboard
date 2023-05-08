@@ -38,9 +38,14 @@ body {
   justify-content: center;
   min-height: var(--button-height);
   color: var(--white);
+  font-size: 1em;
+  font-family: var(--font-family-labels);
 }
 .button:hover {
   cursor: pointer;
+}
+.button .icon {
+  font-size: 1.5em;
 }
 .button .text + .icon,
 .button .icon + .text {

@@ -10,6 +10,7 @@
   --warning: #ddaa22;
 
   --background: #011323;
+  --background-border: #192530;
   --background-alt: #463a27;
 
   --primary: #fc9700;
@@ -24,6 +25,7 @@
   --button-radius: var(--radius-rounded);
 
   --radius: 4px;
+  --radius-large: 10px;
   --radius-rounded: 3000em;
 
   /* Font families and options */

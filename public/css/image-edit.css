@@ -1,0 +1,69 @@
+.image-edit {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-edit__container {
+    border-radius: var(--radius-large);
+    background: var(--black);
+    width: 400px;
+
+}
+.image-edit__header {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 45px;
+    padding: 0.5em 0.5em 0.5em 1em;
+    border-bottom: 1px solid var(--background-border);
+    font-size: 1.1em;
+}
+.image-edit__preview {
+    padding: 1em 2em;
+}
+.image-edit__preview-box {
+    padding: 0.5em;
+    border-radius: var(--radius);
+    background: 
+    repeating-conic-gradient(var(--gray) 0% 25%, var(--white) 0% 50%) 
+      50% / 20px 20px;
+}
+.image-edit__buttons,
+.image-edit__button {
+    display: flex;
+}
+.image-edit__buttons {
+    flex-direction: column;
+    border-bottom-left-radius: var(--radius-large);
+    border-bottom-right-radius: var(--radius-large);
+    overflow: hidden;
+}
+.image-edit__button {
+    border-top: 1px solid var(--background);
+    height: var(--header-height);
+    justify-content: center;
+}
+.image-edit__button:hover {
+    background: var(--background-border);
+}
+.image-edit__button.is-danger:hover {
+    background: var(--error);
+}
+.image-edit__button.is-success:hover {
+    background: var(--success);
+}
+.image-edit__button .button {
+    padding: 0 2em;
+    flex: 1 1 auto;
+}
+.image-edit__button label {
+    font-family: var(--font-family-labels);
+}
+.image-edit__button input[type="file"] {
+    display: none;
+}
