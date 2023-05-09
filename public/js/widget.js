@@ -237,17 +237,27 @@ const renderImageEditPopup = (e) => {
   const $popup = createElementFromTemplate(template);
   const $form = $popup.querySelector("form");
 
-  const onFormSubmit = (e) => {
-    console.log("Form Submitting");
-    fetch("/api/widgets/image", { method: "POST", body: new FormData($form) }).then(
-      () => {
-        console.log("test");
-      }
-    );
-    
+  const onFormSubmit = async (e) => {
+    const response = await fetch("/api/widgets/image", { method: "POST", body: new FormData($form) });
+    const { data } = await response.json();
+
+    // @TODO Do something with the data? like re-render the popup
+    //       instead of just refreshing?
+
+    const $uploadButton = $form.querySelector('#widget-image').closest('.button');
+    const $buttonIcons = $uploadButton.querySelectorAll(".icon");
+    const $buttonText = $uploadButton.querySelector(".text");
+    $buttonText.classList.toggle("is-hidden");
+    [...$buttonIcons].forEach(($buttonIcon) => {
+      $buttonIcon.classList.toggle("is-hidden");
+    });
+
     if(objectHasMethod(e, "preventDefault")) {
       e.preventDefault();
     }
+
+    fireCustomEvent("showWidgets");
+    setTimeout(() => getDomContainer().removeChild($popup), 2000);
   }
 
   [...$popup.querySelectorAll(".button.is-close")].forEach(($b) =>
