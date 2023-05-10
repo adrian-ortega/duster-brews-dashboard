@@ -1,6 +1,5 @@
-const log = require("./log");
-const fs = require("fs");
 const { parseJson, isArray, objectHasKey, isObject } = require("./helpers");
+const { saveFile, loadFile } = require("./files");
 
 class JSONFileStorage {
   constructor(path, data = {}, autoload = false) {
@@ -60,7 +59,7 @@ class JSONFileStorage {
   autoload() {
     if (!this.autoloaded) {
       const defaultData = this.data;
-      this.data = JSONFileStorage.loadFile(this.path, defaultData);
+      this.data = loadFile(this.path, defaultData);
       if (!isObject(this.data) || this.data === null) {
         this.data = defaultData;
       }
@@ -69,7 +68,7 @@ class JSONFileStorage {
   }
 
   refresh(defaultValue = {}) {
-    this.data = JSONFileStorage.loadFile(this.path);
+    this.data = loadFile(this.path);
     if (!isObject(this.data) || this.data === null) {
       this.data = defaultValue;
     }
@@ -77,58 +76,8 @@ class JSONFileStorage {
   }
 
   save(data) {
-    if(!data) data = this.data;
-    return JSONFileStorage.saveFile(this.path, data);
-  }
-
-  static fileExists(path) {
-    try {
-      return fs.existsSync(path);
-    } catch (err) {
-      return false;
-    }
-  }
-
-  static saveFile(path, data = {}) {
-    try {
-      fs.writeFileSync(path, JSON.stringify(data, null, 4));
-      return true;
-    } catch (err) {
-      log.error("JSONFileManager.saveFile Error:", {
-        error: err.message,
-        path,
-        data,
-      });
-      return false;
-    }
-  }
-
-  static loadFile(path, defaultValue = {}) {
-    try {
-      if (!JSONFileStorage.fileExists(path)) {
-        JSONFileStorage.saveFile(path, defaultValue);
-      }
-      return parseJson(fs.readFileSync(path, "utf-8"));
-    } catch (err) {
-      log.error("JSONFileManager.loadFile Error:", {
-        error: err.message,
-        path,
-      });
-      return null;
-    }
-  }
-
-  static deleteFile(path) {
-    try {
-      fs.unlinkSync(path);
-      return true;
-    } catch (err) {
-      log.error("JSONFileManager.deleteFile Error:", {
-        error: err.message,
-        path,
-      });
-      return false;
-    }
+    if (!data) data = this.data;
+    return saveFile(this.path, data);
   }
 }
 
