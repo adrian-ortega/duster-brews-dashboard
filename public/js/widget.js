@@ -203,6 +203,8 @@ const renderImageEditPopup = (e) => {
   <div class="image-edit">
     <div class="image-edit__container">
       <form action="/" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="widget_id" value="${id}"/>
+        <input type="hidden" name="widget_image_key" value="${image_key}"/>
         <div class="image-edit__header">
           <h4>Edit Item Image</h4>
           <button class="button is-close"><span class="icon">${ICON_CLOSE}</span></button>
@@ -216,7 +218,7 @@ const renderImageEditPopup = (e) => {
         <div class="image-edit__buttons">
           <div class="image-edit__button is-success">
             <label for="widget-image" class="button">
-              <input type="file" id="widget-image" name="widget-image" accept="image/*"/>
+              <input type="file" id="widget-image" name="widget_image" accept="image/*"/>
               <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
               <span class="icon">${ICON_UPLOAD}</span>
               <span class="text">Upload</span>

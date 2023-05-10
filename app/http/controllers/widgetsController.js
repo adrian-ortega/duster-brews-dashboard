@@ -5,9 +5,15 @@ const { getWidgetItems } = require("../../api");
 const { respondWithJSON } = require("../../util/http");
 const { moveUploadedFile } = require("../../util/files");
 
+/**
+ * 
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ * @returns {Object}
+ */
 const listWidgetsHandler = (req, res) => {
-  getWidgetItems().then((items) => {
-    respondWithJSON(res, items);
+  return getWidgetItems().then((items) => {
+    return respondWithJSON(res, items);
   });
 };
 
@@ -23,10 +29,19 @@ const WIDGET_ALLOWED_TYPES = {
   tif: "image/tiff",
 };
 
-const widgetImageFileValidator = (file) => {
+/**
+ * Validates that the file uploaded to imageUploadHandler meets
+ * criteria
+ * @param {PersistentFile} file 
+ * @returns {Object & { isValid: Boolean, validName: Function }}
+ */
+const widgetImageFileUploadValidator = (file) => {
   const type = file.mimetype;
   const validTypes = Object.values(WIDGET_ALLOWED_TYPES);
+
+  // @TODO add file size limit?
   const isValid = validTypes.indexOf(type) !== -1;
+
   return {
     isValid,
     validName: () => {
@@ -42,7 +57,7 @@ const imageUploadHandler = (req, res, next) => {
     path.join("public"),
     FILE_UPLOADS_FOLDER
   );
-  const FILE_KEY = "widget-image";
+  const FILE_KEY = "widget_image";
 
   if (!fs.existsSync(FILE_UPLOADS_FOLDER_PATH)) {
     fs.mkdirSync(FILE_UPLOADS_FOLDER_PATH);
@@ -55,8 +70,8 @@ const imageUploadHandler = (req, res, next) => {
 
     if (files[FILE_KEY] && !files[FILE_KEY].length) {
       try {
-        const newWidgetImage = files[FILE_KEY];
-        const validator = widgetImageFileValidator(newWidgetImage);
+        const widgetImageUpload = files[FILE_KEY];
+        const validator = widgetImageFileUploadValidator(widgetImageUpload);
         if (!validator.isValid) {
           return respondWithJSON(res.status(400), {
             status: "fail",
@@ -64,12 +79,17 @@ const imageUploadHandler = (req, res, next) => {
           });
         }
 
-        const upload_filename = validator.validName();
+        const uploadFilename = validator.validName();
         const paths = {
-          public: `${FILE_UPLOADS_FOLDER}/${upload_filename}`,
-          server: `${FILE_UPLOADS_FOLDER_PATH}/${upload_filename}`,
+          public: `${FILE_UPLOADS_FOLDER}/${uploadFilename}`,
+          server: `${FILE_UPLOADS_FOLDER_PATH}/${uploadFilename}`,
         };
-        await moveUploadedFile(newWidgetImage.filepath, paths.server);
+
+        await moveUploadedFile(widgetImageUpload.filepath, paths.server);
+
+        // @TODO save file once movefile uploaded
+        // const widgetId = data.widget_id;
+        // const widgetImageKey = data.widget_image_key;
 
         return respondWithJSON(res, {
           status: "success",
