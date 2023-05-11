@@ -35,26 +35,65 @@
 .settings form {
   padding: 2em 0;
 }
-
-.settings h2 {
+.settings__title {
   font-size: 2.1em;
-  margin-bottom: 1em;
+}
+.settings__tabs {
+  padding: 0 0.25em;
+  margin-bottom: 2em;
+  justify-content: center;
+}
+.settings__tabs,
+.settings__tabs nav,
+.settings__tab-trigger {
+  display: flex;
+}
+.settings__tabs nav,
+.settings__tab-trigger {
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius-rounded);
+}
+.settings__tabs nav {
+  padding: 0.5em;
+  background: var(--black);
+  width: 100%;
+}
+.settings__tab-trigger {
+  padding: 0 1.5em;
+  height: var(--button-height);
+  font-family: var(--font-family-labels);
+  color: var(--gray);
+  font-weight: var(--font-weight-bold);
+  font-size: 0.875em;
+  opacity: 0.5;
+  border: 1px solid transparent;
+}
+.settings__tab-trigger:hover {
+  border-color: transparent;
+  opacity: 1;
+}
+.settings__tab-trigger.is-active {
+  background: var(--background-light);
+  color: var(--white);
+  opacity: 1;
 }
 .settings__container {
   padding: 1em;
 }
+.settings__view {
+  padding-top: 1em;
+}
 .settings__field {
-  display: flex;
+  display: grid;
+  grid-template-columns: 60% 40%;
   font-family: var(--font-family-labels);
 }
-
-.settings__field + .settings__field {
+.settings__field:not(.is-hidden) + .settings__field {
   margin-top: 2em;
 }
-
-.settings__field .label,
-.settings__field .input {
-  flex: 1 1 auto;
+.settings__field .label {
+  padding-right: 1em;
 }
 .settings__field .label label {
   font-weight: var(--font-weight-bold);
@@ -62,6 +101,8 @@
 .settings__field .label p {
   margin-top: 0.25em;
   font-size: 0.8em;
+  margin: 1em 0 0;
+  color: var(--gray-bis);
 }
 .settings__footer {
   display: flex;
@@ -83,4 +124,109 @@
   background: var(--button-background);
   border-radius: var(--button-radius);
   padding: 0 1em;
+}
+
+.settings select,
+.settings textarea,
+.settings input[type="text"] {
+  width: 100%;
+  height: var(--button-height);
+  appearance: none;
+  outline: none;
+  background: var(--input-background);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.5em;
+  color: var(--white);
+}
+.settings textarea:active,
+.settings input[type="text"]:active {
+
+}
+.settings select:focus,
+.settings textarea:focus,
+.settings input[type="text"]:focus {
+  border: 1px solid var(--background);
+  box-shadow: 0 0 0 0.1em var(--background), 0 0 0 0.2em var(--primary);
+  padding-right: 1em;
+}
+.settings .select {
+  position: relative;
+  display: block;
+}
+.settings .select .icon {
+  position: absolute;
+  font-size: 1.5em;
+  top: 50%;
+  right: 0.25em;
+  transform: translateY(-50%);
+}
+.image-input {
+
+}
+.image-input__preview {
+  background: var(--input-background);
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+}
+.image-input__preview > span {
+  height: 0;
+  width: 100%;
+  padding-bottom: 100%;
+  background: 
+    repeating-conic-gradient(var(--gray) 0% 25%, var(--white) 0% 50%) 
+      50% / 20px 20px;
+}
+.image-input__preview,
+.image-input__trigger {
+  cursor: pointer;
+}
+.image-input__file,
+.image-input__preview,
+.image-input__trigger,
+.image-input__preview > span {
+  position: relative;
+  display: flex;
+  border-radius: var(--radius);
+}
+
+.image-input__trigger {
+  appearance: none;
+  height: var(--button-height);
+  background: var(--background-light);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-rounded);
+  font-family: var(--font-family-labels);
+  font-size: .9em;
+  font-weight: var(--font-weight-bold);
+}
+.image-input__trigger input {
+  display: none;
+}
+
+.image-input__file {
+  font-size: 0.8em;
+  margin: 0 0 1em 0;
+  flex-direction: column;
+}
+.image-input__file-l {
+  color: var(--gray-bis);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 0.25em;
+  padding: 0 0.5em;
+}
+.image-input__file-v {
+  padding: 0.5em;
+  background: var(--input-background);
+  font-family: var(--font-family-mono);
+}
+.image-input__file-l,
+.image-input__file-v {
+  display: block;
+}
+@media screen and (min-width: 768px) {
+  .settings__title {
+    margin-bottom: 1em;
+  }
 }

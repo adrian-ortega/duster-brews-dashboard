@@ -10,7 +10,7 @@
   min-height: 100%;
 }
 .is-hidden {
-  display: none;
+  display: none !important;
 }
 
 .placeholder,

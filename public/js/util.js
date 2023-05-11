@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+const ICON_MENU_DOWN = 
+  '<svg viewBox="0 0 24 24"><path d="M7,10L12,15L17,10H7Z" /></svg>';
 const ICON_RELOAD =
   '<svg viewBox="0 0 24 24"><path d="M2 12C2 16.97 6.03 21 11 21C13.39 21 15.68 20.06 17.4 18.4L15.9 16.9C14.63 18.25 12.86 19 11 19C4.76 19 1.64 11.46 6.05 7.05C10.46 2.64 18 5.77 18 12H15L19 16H19.1L23 12H20C20 7.03 15.97 3 11 3C6.03 3 2 7.03 2 12Z" /></svg>';
 const ICON_KEG =
@@ -133,22 +135,6 @@ const objectHasMethod = (object, method = null) =>
   !isObject(object) || typeof object[method] === "undefined"
     ? false
     : isFunction(object[method]);
-
-/**
- *
- * @param {String} url
- * @param {Object} data
- * @returns {Promise<*>}
- */
-const formJSONPost = (url, data = {}) => {
-  return fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-};
 
 window.refreshCSS = (timeout = 60000) => {
   let links = document.getElementsByTagName("link");
