@@ -1,15 +1,49 @@
 {
   "refresh_rate": 60,
   "burn_in_guard_refresh_rate": 15,
+  "logo": null,
+  "theme": "default",
+  "enable_plaato": true,
 
   "fields": {
+    "logo": {
+      "label": "App Logo",
+      "help": "This is the logo that appears on the app",
+      "type": "image",
+      "category": "appearance"
+    },
+    "theme": {
+      "label": "App Theme",
+      "help": "",
+      "type": "options",
+      "category": "appearance",
+      "options": ["default", "dark", "chalk"]
+    },
     "refresh_rate": {
       "label": "Refresh Rate",
-      "help": "Minutes between refresh calls, defaults to 60 mins."
+      "help": "Minutes between refresh calls, defaults to 60 mins.",
+      "category": "general"
     },
     "burn_in_guard_refresh_rate": {
       "label": "Burn-in Guard Refresh Rate",
-      "help": "Minutes between refresh calls, defaults to 15 mins."
+      "help": "Minutes between refresh calls, defaults to 15 mins.",
+      "category": "general"
+    },
+    "enable_plaato": {
+      "label": "Enable PLAATO",
+      "category": "general",
+      "type": "boolean"
+    }
+  },
+
+  "categories": {
+    "general": {
+      "label": "General",
+      "order": 0
+    },
+    "appearance": {
+      "label": "Appearance",
+      "order": 1
     }
   }
 }

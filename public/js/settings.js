@@ -6,8 +6,8 @@ const onSettingsSaveStart = () => {
     $button.classList.add("disabled");
     $button.setAttribute("disabled", true);
 
-    if ($button.classList.contains('is-save')) {
-      $button.querySelector('.text').classList.add('is-hidden');
+    if ($button.classList.contains("is-save")) {
+      $button.querySelector(".text").classList.add("is-hidden");
     }
   });
 };
@@ -21,8 +21,8 @@ const onSettingsSave = (e) => {
     const $input = $form[field_id];
     settings[field_id] = $input.value;
   });
-  
-  formJSONPost('/api/settings', settings);
+
+  formJSONPost("/api/settings", settings);
 };
 
 const onSettingsSaveEnd = () => {
@@ -30,8 +30,8 @@ const onSettingsSaveEnd = () => {
   [...$footer.querySelectorAll(".button")].forEach(($button) => {
     $button.classList.remove("disabled");
     $button.removeAttribute("disabled");
-    if ($button.classList.contains('is-save')) {
-      $button.querySelector('.text').classList.remove('is-hidden');
+    if ($button.classList.contains("is-save")) {
+      $button.querySelector(".text").classList.remove("is-hidden");
     }
   });
 };
@@ -41,24 +41,56 @@ const onSettingsCancel = (e) => {
 };
 
 const settingsFieldTemplate = ({ label, id, content = "", help = null }) => {
-  return `<div class="settings__field">
-        <div class="label">
-            <label for="${id}">${label}:</label>
-            ${help ? `<p>${help}</p>` : ""}
-        </div>
-        ${content}
-    </div>`;
+  const $field = createElementFromTemplate(`
+    <div class="settings__field">
+      <div class="label"><label for="input-${id}">${label}:</label>
+      ${help ? `<p>${help}</p>` : ""}
+      </div>
+    </div>
+  `);
+
+  $field.appendChild(
+    content instanceof Element
+      ? content
+      : createElementFromTemplate(content)
+  );
+
+  return $field;
 };
 
 const renderSettingsInput = (label, value, { id = null, help = null }) => {
-  return createElementFromTemplate(
-    settingsFieldTemplate({
-      label,
-      id,
-      help,
-      content: `<input class="input" id="input-${id}" name="${id}" value="${value}"/>`,
-    })
+  return settingsFieldTemplate({
+    label,
+    id,
+    help,
+    content: `<input class="input" id="input-${id}" name="${id}" value="${value}"/>`,
+  });
+};
+
+const renderSettingsOptions = (label, value, { id, help, options = [] }) => {
+  const transformer = (option) => {
+    const oText = isObject(option) ? option.text : option;
+    const oValue = isObject(option) ? option.value : option;
+    const oSel = oValue === value ? ' selected="selected"' : '';
+    return `<option value="${oValue}"${oSel}>${oText}</option>`;
+  }
+  const $content = createElementFromTemplate(`<select id="input-${id}" name="${id}">${options.map(transformer)}</select>`);
+  return settingsFieldTemplate({ label, id, help, content: $content })
+};
+
+const renderSettingsImage = (label, value, { id, help }) => {
+  const $content = createElementFromTemplate(
+    `<label for="input-${id}">
+      <input type="file" id="input-${id}" name="${id}"/>
+      <span></span>
+    </label>`
   );
+  return settingsFieldTemplate({ label, id, help, content: $content })
+};
+const renderSettingsSwitch = (label, value, { id, help }) => {
+  const checked = value ? 'checked="checked"' : "";
+  const content = `<label for="input-${id}" class="checkbox"><input type="checkbox" id="input-${id}" name="${id}" value="1" ${checked}><span></span></span>`;
+  return settingsFieldTemplate({ label, id, help, content });
 };
 
 const renderSettingsReset = () => {
@@ -103,12 +135,26 @@ const renderSettings = () => {
   const $settingsForm = $settings.querySelector(".settings_content");
 
   Object.entries(fields).forEach(([field_id, field]) => {
-    $settingsForm.appendChild(
-      renderSettingsInput(field.label, settings[field_id], {
-        id: field_id,
-        help: field.help,
-      })
-    );
+    let $field;
+    const opts = { id: field_id, ...field };
+    const value = settings[field_id];
+    switch (field.type) {
+      case "options":
+        $field = renderSettingsOptions(field.label, value, opts);
+        break;
+      case "boolean":
+      case "bool":
+        $field = renderSettingsSwitch(field.label, value, opts);
+        break;
+      case "image":
+        $field = renderSettingsImage(field.label, value, opts);
+        break;
+      case null:
+      default:
+        $field = renderSettingsInput(field.label, value, opts);
+        break;
+    }
+    $settingsForm.appendChild($field);
   });
 
   $settings.querySelector(".settings__form").addEventListener("submit", (e) => {
