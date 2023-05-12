@@ -6,7 +6,7 @@
  * @param {Number} timestamp
  * @return {Promise<void>}
  */
-const updateWidgets = async ({items, timestamp }) => await renderWidgets(items, timestamp || performance.now());
+const updateWidgets = async ({ items, timestamp }) => await renderWidgets(items, timestamp || performance.now());
 
 const burnInGuard = () => {
     const $el = document.createElement('div');
@@ -28,22 +28,22 @@ const initialize = async () => {
 
     const isRoute = (route) => window[APP_NS].route === route;
     const $container = getDomContainer();
-    if($container) $container.innerHTML = '';
+    if ($container) $container.innerHTML = '';
 
     initializeNav();
     renderPlaceholders();
     await createWebSocket({
         onmessage: (data) => {
-            if(objectHasKey(data, 'burnInGuard')) {
+            if (objectHasKey(data, 'burnInGuard')) {
                 return burnInGuard();
             }
 
             if (objectHasKey(data, 'settings')) {
-                window[APP_NS].state.settings = {...data.settings};
-                if(isRoute('settings')) renderSettings();
+                window[APP_NS].state.settings = { ...data.settings };
+                if (isRoute('settings')) renderSettings();
             }
 
-            if(objectHasKey(data, 'items') ) {
+            if (objectHasKey(data, 'items')) {
                 window[window.APP_NS].state.items = [...data.items];
                 if (isRoute('home')) updateWidgets(data);
             }
@@ -60,11 +60,16 @@ const initialize = async () => {
         window[window.APP_NS].fireAction('refreshSettings');
         document.querySelector('.nav-buttons').classList.add('is-hidden');
     });
-    
-    document.addEventListener('ShowWidgets', () => {
+
+    document.addEventListener('ShowBeers', () => {
         renderPlaceholders();
         window[window.APP_NS].route = 'home';
         window[window.APP_NS].fireAction('refreshWidgets');
         document.querySelector('.nav-buttons').classList.remove('is-hidden');
-      })
+    });
+
+    document.addEventListener("EditBeers", () => {});
+    document.addEventListener("AddBeer", () => {});
+    document.addEventListener("EditBreweries", () => {});
+    document.addEventListener("AddBrewery", () => {});
 })();

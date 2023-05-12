@@ -9,7 +9,7 @@ const NAVIGATION_BUTTONS = [
         icon: ICON_RELOAD,
         onClick(e) {
             e.preventDefault();
-            fireCustomEvent('ShowWidgets', null, e.target);
+            fireCustomEvent('ShowBeers', null, e.target);
         }
     }, {
         text: 'Settings',
@@ -22,11 +22,13 @@ const NAVIGATION_BUTTONS = [
                 text: "Add Beer",
                 onClick(e) {
                     e.preventDefault();
+                    fireCustomEvent('AddBeer', null, e.target);
                 }
             }, {
                 text: "Edit Beers",
                 onClick(e) {
                     e.preventDefault();
+                    fireCustomEvent('EditBeers', null, e.target);
                 }
             }, {
                 title: "Breweries"
@@ -34,11 +36,13 @@ const NAVIGATION_BUTTONS = [
                 text: "Add Brewery",
                 onClick(e) {
                     e.preventDefault();
+                    fireCustomEvent('AddBrewery', null, e.target);
                 }
             }, {
                 text: "Edit Breweries",
                 onClick(e) {
                     e.preventDefault();
+                    fireCustomEvent('EditBreweries', null, e.target);
                 }
             }, {
                 title: ""

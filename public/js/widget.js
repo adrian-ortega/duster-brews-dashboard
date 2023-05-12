@@ -258,7 +258,7 @@ const renderImageEditPopup = (e) => {
       e.preventDefault();
     }
 
-    fireCustomEvent("showWidgets");
+    fireCustomEvent("showBeers");
     setTimeout(() => getDomContainer().removeChild($popup), 2000);
   }
 

@@ -40,7 +40,7 @@ const onSettingsSaveEnd = () => {
 };
 
 const onSettingsCancel = (e) => {
-  fireCustomEvent("ShowWidgets", null, e.target);
+  fireCustomEvent("ShowBeers", null, e.target);
 };
 
 const settingsFieldTemplate = ({
