@@ -24,14 +24,6 @@
   margin-left: auto;
   opacity: 1;
 }
-.settings {
-  width: 100%;
-  max-width: 40em;
-  margin: 0 auto;
-  height: calc(100% - var(--header-height));
-  position: relative;
-}
-
 .settings form {
   padding: 2em 0;
 }
@@ -83,26 +75,6 @@
 }
 .settings__view {
   padding-top: 1em;
-}
-.settings__field {
-  display: grid;
-  grid-template-columns: 60% 40%;
-  font-family: var(--font-family-labels);
-}
-.settings__field:not(.is-hidden) + .settings__field {
-  margin-top: 2em;
-}
-.settings__field .label {
-  padding-right: 1em;
-}
-.settings__field .label label {
-  font-weight: var(--font-weight-bold);
-}
-.settings__field .label p {
-  margin-top: 0.25em;
-  font-size: 0.8em;
-  margin: 1em 0 0;
-  color: var(--gray-bis);
 }
 .settings__footer {
   display: flex;

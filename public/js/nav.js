@@ -63,7 +63,6 @@ const createNavLogo = () => {
 
 const createNavButton = (options) => {
     if (typeof options.title !== "undefined") {
-        console.log(options);
         return options.title !== ""
             ? createElementFromTemplate(`<h3>${options.title}</h3>`)
             : createElementFromTemplate('<hr/>')
@@ -98,14 +97,12 @@ const createNavButtons = () => {
         if (isArray(b.children) && b.children.length > 0) {
             const close = () => {
                 const $children = $nav.querySelector(`[data-parent="${b.id}"]`);
-                console.log($children);
                 $nav.removeChild($children);
                 document.removeEventListener('click', outsideClickHandler, false);
                 document.removeEventListener('keydown', escKeyHandler);
             }
             const outsideClickHandler = (e) => {
                 if (e.target !== $button || !$button.contains(e.target) && !$nav.contains(e.target)) {
-                    console.log(e.target);
                     close();
                 }
             };

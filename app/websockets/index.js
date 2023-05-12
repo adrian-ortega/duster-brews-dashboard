@@ -52,6 +52,8 @@ const onConnectionMessage = async (data, ws) => {
         break;
       case "refreshSettings":
         response.settings = Settings.all();
+        response.fields = require("../settings/fields.json");
+        response.categories = require("../settings/categories.json");
         break;
     }
     ws.send(JSON.stringify(response));
@@ -64,6 +66,8 @@ const onConnection = async function (ws) {
     JSON.stringify({
       items: await Items.all(),
       settings: Settings.all(),
+      fields: require("../settings/fields.json"),
+      categories: require("../settings/categories.json")
     })
   );
 };
