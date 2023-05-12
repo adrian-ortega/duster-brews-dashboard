@@ -18,3 +18,125 @@
   margin: 1em 0 0;
   color: var(--gray-bis);
 }
+
+.field select,
+.field textarea,
+.field input[type="text"] {
+  width: 100%;
+  height: var(--button-height);
+  appearance: none;
+  outline: none;
+  background: var(--input-background);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.5em;
+  color: var(--white);
+}
+.field select:focus,
+.field textarea:focus,
+.field input[type="text"]:focus {
+  border: 1px solid var(--background);
+  box-shadow: 0 0 0 0.1em var(--background), 0 0 0 0.2em var(--primary);
+  padding-right: 1em;
+}
+.field .select {
+  position: relative;
+  display: block;
+}
+.field .select .icon {
+  position: absolute;
+  font-size: 1.5em;
+  top: 50%;
+  right: 0.25em;
+  transform: translateY(-50%);
+}
+
+/* Image Field */
+.image-input__preview {
+  background: var(--input-background);
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+}
+.image-input__preview > span {
+  height: 0;
+  width: 100%;
+  padding-bottom: 100%;
+  background: repeating-conic-gradient(var(--gray) 0% 25%, var(--white) 0% 50%)
+    50% / 20px 20px;
+}
+.image-input__preview,
+.image-input__trigger {
+  cursor: pointer;
+}
+.image-input__file,
+.image-input__preview,
+.image-input__trigger,
+.image-input__preview > span {
+  position: relative;
+  display: flex;
+  border-radius: var(--radius);
+}
+
+.image-input__trigger {
+  appearance: none;
+  height: var(--button-height);
+  background: var(--background-light);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-rounded);
+  font-family: var(--font-family-labels);
+  font-size: 0.9em;
+  font-weight: var(--font-weight-bold);
+}
+.image-input__trigger input {
+  display: none;
+}
+
+.image-input__file {
+  font-size: 0.8em;
+  margin: 0 0 1em 0;
+  flex-direction: column;
+}
+.image-input__file-l {
+  color: var(--gray-bis);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 0.25em;
+  padding: 0 0.5em;
+}
+.image-input__file-v {
+  padding: 0.5em;
+  background: var(--input-background);
+  font-family: var(--font-family-mono);
+}
+.image-input__file-l,
+.image-input__file-v {
+  display: block;
+}
+
+/* Checkboxes and Radio */
+.switch {
+  width: 2em;
+  height: 1.1em;
+  border-radius: var(--radius-rounded);
+  display: inline-flex;
+  align-items: center;
+  background: var(--white);
+  padding: 0 0.1em;
+  cursor: pointer;
+}
+.switch input {
+  display: none;
+}
+.switch span {
+  display: block;
+  border-radius: var(--radius-rounded);
+  background: var(--tertiary);
+  width: 0.9em;
+  height: 0.9em;
+  opacity: 0.65;
+  transition: all 0.1s ease-in-out;
+}
+.switch input:checked + span {
+  margin-left: auto;
+  opacity: 1;
+}

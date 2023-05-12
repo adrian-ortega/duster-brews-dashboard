@@ -3,9 +3,9 @@ class Forms {
     return `input-${id}`;
   }
 
-  static renderField({ label, id, content, help, type, category = "general" }) {
+  static renderField({ label, id, content, help, type = "text", category = "general" }) {
     const $field = createElementFromTemplate(`
-    <div class="field field${type}" data-cat="${category}">
+    <div class="field field--${type}" data-cat="${category}">
       <div class="label">
         <label for="${Forms.getHtmlID(id)}">${label}</label>
         ${help ? `<p>${help}</p>` : ""}
@@ -96,7 +96,7 @@ class Forms {
     const { id } = fieldOptions;
     const checked = value ? 'checked="checked"' : "";
     const content = `<div class="input">
-      <label for="${Forms.getHtmlID(id)}" class="checkbox">
+      <label for="${Forms.getHtmlID(id)}" class="switch">
         <input type="checkbox" id="${Forms.getHtmlID(
           id
         )}" name="${id}" value="1" ${checked}/>
