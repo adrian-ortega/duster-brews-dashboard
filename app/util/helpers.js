@@ -144,6 +144,10 @@ const isEmpty = (mixedValue) => {
   return false;
 };
 
+const makeId = () => {
+
+};
+
 module.exports = {
   NOOP: () => {},
   wait,
@@ -162,4 +166,5 @@ module.exports = {
   objectToFormData,
 
   getValue,
+  makeId
 };

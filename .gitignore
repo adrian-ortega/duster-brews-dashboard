@@ -111,4 +111,5 @@ dist
 /storage/credentials.json
 /storage/token.json
 /storage/settings.json
+/storage/*.db.json
 /public/images/uploads

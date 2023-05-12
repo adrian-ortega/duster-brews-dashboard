@@ -1,4 +1,5 @@
 const { objectHasKey, parseJson, isObject, isArray } = require("../util/helpers");
+const { makeId } = require("../util/uuid")
 const JSONFileStorage = require("../util/storage");
 
 const MODEL_DEFAULTS = {
@@ -10,6 +11,11 @@ class ModelCollection extends JSONFileStorage {
         const defaults = { ...MODEL_DEFAULTS }; 
         super(filepath, defaults, true);
         this.defaults = defaults;
+    }
+
+    create (data) {
+        const id = makeId();
+        return this.put(id, data);
     }
 
     get(id) {
