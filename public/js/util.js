@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+const ICON_DOTS_HORZ = 
+  '<svg viewBox="0 0 24 24"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" /></svg>';
 const ICON_MENU_DOWN = 
   '<svg viewBox="0 0 24 24"><path d="M7,10L12,15L17,10H7Z" /></svg>';
 const ICON_RELOAD =
@@ -99,6 +101,8 @@ const fireCustomEvent = (eventName, detail = {}, target = document) => {
   return target.dispatchEvent(customEvent);
 };
 
+const isArray = arr => Array.isArray(arr);
+
 /**
  *
  * @param {*} obj
@@ -136,26 +140,7 @@ const objectHasMethod = (object, method = null) =>
     ? false
     : isFunction(object[method]);
 
-window.refreshCSS = (timeout = 60000) => {
-  let links = document.getElementsByTagName("link");
-  for (let i = 0; i < links.length; i++) {
-    if (
-      links[i].getAttribute("rel") == "stylesheet" &&
-      links[i].getAttribute("data-autoreload") !== null
-    ) {
-      let href = links[i].getAttribute("href").split("?")[0];
-      let newHref = href + "?version=" + new Date().getMilliseconds();
-      links[i].setAttribute("href", newHref);
-    }
-  }
-
-  const autoRefreshCss = () => {
-    clearTimeout(window.autoRefreshCssTimeout);
-    window.refreshCSS();
-    window.autoRefreshCssTimeout = setTimeout(autoRefreshCss, timeout);
-  };
-
-  window.autoRefreshCssTimeout = setTimeout(autoRefreshCss, timeout);
-
-  return true;
-};
+const makeId = (size = 5) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  return [...Array(size)].map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+}
