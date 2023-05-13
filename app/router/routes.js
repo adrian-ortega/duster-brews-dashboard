@@ -1,5 +1,9 @@
 const { dashboardView } = require("../http/controllers/homeController");
 const {
+  beerGetHandler,
+  beerGetFieldsHandler,
+} = require("../http/controllers/beerController");
+const {
   settingsGetHandler,
   settingsPostHandler,
 } = require("../http/controllers/settingsController");
@@ -25,11 +29,22 @@ module.exports = [
   },
   {
     path: "/api/widgets",
+    methods: ["GET"],
     handler: listWidgetsHandler,
   },
   {
     path: "/api/widgets/image",
     methods: ["POST"],
     handler: imageUploadHandler,
+  },
+  {
+    path: "/api/beer",
+    methods: ["GET"],
+    handler: beerGetHandler,
+  },
+  {
+    path: "/api/beer/fields",
+    methods: ["GET"],
+    handler: beerGetFieldsHandler,
   },
 ];
