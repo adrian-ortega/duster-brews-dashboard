@@ -10,12 +10,14 @@ const beerGetFieldsHandler = (req, res) =>
       name: "name",
       value: null,
       type: "text",
+      required: true,
     },
     {
       label: "Brewery",
       name: "brewery_id",
       value: null,
       type: "select",
+      required: true,
       options: BreweriesCollection.all().map((brewery) => {
         return {
           value: brewery.id,
@@ -28,6 +30,7 @@ const beerGetFieldsHandler = (req, res) =>
       name: "style",
       value: null,
       type: "text",
+      required: true,
     },
     {
       label: "Gravity Start",

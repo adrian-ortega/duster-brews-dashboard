@@ -63,32 +63,6 @@ const hideNavButtons = () => {
 // Go baby go
 (async () => {
   await initialize();
-  document.addEventListener("ShowSettings", () => {
-    renderSettings();
-    window[APP_NS].route = "settings";
-    window[window.APP_NS].fireAction("refreshSettings");
-  });
-
-  document.addEventListener("ShowBeers", () => {
-    renderPlaceholders();
-    window[window.APP_NS].route = "home";
-    window[window.APP_NS].fireAction("refreshWidgets");
-  });
-
-  document.addEventListener("EditBeers", () => {
-    window[window.APP_NS].route = "edit-beer";
-    renderEditBeersForm();
-  });
-  document.addEventListener("AddBeer", () => {
-    window[window.APP_NS].route = "add-beer";
-    renderCreateBeerForm();
-  });
-  document.addEventListener("EditBreweries", () => {
-    window[window.APP_NS].route = "edit-breweries";
-  });
-  document.addEventListener("AddBrewery", () => {
-    window[window.APP_NS].route = "add-brewery";
-  });
 
   ["ShowSettings"].forEach((eventName) => {
     document.addEventListener(eventName, showNavButtons);
@@ -110,10 +84,40 @@ const hideNavButtons = () => {
   ].forEach((eventName) => {
     document.addEventListener(eventName, () => {
       const $container = getDomContainer();
-      const $widgets = $container.querySelector(".widgets");
-      if ($widgets) {
-        $container.removeChild($widgets);
+      const $oldContainers = [
+        ...$container.querySelectorAll(".edit-container"),
+      ];
+      if ($oldContainers.length > 0) {
+        $oldContainers.forEach(($oc) => $container.removeChild($oc));
       }
+      console.log("Resetting for", eventName);
     });
+  });
+
+  document.addEventListener("ShowSettings", () => {
+    renderSettings();
+    window[APP_NS].route = "settings";
+    window[window.APP_NS].fireAction("refreshSettings");
+  });
+  document.addEventListener("ShowBeers", () => {
+    renderPlaceholders();
+    window[window.APP_NS].route = "home";
+    window[window.APP_NS].fireAction("refreshWidgets");
+  });
+  document.addEventListener("EditBeers", () => {
+    window[window.APP_NS].route = "edit-beer";
+    renderEditBeersForm();
+  });
+  document.addEventListener("AddBeer", () => {
+    window[window.APP_NS].route = "add-beer";
+    renderCreateBeerForm();
+  });
+  document.addEventListener("EditBreweries", () => {
+    window[window.APP_NS].route = "edit-breweries";
+    renderEditBreweriesForm();
+  });
+  document.addEventListener("AddBrewery", () => {
+    window[window.APP_NS].route = "add-brewery";
+    renderCreateBreweryForm();
   });
 })();

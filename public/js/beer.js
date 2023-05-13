@@ -1,15 +1,15 @@
 const renderResetBeersContainer = () => {
   const $container = getDomContainer();
-  let $settings = $container.querySelector(".settings");
-  if ($settings) {
-    $settings.innerHTML = "";
+  let $beerContainer = $container.querySelector(".beer-edit");
+  if ($beerContainer) {
+    $beerContainer.innerHTML = "";
   } else {
-    $settings = createElementFromTemplate(
-      `<div class="beer-edit container"></div>`
+    $beerContainer = createElementFromTemplate(
+      `<div class="beer-edit edit-container container"></div>`
     );
   }
-  $container.appendChild($settings);
-  return $settings;
+  $container.appendChild($beerContainer);
+  return $beerContainer;
 };
 
 const renderCreateBeerForm = () => {
@@ -34,24 +34,7 @@ const renderCreateBeerForm = () => {
 
   fetch("/api/beer/fields").then(async (response) => {
     const { data } = await response.json();
-    const $form = $container.querySelector(".settings__view");
-    data.forEach((field) => {
-      let $field;
-      const fieldOpts = { ...field, id: field.name };
-      switch (field.type) {
-        case "select":
-          $field = Forms.renderSelectField(field.label, field.value, fieldOpts);
-          break;
-        case "image":
-          $field = Forms.renderImageField(field.label, field.value, fieldOpts);
-          break;
-        case "text":
-        default:
-          $field = Forms.renderTextField(field.label, field.value, fieldOpts);
-          break;
-      }
-      $form.appendChild($field);
-    });
+    Forms.renderFields(data, $container.querySelector(".settings__view"));
   });
 };
 

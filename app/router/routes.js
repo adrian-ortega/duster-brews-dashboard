@@ -11,6 +11,10 @@ const {
   listWidgetsHandler,
   imageUploadHandler,
 } = require("../http/controllers/widgetsController");
+const {
+  breweriesGetHandler,
+  breweriesFieldsHandler,
+} = require("../http/controllers/breweriesController");
 
 module.exports = [
   {
@@ -36,6 +40,16 @@ module.exports = [
     path: "/api/widgets/image",
     methods: ["POST"],
     handler: imageUploadHandler,
+  },
+  {
+    path: "/api/breweries",
+    methods: ["GET"],
+    handler: breweriesGetHandler,
+  },
+  {
+    path: "/api/breweries/fields",
+    methods: ["GET"],
+    handler: breweriesFieldsHandler,
   },
   {
     path: "/api/beer",

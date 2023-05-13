@@ -2,6 +2,7 @@
   font-size: 0.9em;
   height: var(--header-height);
   background: transparent;
+  z-index: 3;
 }
 
 .nav,
@@ -58,6 +59,7 @@
   background: var(--black);
   padding: 1em 0 0.5em;
   border-radius: var(--radius);
+  z-index: 99;
 }
 .nav-sub hr {
   margin: 0.5em 0;

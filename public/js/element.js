@@ -1,13 +1,49 @@
 class Forms {
+  static renderFields(fields, $form) {
+    fields.forEach((field) => {
+      let $field;
+      const fieldOpts = { ...field, id: field.name };
+      switch (field.type) {
+        case "select":
+          $field = Forms.renderSelectField(field.label, field.value, fieldOpts);
+          break;
+        case "image":
+          $field = Forms.renderImageField(field.label, field.value, fieldOpts);
+          break;
+        case "text":
+        default:
+          $field = Forms.renderTextField(field.label, field.value, fieldOpts);
+          break;
+      }
+      $form.appendChild($field);
+    });
+
+    $form
+      .querySelector(".field:first-child")
+      .querySelector(".input")
+      .querySelectorAll("select, input, textarea")[0]
+      .focus();
+  }
+
   static getHtmlID(id) {
     return `input-${id}`;
   }
 
-  static renderField({ label, id, content, help, type = "text", category = "general" }) {
+  static renderField({
+    label,
+    id,
+    content,
+    help,
+    type = "text",
+    category = "general",
+    required = false,
+  }) {
     const $field = createElementFromTemplate(`
     <div class="field field--${type}" data-cat="${category}">
       <div class="label">
-        <label for="${Forms.getHtmlID(id)}">${label}</label>
+        <label for="${Forms.getHtmlID(id)}">
+          ${label}${required ? '<span class="required">*</span>' : ""}
+        </label>
         ${help ? `<p>${help}</p>` : ""}
       </div>
     </div>
@@ -26,9 +62,9 @@ class Forms {
       ...fieldOptions,
       label,
       content: `<div class="input">
-          <input type="text" id="${Forms.getHtmlID(
-            id
-          )}" name="${id}" value="${value ? value.toString() : ''}"/>
+          <input type="text" id="${Forms.getHtmlID(id)}" name="${id}" value="${
+        value ? value.toString() : ""
+      }"/>
         </div>`,
     });
   }

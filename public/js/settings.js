@@ -51,7 +51,7 @@ const renderSettingsReset = () => {
     $settings.innerHTML = "";
   } else {
     $settings = createElementFromTemplate(
-      `<div class="settings container"></div>`
+      `<div class="settings edit-container container"></div>`
     );
   }
   $container.appendChild($settings);
