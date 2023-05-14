@@ -14,6 +14,7 @@ const {
 const {
   breweriesGetHandler,
   breweriesFieldsHandler,
+  breweriesPostHandler,
 } = require("../http/controllers/breweriesController");
 
 module.exports = [
@@ -45,6 +46,11 @@ module.exports = [
     path: "/api/breweries",
     methods: ["GET"],
     handler: breweriesGetHandler,
+  },
+  {
+    path: "/api/breweries",
+    methods: ["POST", "PUT"],
+    handler: breweriesPostHandler,
   },
   {
     path: "/api/breweries/fields",
