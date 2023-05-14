@@ -15,35 +15,23 @@ const sanitizedCopy = (a) => (isObject(a) ? { ...a } : isArray(a) ? [...a] : a);
 
 class ModelCollection extends JSONFileStorage {
   constructor(filepath) {
-    const defaults = { ...MODEL_DEFAULTS };
-    super(filepath, defaults, true);
-    this.defaults = defaults;
+    super(filepath, sanitizedCopy(MODEL_DEFAULTS));
   }
 
   create(data) {
     const id = makeId();
-    this.put(id, data);
+    this.put({ id, ...data });
     return this.get(id);
   }
 
   get(id) {
     this.refresh();
-    return objectHasKey(this.data.items, id) ? this.data.items[id] : null;
+    return this.data.items.find(item => item.id === id);
   }
 
-  put(id_or_items, value) {
+  put(data) {
     this.refresh();
-    
-    if (isArray(id_or_items) && objectHasKey(id_or_items[0], "id")) {
-      const values = [...id_or_items];
-      const ids = values.map(({ id }) => id);
-      ids.forEach((id, i) => {
-        this.data.items[id] = sanitizedCopy(values[i]);
-      });
-    } else {
-      this.data.items[id_or_items] = sanitizedCopy(value);
-    }
-    console.log(this.data.items);
+    this.data.items.push(sanitizedCopy(data));
     return this.save();
   }
 
@@ -61,21 +49,13 @@ class ModelCollection extends JSONFileStorage {
     return !objectHasKey(this.data.items, id);
   }
 
-  has(id_or_ids) {
-    let has;
+  has(id) {
     this.refresh();
-    if (isArray(id_or_ids)) {
-      has = Object.entries(this.data.items).find((item) =>
-        id_or_ids.includes(item.id)
-      );
-    } else {
-      has = objectHasKey(this.data.items, id_or_ids);
-    }
-    return has;
+    return this.data.items.some(item => item.id === id);
   }
 
   refresh() {
-    return super.refresh(this.defaults);
+    return super.refresh(sanitizedCopy(MODEL_DEFAULTS));
   }
 }
 

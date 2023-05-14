@@ -22,21 +22,13 @@ const breweriesFieldsHandler = (req, res) => {
   ]);
 };
 
-const fieldProcessor = async (key, value, { fields }) => {};
-
-const fieldValidator = (data) => {
-  return validate(data, {
-    name: "required",
-  });
-};
-
 const breweriesPostHandler = (req, res, next) => {
   const form = formidable();
   form.parse(req, (err, formData, files) => {
     if (err) {
       return next(err);
     }
-    const validator = fieldValidator({ ...formData, ...files });
+    const validator = validate({ ...formData, ...files }, { name: "required" });
     if (validator.failed()) {
       const data = {
         status: 422,
@@ -46,9 +38,9 @@ const breweriesPostHandler = (req, res, next) => {
     }
 
     const brewery = Breweries.create({
-      name: formData.name
+      name: formData.name,
     });
-    
+
     return respondWithJSON(res, brewery);
   });
 };

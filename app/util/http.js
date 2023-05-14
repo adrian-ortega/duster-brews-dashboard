@@ -7,7 +7,6 @@ const respondWithJSON = (res, data, meta, status = 200) => {
   if (meta) {
     response.meta = meta;
   }
-
   res.setHeader("Content-Type", "application/json");
   res.status(status).json(response);
 };

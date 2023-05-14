@@ -36,6 +36,16 @@ const renderCreateBreweryForm = () => {
     const { data } = await response.json();
     Forms.renderFields(data, $container.querySelector(".settings__view"));
   });
+
+  $container
+    .querySelector(".settings__form")
+    .addEventListener("submit", (e) => {
+      e.preventDefault();
+      fetch("/api/breweries", {
+        method: "POST",
+        body: new FormData(e.target),
+      }).then(() => fireCustomEvent("ShowBeers"));
+    });
 };
 
 const renderEditBreweriesForm = () => {};
