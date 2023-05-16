@@ -1,7 +1,7 @@
 const Websocket = require("ws");
 const Settings = require("../settings");
+const Taps = require("../models/Taps");
 const { performance } = require("perf_hooks");
-const Items = require("../models/Items");
 const { ONE_SECOND } = require("../util/time");
 const { wait, parseJson } = require("../util/helpers");
 
@@ -14,7 +14,7 @@ const widgetHeartbeat = async (timestamp) => {
   try {
     const timeOffset =
       parseInt(Settings.get("refresh_rate", "60"), 10) * ONE_SECOND;
-    const data = await Items.all();
+    const data = await Taps.all();
     broadcast(data.items);
     widgetHeartbeatTries = 0;
     setTimeout(() => widgetHeartbeat(timestamp + timeOffset), timeOffset);
@@ -48,7 +48,7 @@ const onConnectionMessage = async (data, ws) => {
     const response = {};
     switch (data.action) {
       case "refreshWidgets":
-        response.items = await Items.all();
+        response.taps = await Taps.all();
         break;
       case "refreshSettings":
         response.settings = Settings.all();
@@ -64,10 +64,10 @@ const onConnection = async function (ws) {
   ws.on("message", (msg) => onConnectionMessage(parseJson(msg), ws));
   ws.send(
     JSON.stringify({
-      items: await Items.all(),
+      taps: await Taps.all(),
       settings: Settings.all(),
       fields: require("../settings/fields.json"),
-      categories: require("../settings/categories.json")
+      categories: require("../settings/categories.json"),
     })
   );
 };

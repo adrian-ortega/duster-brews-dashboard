@@ -1,9 +1,9 @@
-const BeerCollection = require("../../models/Items");
+const Taps = require("../../models/Taps");
 const BreweriesCollection = require("../../models/Breweries");
 const { respondWithJSON } = require("../../util/http");
 
-const beerGetHandler = (req, res) => respondWithJSON(res, BeerCollection.all());
-const beerGetFieldsHandler = (req, res) =>
+const tapsGetHandler = (req, res) => respondWithJSON(res, Taps.all());
+const tapsGetFieldsHandler = (req, res) =>
   respondWithJSON(res, [
     {
       label: "Name",
@@ -59,6 +59,6 @@ const beerGetFieldsHandler = (req, res) =>
   ]);
 
 module.exports = {
-  beerGetHandler,
-  beerGetFieldsHandler,
+  tapsGetHandler,
+  tapsGetFieldsHandler,
 };

@@ -1,6 +1,5 @@
 const formidable = require("formidable");
-const fs = require("fs");
-const { getWidgetItems } = require("../../api");
+const Taps = require("../../models/Taps");
 const { ALLOWED_IMAGE_TYPES, FILE_UPLOADS_FOLDER, FILE_UPLOADS_FOLDER_PATH } = require("../../util");
 const { respondWithJSON } = require("../../util/http");
 const { moveUploadedFile } = require("../../util/files");
@@ -11,11 +10,7 @@ const { moveUploadedFile } = require("../../util/files");
  * @param {Express.Response} res 
  * @returns {Object}
  */
-const listWidgetsHandler = (req, res) => {
-  return getWidgetItems().then((items) => {
-    return respondWithJSON(res, items);
-  });
-};
+const listWidgetsHandler = (req, res) => respondWithJSON(res, Taps.all())
 
 /**
  * Validates that the file uploaded to imageUploadHandler meets
