@@ -11,11 +11,16 @@ const MODEL_DEFAULTS = {
   items: [],
 };
 
+/**
+ * @TODO move to helpers.js?
+ * @param {Object|Array} a 
+ * @returns {Object|Array}
+ */
 const sanitizedCopy = (a) => (isObject(a) ? { ...a } : isArray(a) ? [...a] : a);
 
 class ModelCollection extends JSONFileStorage {
   constructor(filepath) {
-    super(filepath, sanitizedCopy(MODEL_DEFAULTS));
+    super(filepath, sanitizedCopy(MODEL_DEFAULTS), true);
   }
 
   create(data) {

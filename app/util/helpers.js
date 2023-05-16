@@ -99,15 +99,18 @@ const getValue = (valueOrFunc, defaultValue = null) => {
 };
 
 /**
- * @param {string} str
+ * @param {string} jsonString
  * @param {null|*} defaultValue
  * @return {null|*}
  */
-const parseJson = (str, defaultValue = null) => {
+const parseJson = (jsonString, defaultValue = null) => {
   try {
-    return JSON.parse(str);
+    return JSON.parse(jsonString);
   } catch (e) {
-    console.log("Invalid JSON", str);
+    console.log("Invalid JSON", {
+      jsonString,
+      errorStack: e.stack
+    });
     return defaultValue;
   }
 };
