@@ -1,4 +1,4 @@
-const renderResetBreweriesContainer = () => {
+const resetBreweriesContainer = () => {
   const $container = getDomContainer();
   let $breweriesContainer = $container.querySelector(".brewery-edit");
   if ($breweriesContainer) {
@@ -13,7 +13,7 @@ const renderResetBreweriesContainer = () => {
 };
 
 const renderCreateBreweryForm = () => {
-  const $container = renderResetBeersContainer();
+  const $container = resetBreweriesContainer();
   $container.appendChild(
     createElementFromTemplate(`<div class="settings__container">
         <h2 class="settings__title">Create Brewery</h2>
@@ -25,6 +25,10 @@ const renderCreateBreweryForm = () => {
               <button type="submit" class="button is-save is-primary">
                 <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
                 <span class="text">Save</span>
+              </button>
+              <button type="submit" class="button is-save-plus is-primary">
+                <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
+                <span class="text">Save + another</span>
               </button>
               <button class="button is-cancel">Cancel</button>
             </div>
@@ -44,8 +48,33 @@ const renderCreateBreweryForm = () => {
       fetch("/api/breweries", {
         method: "POST",
         body: new FormData(e.target),
-      }).then(() => fireCustomEvent("ShowBeers"));
+      }).then(() => {
+        if(e.submitter && e.submitter.classList.contains('is-save-plus')) {
+          fireCustomEvent("AddBrewery");
+        } else {
+          fireCustomEvent("ShowTaps");
+        }
+      });
     });
+
+  return $container.querySelector(".settings__container");
+};
+
+const renderFirstTimeBreweries = () => {
+  removeWidgetsContainer();
+  const $container = renderCreateBreweryForm();
+  const $title = $container.querySelector(".settings__title");
+  $title.classList.add("is-first-time");
+  $title.innerHTML = "Must be your first time";
+  $title.after(
+    createElementFromTemplate(`<div class="first-time">
+      <p>Before you can add any <strong>Taps</strong>, we need to add one or more <strong>Breweries</strong>.</p>
+    </div>`)
+  );
+  const $cancelBtn = $container.querySelector(".button.is-cancel");
+  if ($cancelBtn) {
+    $cancelBtn.parentNode.removeChild($cancelBtn);
+  }
 };
 
 const renderEditBreweriesForm = () => {};

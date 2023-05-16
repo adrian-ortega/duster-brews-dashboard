@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
-const ICON_DOTS_HORZ = 
+const ICON_DOTS_HORZ =
   '<svg viewBox="0 0 24 24"><path d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" /></svg>';
-const ICON_MENU_DOWN = 
+const ICON_MENU_DOWN =
   '<svg viewBox="0 0 24 24"><path d="M7,10L12,15L17,10H7Z" /></svg>';
 const ICON_RELOAD =
   '<svg viewBox="0 0 24 24"><path d="M2 12C2 16.97 6.03 21 11 21C13.39 21 15.68 20.06 17.4 18.4L15.9 16.9C14.63 18.25 12.86 19 11 19C4.76 19 1.64 11.46 6.05 7.05C10.46 2.64 18 5.77 18 12H15L19 16H19.1L23 12H20C20 7.03 15.97 3 11 3C6.03 3 2 7.03 2 12Z" /></svg>';
@@ -64,6 +64,21 @@ const getWidgetContainer = () => {
   return $widgetsContainer;
 };
 
+const removeWidgetsContainer = () => {
+  const $widgets = getDomContainer().querySelector(".widgets");
+  if ($widgets) $widgets.parentNode.removeChild($widgets);
+};
+
+/**
+ *
+ * @returns {Element}
+ */
+const getEmptyWidgetsContainer = () => {
+  const $widgetsContainer = getWidgetContainer();
+  $widgetsContainer.innerHTML = "";
+  return $widgetsContainer;
+};
+
 /**
  * Wraps an image source and optional title in asemantically
  * correct HTML string.
@@ -101,7 +116,7 @@ const fireCustomEvent = (eventName, detail = {}, target = document) => {
   return target.dispatchEvent(customEvent);
 };
 
-const isArray = arr => Array.isArray(arr);
+const isArray = (arr) => Array.isArray(arr);
 
 /**
  *
@@ -141,6 +156,9 @@ const objectHasMethod = (object, method = null) =>
     : isFunction(object[method]);
 
 const makeId = (size = 5) => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  return [...Array(size)].map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
-}
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  return [...Array(size)]
+    .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
+    .join("");
+};

@@ -9,7 +9,7 @@ const NAVIGATION_BUTTONS = [
         icon: ICON_RELOAD,
         onClick(e) {
             e.preventDefault();
-            fireCustomEvent('ShowBeers', null, e.target);
+            fireCustomEvent('ShowTaps', null, e.target);
         }
     }, {
         text: 'Settings',
@@ -17,18 +17,18 @@ const NAVIGATION_BUTTONS = [
         icon: ICON_DOTS_HORZ,
         children: [
             {
-                title: "Beer"
+                title: "Taps"
             }, {
-                text: "Add Beer",
+                text: "Add Tap",
                 onClick(e) {
                     e.preventDefault();
-                    fireCustomEvent('AddBeer', null, e.target);
+                    fireCustomEvent('AddTap', null, e.target);
                 }
             }, {
-                text: "Edit Beers",
+                text: "Edit Taps",
                 onClick(e) {
                     e.preventDefault();
-                    fireCustomEvent('EditBeers', null, e.target);
+                    fireCustomEvent('EditTaps', null, e.target);
                 }
             }, {
                 title: "Breweries"

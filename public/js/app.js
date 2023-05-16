@@ -4,8 +4,17 @@
  * @param {Number} timestamp
  * @return {Promise<void>}
  */
-const updateWidgets = async ({ items, timestamp }) =>
-  await renderWidgets(items, timestamp || performance.now());
+const updateWidgets = async ({ taps, breweries, timestamp }) => {
+  timestamp = timestamp || performance.now();
+
+  if (breweries.length === 0) { 
+    return renderFirstTimeBreweries();
+  } else if (taps.length === 0) {
+    return renderFirstTimeTaps();
+  }
+  return renderWidgets(taps, timestamp);
+}
+  
 
 const burnInGuard = () => {
   const $el = document.createElement("div");
@@ -31,6 +40,7 @@ const initialize = async () => {
 
   initializeNav();
   renderPlaceholders();
+
   await createWebSocket({
     onmessage: (data) => {
       if (objectHasKey(data, "burnInGuard")) {
@@ -44,8 +54,12 @@ const initialize = async () => {
         if (isRoute("settings")) renderSettings();
       }
 
-      if (objectHasKey(data, "items")) {
-        window[window.APP_NS].state.items = [...data.items];
+      if (objectHasKey(data, "breweries")) {
+        window[window.APP_NS].state.breweries = [...data.breweries];
+      }
+
+      if (objectHasKey(data, "taps")) {
+        window[window.APP_NS].state.taps = [...data.taps];
         if (isRoute("home")) updateWidgets(data);
       }
     },
@@ -68,7 +82,7 @@ const hideNavButtons = () => {
     document.addEventListener(eventName, showNavButtons);
   });
 
-  ["ShowBeers", "EditBeers", "AddBeer", "EditBreweries", "AddBrewery"].forEach(
+  ["ShowTaps", "EditTaps", "AddTap", "EditBreweries", "AddBrewery"].forEach(
     (eventName) => {
       document.addEventListener(eventName, hideNavButtons);
     }
@@ -76,9 +90,9 @@ const hideNavButtons = () => {
 
   [
     "ShowSettings",
-    "ShowBeers",
-    "EditBeers",
-    "AddBeer",
+    "ShowTaps",
+    "EditTaps",
+    "AddTap",
     "EditBreweries",
     "AddBrewery",
   ].forEach((eventName) => {
@@ -99,18 +113,18 @@ const hideNavButtons = () => {
     window[APP_NS].route = "settings";
     window[window.APP_NS].fireAction("refreshSettings");
   });
-  document.addEventListener("ShowBeers", () => {
+  document.addEventListener("ShowTaps", () => {
     renderPlaceholders();
     window[window.APP_NS].route = "home";
     window[window.APP_NS].fireAction("refreshWidgets");
   });
-  document.addEventListener("EditBeers", () => {
-    window[window.APP_NS].route = "edit-beer";
-    renderEditBeersForm();
+  document.addEventListener("EditTaps", () => {
+    window[window.APP_NS].route = "edit-tap";
+    renderEditTapsForm();
   });
-  document.addEventListener("AddBeer", () => {
-    window[window.APP_NS].route = "add-beer";
-    renderCreateBeerForm();
+  document.addEventListener("AddTap", () => {
+    window[window.APP_NS].route = "add-tap";
+    renderCreateTapForm();
   });
   document.addEventListener("EditBreweries", () => {
     window[window.APP_NS].route = "edit-breweries";

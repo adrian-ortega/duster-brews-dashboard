@@ -41,7 +41,7 @@ const onSettingsSaveEnd = () => {
 };
 
 const onSettingsCancel = (e) => {
-  fireCustomEvent("ShowBeers", null, e.target);
+  fireCustomEvent("ShowTaps", null, e.target);
 };
 
 const renderSettingsReset = () => {

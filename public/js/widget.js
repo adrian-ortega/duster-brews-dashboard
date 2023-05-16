@@ -36,7 +36,7 @@ const createWidgetPlaceholder = (i) => {
 
 /**
  * Creates the main Widget DOM Element that displays the information for
- * each beer.
+ * each tap.
  * @param {object} item
  * @return {ChildNode}
  */
@@ -144,14 +144,17 @@ const createWidgetElement = ({
   return $widget;
 };
 
+const renderFirstTimeWidgets = () => {
+  const $widgetsContainer = getEmptyWidgetsContainer();
+  $widgetsContainer.innerHTML = "First Time Widgets";
+}
+
 /**
  * Creates five placeholder widgets while the websocket connects and returns a message.
  * @return {Promise<void>}
  */
 const renderPlaceholders = async () => {
-  const $widgetsContainer = getWidgetContainer();
-  $widgetsContainer.innerHTML = "";
-
+  const $widgetsContainer = getEmptyWidgetsContainer();
   window[window.APP_NS].$widgets = new Array(5).fill(0).map((_, i) => {
     const $el = createWidgetPlaceholder(i);
     $widgetsContainer.appendChild($el);
@@ -168,8 +171,7 @@ const renderPlaceholders = async () => {
  */
 const renderWidgets = async (items, timestamp) => {
   const app = window[window.APP_NS];
-  const $widgetsContainer = getWidgetContainer();
-
+  const $widgetsContainer = getEmptyWidgetsContainer();
   if (
     !app.widgets.timestamp ||
     timestamp - app.widgets.timestamp > app.widgets.interval
@@ -187,8 +189,6 @@ const renderWidgets = async (items, timestamp) => {
     }
     items = tempItems;
   }
-
-  $widgetsContainer.innerHTML = "";
   window[window.APP_NS].$widgets = items.map((item) => {
     const $el = createWidgetElement(item);
     $widgetsContainer.appendChild($el);
@@ -198,7 +198,7 @@ const renderWidgets = async (items, timestamp) => {
 
 const renderImageEditPopup = (e) => {
   const { id, image_key } = e.detail;
-  const item = window[window.APP_NS].state.items.find((w) => w.id === id);
+  const item = window[window.APP_NS].state.taps.find((w) => w.id === id);
   const template = `
   <div class="image-edit">
     <div class="image-edit__container">
@@ -240,13 +240,18 @@ const renderImageEditPopup = (e) => {
   const $form = $popup.querySelector("form");
 
   const onFormSubmit = async (e) => {
-    const response = await fetch("/api/widgets/image", { method: "POST", body: new FormData($form) });
+    const response = await fetch("/api/widgets/image", {
+      method: "POST",
+      body: new FormData($form),
+    });
     const { data } = await response.json();
 
     // @TODO Do something with the data? like re-render the popup
     //       instead of just refreshing?
 
-    const $uploadButton = $form.querySelector('#widget-image').closest('.button');
+    const $uploadButton = $form
+      .querySelector("#widget-image")
+      .closest(".button");
     const $buttonIcons = $uploadButton.querySelectorAll(".icon");
     const $buttonText = $uploadButton.querySelector(".text");
     $buttonText.classList.toggle("is-hidden");
@@ -254,13 +259,13 @@ const renderImageEditPopup = (e) => {
       $buttonIcon.classList.toggle("is-hidden");
     });
 
-    if(objectHasMethod(e, "preventDefault")) {
+    if (objectHasMethod(e, "preventDefault")) {
       e.preventDefault();
     }
 
-    fireCustomEvent("showBeers");
+    fireCustomEvent("showTaps");
     setTimeout(() => getDomContainer().removeChild($popup), 2000);
-  }
+  };
 
   [...$popup.querySelectorAll(".button.is-close")].forEach(($b) =>
     $b.addEventListener("click", (e) => {
@@ -279,7 +284,7 @@ const renderImageEditPopup = (e) => {
     [...$buttonIcons].forEach(($buttonIcon) => {
       $buttonIcon.classList.toggle("is-hidden");
     });
-    
+
     onFormSubmit();
   });
 

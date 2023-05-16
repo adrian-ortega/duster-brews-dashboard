@@ -47,12 +47,16 @@ body {
 .button .icon {
   font-size: 1.5em;
 }
-.button .text + .icon,
-.button .icon + .text {
+.button .text:not(.is-hidden) + .icon,
+.button .icon:not(.is-hidden) + .text {
   margin-left: 0.25em;
 }
 .button[disabled] {
   opacity: 0.5;
+}
+.button .text small {
+  font-size: 50%;
+  display: block;
 }
 .main-content {
   position: relative;

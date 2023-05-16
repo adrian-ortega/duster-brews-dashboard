@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-
 /**
  * Created the app instance of WebSocket and attaches it to
  * the global instance. passes the message and error functions

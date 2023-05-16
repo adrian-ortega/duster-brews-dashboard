@@ -1,5 +1,6 @@
 const Websocket = require("ws");
 const Settings = require("../settings");
+const Breweries = require("../models/Breweries");
 const Taps = require("../models/Taps");
 const { performance } = require("perf_hooks");
 const { ONE_SECOND } = require("../util/time");
@@ -48,6 +49,7 @@ const onConnectionMessage = async (data, ws) => {
     const response = {};
     switch (data.action) {
       case "refreshWidgets":
+        response.breweries = await Breweries.all();
         response.taps = await Taps.all();
         break;
       case "refreshSettings":
@@ -64,6 +66,7 @@ const onConnection = async function (ws) {
   ws.on("message", (msg) => onConnectionMessage(parseJson(msg), ws));
   ws.send(
     JSON.stringify({
+      breweries: await Breweries.all(),
       taps: await Taps.all(),
       settings: Settings.all(),
       fields: require("../settings/fields.json"),
