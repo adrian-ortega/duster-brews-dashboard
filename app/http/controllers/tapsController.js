@@ -1,6 +1,8 @@
+const formidable = require("formidable");
 const Taps = require("../../models/Taps");
 const BreweriesCollection = require("../../models/Breweries");
 const { respondWithJSON } = require("../../util/http");
+const { validate } = require("../../validation");
 
 const tapsGetHandler = (req, res) => respondWithJSON(res, Taps.all());
 const tapsGetFieldsHandler = (req, res) =>
@@ -58,7 +60,41 @@ const tapsGetFieldsHandler = (req, res) =>
     },
   ]);
 
+const tapsPostHandler = (req, res, next) => {
+  const form = formidable();
+  form.parse(req, (err, formData, files) => {
+    if (err) {
+      return next(err);
+    }
+    const validator = validate(
+      { ...formData, ...files },
+      {
+        name: "required",
+        brewery_id: ["required", "breweryExists"],
+        style: "required",
+      }
+    );
+
+    if (validator.failed()) {
+      return respondWithJSON(
+        res,
+        { status: 422, errors: validator.getErrors() },
+        422
+      );
+    }
+
+    const tap = Taps.create({
+      brewery_id: formData.brewery_id,
+      name: formData.name,
+      style: formData.style,
+    });
+
+    return respondWithJSON(res, tap);
+  });
+};
+
 module.exports = {
   tapsGetHandler,
   tapsGetFieldsHandler,
+  tapsPostHandler,
 };

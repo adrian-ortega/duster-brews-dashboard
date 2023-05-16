@@ -147,7 +147,7 @@ const createWidgetElement = ({
 const renderFirstTimeWidgets = () => {
   const $widgetsContainer = getEmptyWidgetsContainer();
   $widgetsContainer.innerHTML = "First Time Widgets";
-}
+};
 
 /**
  * Creates five placeholder widgets while the websocket connects and returns a message.

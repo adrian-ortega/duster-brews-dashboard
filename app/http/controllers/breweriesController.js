@@ -30,11 +30,11 @@ const breweriesPostHandler = (req, res, next) => {
     }
     const validator = validate({ ...formData, ...files }, { name: "required" });
     if (validator.failed()) {
-      const data = {
-        status: 422,
-        errors: validator.getErrors(),
-      };
-      return respondWithJSON(res, data, 422);
+      return respondWithJSON(
+        res,
+        { status: 422, errors: validator.getErrors() },
+        422
+      );
     }
 
     const brewery = Breweries.create({

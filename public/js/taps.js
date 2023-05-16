@@ -26,6 +26,10 @@ const renderCreateTapForm = () => {
               <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
               <span class="text">Save</span>
             </button>
+            <button type="submit" class="button is-save-plus is-primary">
+              <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
+              <span class="text">Save + Another</span>
+            </button>
             <button class="button is-cancel">Cancel</button>
           </div>
       </form>
@@ -36,6 +40,22 @@ const renderCreateTapForm = () => {
     const { data } = await response.json();
     Forms.renderFields(data, $container.querySelector(".settings__view"));
   });
+
+  $container
+    .querySelector(".settings__form")
+    .addEventListener("submit", (e) => {
+      e.preventDefault();
+      fetch("/api/taps", {
+        method: "POST",
+        body: new FormData(e.target),
+      }).then(() => {
+        if(e.submitter && e.submitter.classList.contains('is-save-plus')) {
+          fireCustomEvent("AddTap");
+        } else {
+          fireCustomEvent("ShowTaps");
+        }
+      });
+    });
 
   return $container.querySelector(".settings__container");
 };

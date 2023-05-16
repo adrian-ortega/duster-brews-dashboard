@@ -2,6 +2,7 @@ const { dashboardView } = require("../http/controllers/homeController");
 const {
   tapsGetHandler,
   tapsGetFieldsHandler,
+  tapsPostHandler,
 } = require("../http/controllers/tapsController");
 const {
   settingsGetHandler,
@@ -61,6 +62,11 @@ module.exports = [
     path: "/api/taps",
     methods: ["GET"],
     handler: tapsGetHandler,
+  },
+  {
+    path: "/api/taps",
+    methods: ["POST", "PUT"],
+    handler: tapsPostHandler,
   },
   {
     path: "/api/taps/fields",
