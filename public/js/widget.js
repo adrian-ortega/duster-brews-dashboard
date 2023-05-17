@@ -40,20 +40,23 @@ const createWidgetPlaceholder = (i) => {
 const createWidgetElement = ({
   id,
   keg,
-  brewery,
-  brewery_image,
   style,
   name,
-  background_image,
-  abv,
-  ibu,
+  abv = 0,
+  ibu = 0,
+  media = [],
+  brewery_id,
 }) => {
-  abv = parseFloat(keg.abv > 0 ? keg.abv : abv).toFixed(1);
+  abv = parseFloat(keg && keg.abv > 0 ? keg.abv : abv).toFixed(1);
   ibu = parseInt(ibu, 10);
-  const keg_percent = parseFloat(keg.percent_beer_left).toFixed(1);
-  const template = `<div id="keg-${keg.id}" class="widget">
+  const brewery = getBrewery(brewery_id);
+  const keg_percent = parseFloat(keg ? keg.percent_beer_left : "0").toFixed(1);
+  const primary_image = media.find((m) => m.primary);
+  const brewery_image = brewery.media.find((m) => m.primary);
+  console.log({ brewery, brewery_image, primary_image, media });
+  const template = `<div id="tap-${id}" class="widget">
     <div class="widget__image">
-      ${imgTemplate(background_image, name)}
+      ${imgTemplate(primary_image ? primary_image.src : "", name)}
       <div class="widget__image-controls">
         <button class="button is-edit" title="Edit">
           <span class="icon">${ICON_IMAGE_EDIT}</span>
@@ -62,11 +65,14 @@ const createWidgetElement = ({
     </div>
     <div class="widget__content">
       <div class="widget__content-header">
-        <div class="keg__image">${imgTemplate(brewery_image, brewery)}</div>
+        <div class="keg__image">${imgTemplate(
+          brewery_image ? brewery_image.src : "",
+          brewery ? brewery.name : ""
+        )}</div>
         <div class="keg__header">
-          <p class="keg__location">${keg.keg_location}</p>
+          <p class="keg__location">${keg ? keg.keg_location : ""}</p>
           <h2 class="keg__name">${name}</h2>
-          <p class="keg__brewery">${brewery}</p>
+          <p class="keg__brewery">${brewery ? brewery.name : ""}</p>
         </div>
       </div>
       <div class="widget__content-footer">
@@ -77,7 +83,11 @@ const createWidgetElement = ({
         </div>
         <div class="keg__detail"><p>ABV</p><h3>${abv}%</h3></div>
         <div class="keg__detail"><p>IBUS</p><h3>${ibu}</h3></div>
-        <div class="keg__detail"><p>Kegged</p><h3>${keg.keg_date}</h3></div>
+        ${
+          keg
+            ? `<div class="keg__detail"><p>Kegged</p><h3>${keg.keg_date}</h3></div>`
+            : ""
+        }
       </div>
     </div>
   </div>`;
@@ -131,11 +141,7 @@ const createWidgetElement = ({
 
   $widget.querySelector(".button.is-edit").addEventListener("click", (e) => {
     e.preventDefault();
-    fireCustomEvent(
-      "showImageEditPopup",
-      { id, image_key: "background_image" },
-      e.target
-    );
+    fireCustomEvent("showImageEditPopup", { id, image_key: "media" }, e.target);
   });
 
   return $widget;
@@ -194,28 +200,29 @@ const renderWidgets = async (items, timestamp) => {
 };
 
 const renderImageEditPopup = (e) => {
-  const { id, image_key } = e.detail;
-  const item = window[window.APP_NS].state.taps.find((w) => w.id === id);
+  const { id } = e.detail;
+  const item = getTap(id);
+  const image = item.media.find((m) => m.primary);
+
   const template = `
   <div class="image-edit">
     <div class="image-edit__container">
       <form action="/" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="widget_id" value="${id}"/>
-        <input type="hidden" name="widget_image_key" value="${image_key}"/>
+        <input type="hidden" name="tap_id" value="${id}"/>
         <div class="image-edit__header">
           <h4>Edit Item Image</h4>
           <button class="button is-close"><span class="icon">${ICON_CLOSE}</span></button>
         </div>
         <div class="image-edit__preview">
           <div class="image-edit__preview-box">${imgTemplate(
-            item[image_key],
+            image ? image.src : "",
             "Preview"
           )}</div>
         </div>
         <div class="image-edit__buttons">
           <div class="image-edit__button is-success">
             <label for="widget-image" class="button">
-              <input type="file" id="widget-image" name="widget_image" accept="image/*"/>
+              <input type="file" id="widget-image" name="media" accept="image/*"/>
               <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
               <span class="icon">${ICON_UPLOAD}</span>
               <span class="text">Upload</span>
@@ -237,14 +244,22 @@ const renderImageEditPopup = (e) => {
   const $form = $popup.querySelector("form");
 
   const onFormSubmit = async (e) => {
-    const response = await fetch("/api/widgets/image", {
+    const response = await fetch("/api/taps/media", {
       method: "POST",
       body: new FormData($form),
     });
     const { data } = await response.json();
-
-    // @TODO Do something with the data? like re-render the popup
-    //       instead of just refreshing?
+    if (data.success) {
+      const $el = window[window.APP_NS].$widgets.find(
+        ($w) => $w.id.replace("tap-", "") === id
+      );
+      if ($el) {
+        $el.querySelector(".widget__image").innerHTML = imgTemplate(
+          data.image.src,
+          item.name
+        );
+      }
+    }
 
     const $uploadButton = $form
       .querySelector("#widget-image")
@@ -260,8 +275,8 @@ const renderImageEditPopup = (e) => {
       e.preventDefault();
     }
 
-    fireCustomEvent("showTaps");
-    setTimeout(() => getDomContainer().removeChild($popup), 2000);
+    fireCustomEvent("ShowTaps");
+    setTimeout(() => getDomContainer().removeChild($popup), 1);
   };
 
   [...$popup.querySelectorAll(".button.is-close")].forEach(($b) =>

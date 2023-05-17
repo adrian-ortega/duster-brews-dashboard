@@ -1,3 +1,6 @@
+const getTap = (id) =>
+  window[window.APP_NS].state.taps.find((w) => w.id === id);
+
 const resetTapsContainer = () => {
   const $container = getDomContainer();
   let $tapsContainer = $container.querySelector(".taps-edit");
@@ -49,7 +52,7 @@ const renderCreateTapForm = () => {
         method: "POST",
         body: new FormData(e.target),
       }).then(() => {
-        if(e.submitter && e.submitter.classList.contains('is-save-plus')) {
+        if (e.submitter && e.submitter.classList.contains("is-save-plus")) {
           fireCustomEvent("AddTap");
         } else {
           fireCustomEvent("ShowTaps");

@@ -10,9 +10,6 @@ const {
   settingsPostHandler,
 } = require("../http/controllers/settingsController");
 const {
-  listWidgetsHandler,
-} = require("../http/controllers/widgetsController");
-const {
   breweriesGetHandler,
   breweriesFieldsHandler,
   breweriesPostHandler,
@@ -33,11 +30,8 @@ module.exports = [
     methods: ["POST"],
     handler: settingsPostHandler,
   },
-  {
-    path: "/api/widgets",
-    methods: ["GET"],
-    handler: listWidgetsHandler,
-  },
+
+  // Breweries
   {
     path: "/api/breweries",
     methods: ["GET"],
@@ -53,6 +47,8 @@ module.exports = [
     methods: ["GET"],
     handler: breweriesFieldsHandler,
   },
+
+  // TAPS
   {
     path: "/api/taps",
     methods: ["GET"],
