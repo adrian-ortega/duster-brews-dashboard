@@ -1,3 +1,7 @@
+/**
+ * Queries for the Breweries edit container or creates it and returns it.
+ * @returns {Element}
+ */
 const resetBreweriesContainer = () => {
   const $container = getDomContainer();
   let $breweriesContainer = $container.querySelector(".brewery-edit");
@@ -49,7 +53,7 @@ const renderCreateBreweryForm = () => {
         method: "POST",
         body: new FormData(e.target),
       }).then(() => {
-        if(e.submitter && e.submitter.classList.contains('is-save-plus')) {
+        if (e.submitter && e.submitter.classList.contains("is-save-plus")) {
           fireCustomEvent("AddBrewery");
         } else {
           fireCustomEvent("ShowTaps");

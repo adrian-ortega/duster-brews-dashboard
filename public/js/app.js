@@ -7,14 +7,13 @@
 const updateWidgets = async ({ taps, breweries, timestamp }) => {
   timestamp = timestamp || performance.now();
 
-  if (breweries.length === 0) { 
+  if (breweries.length === 0) {
     return renderFirstTimeBreweries();
   } else if (taps.length === 0) {
     return renderFirstTimeTaps();
   }
   return renderWidgets(taps, timestamp);
-}
-  
+};
 
 const burnInGuard = () => {
   const $el = document.createElement("div");
