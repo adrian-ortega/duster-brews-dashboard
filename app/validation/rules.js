@@ -1,6 +1,8 @@
+const Taps = require("../models/Taps");
 const Breweries = require("../models/Breweries");
 const ValidationRule = require("./rule");
 const { isEmpty } = require("../util/helpers");
+const { ALLOWED_IMAGE_TYPES } = require("../util")
 
 class NotEmptyValidationRule extends ValidationRule {
   validate(input) {
@@ -14,6 +16,16 @@ class IsNotDuplicateBreweryValidationRule extends ValidationRule {
   }
 }
 
+class TapExistsValidationRule extends ValidationRule {
+  validate(input) {
+    return Taps.has(input);
+  }
+
+  getErrorMessage () {
+    return "Tap does not exist";
+  }
+}
+
 class BreweryExistsValidationRule extends ValidationRule {
   validate(input) {
     return Breweries.has(input);
@@ -21,6 +33,16 @@ class BreweryExistsValidationRule extends ValidationRule {
 
   getErrorMessage () {
     return "Brewery does not exist";
+  }
+}
+
+class IsValidImageFileValidationRule extends ValidationRule {
+  validate (input) {
+    return Object.values(ALLOWED_IMAGE_TYPES).indexOf(input.mimetype) !== -1
+  }
+
+  getErrorMessage () {
+    return `'${this.getName()}' is an invalid image file.`
   }
 }
 
@@ -36,6 +58,14 @@ const dictionary = [
   [
     BreweryExistsValidationRule,
     ["breweryExists"],
+  ],
+  [
+    TapExistsValidationRule,
+    ["tapExists"],
+  ],
+  [
+    IsValidImageFileValidationRule,
+    ["image", "isValidImage"]
   ],
 ];
 
@@ -55,7 +85,12 @@ const getRule = (alias) => {
 };
 
 module.exports = {
-  rules: { NotEmptyValidationRule, IsNotDuplicateBreweryValidationRule, BreweryExistsValidationRule },
+  rules: {
+    NotEmptyValidationRule,
+    IsNotDuplicateBreweryValidationRule,
+    BreweryExistsValidationRule,
+    IsValidImageFileValidationRule
+  },
   getRule,
   dictionary,
 };

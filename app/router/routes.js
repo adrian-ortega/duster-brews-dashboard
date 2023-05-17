@@ -3,6 +3,7 @@ const {
   tapsGetHandler,
   tapsGetFieldsHandler,
   tapsPostHandler,
+  tapsMediaHandler,
 } = require("../http/controllers/tapsController");
 const {
   settingsGetHandler,
@@ -10,7 +11,6 @@ const {
 } = require("../http/controllers/settingsController");
 const {
   listWidgetsHandler,
-  imageUploadHandler,
 } = require("../http/controllers/widgetsController");
 const {
   breweriesGetHandler,
@@ -39,11 +39,6 @@ module.exports = [
     handler: listWidgetsHandler,
   },
   {
-    path: "/api/widgets/image",
-    methods: ["POST"],
-    handler: imageUploadHandler,
-  },
-  {
     path: "/api/breweries",
     methods: ["GET"],
     handler: breweriesGetHandler,
@@ -67,6 +62,11 @@ module.exports = [
     path: "/api/taps",
     methods: ["POST", "PUT"],
     handler: tapsPostHandler,
+  },
+  {
+    path: "/api/taps/media",
+    methods: ["POST", "PUT"],
+    handler: tapsMediaHandler,
   },
   {
     path: "/api/taps/fields",
