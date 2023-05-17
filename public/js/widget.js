@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-
 /**
  * Creates an element as a placeholder for loading widgets
  * @param {Number} i

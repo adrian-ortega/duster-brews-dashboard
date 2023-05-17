@@ -50,7 +50,7 @@ const getDomContainer = () =>
  */
 const getWidgetContainer = () => {
   const $container = getDomContainer();
-  const $settings = $container.querySelector(".settings");
+  const $settings = $container.querySelector(".edit-container");
   if ($settings) {
     $container.removeChild($settings);
   }
@@ -87,7 +87,9 @@ const getEmptyWidgetsContainer = () => {
  * @return {`<figure><img src="${string}" alt=""/></figure>`}
  */
 const imgTemplate = (src, alt = "") => {
-  return `<figure><span><img src="${src}" alt="${alt}"/></span></figure>`;
+  return !src || src === ""
+    ? ""
+    : `<figure><span><img src="${src}" alt="${alt}"/></span></figure>`;
 };
 
 /**
