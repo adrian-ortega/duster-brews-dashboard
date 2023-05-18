@@ -2,6 +2,7 @@
   font-size: 0.9em;
   height: var(--header-height);
   background: transparent;
+  z-index: 3;
 }
 
 .nav,
@@ -38,15 +39,56 @@
 .nav-item.logo figure span {
   height: 80%;
 }
-
+.nav-buttons {
+  position: relative;
+}
 .nav-button {
   font-family: var(--font-family-labels);
-  font-weight: var(--font-weight-bold);
   color: var(--tertiary);
-  text-transform: uppercase;
   font-size: 1.2em;
 }
 
 .nav-button .text,
 .nav-button .icon {
+}
+
+.nav-sub {
+  position: absolute;
+  top: 100%;
+  right: 1em;
+  background: var(--black);
+  padding: 1em 0 0.5em;
+  border-radius: var(--radius);
+  z-index: 99;
+}
+.nav-sub hr {
+  margin: 0.5em 0;
+  border: none;
+}
+.nav-sub h3 {
+  font-size: 1em;
+  font-family: var(--font-family-labels);
+  font-weight: var(--font-weight-bold);
+  color: var(--white);
+  padding: 0 0 0.5em 1em;
+}
+.nav-sub h3,
+.nav-sub hr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  opacity: 0.25;
+}
+.nav-sub .nav-button + h3 {
+  margin-top: 1em;
+}
+.nav-sub .nav-button {
+  width: 100%;
+  padding: 0 2em;
+  height: var(--button-height);
+  justify-content: flex-start;
+  font-size: 1em;
+  white-space: nowrap;
+}
+.nav-sub .nav-button:hover {
+  background: var(--black-bis);
+  color: var(--white);
 }

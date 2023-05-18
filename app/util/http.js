@@ -1,12 +1,16 @@
-const respondWithJSON = (res, data, meta) => {
-  res.setHeader("Content-Type", "application/json");
+const respondWithJSON = (res, data, meta, status = 200) => {
   const response = { data };
+  if (!isNaN(meta)) {
+    status = meta;
+    meta = undefined;
+  }
   if (meta) {
     response.meta = meta;
   }
-  res.json(response);
+  res.setHeader("Content-Type", "application/json");
+  res.status(status).json(response);
 };
 
 module.exports = {
-    respondWithJSON
-}
+  respondWithJSON,
+};

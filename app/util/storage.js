@@ -1,11 +1,17 @@
-const { parseJson, isArray, objectHasKey, isObject } = require("./helpers");
+const {
+  parseJson,
+  isArray,
+  objectHasKey,
+  isObject,
+  isFunction,
+} = require("./helpers");
 const { saveFile, loadFile } = require("./files");
 
 class JSONFileStorage {
   constructor(path, data = {}, autoload = false) {
     this.path = path;
     this.data = data;
-    if (autoload) this.autoload();
+    if (autoload) this.autoload(autoload);
   }
 
   get(id, defaultValue = null) {
@@ -56,12 +62,15 @@ class JSONFileStorage {
     return has;
   }
 
-  autoload() {
+  autoload(autoloadCallback) {
     if (!this.autoloaded) {
       const defaultData = this.data;
       this.data = loadFile(this.path, defaultData);
       if (!isObject(this.data) || this.data === null) {
         this.data = defaultData;
+      }
+      if (isFunction(autoloadCallback)) {
+        autoloadCallback(this);
       }
       this.autoloaded = true;
     }

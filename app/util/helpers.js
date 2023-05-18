@@ -5,6 +5,12 @@
 const isUndefined = (a) => typeof a === "undefined";
 
 /**
+ * @param {Object|Array} a
+ * @returns {Object|Array}
+ */
+const sanitizedCopy = (a) => (isObject(a) ? { ...a } : isArray(a) ? [...a] : a);
+
+/**
  * @param {string} str
  * @return {boolean}
  */
@@ -99,15 +105,18 @@ const getValue = (valueOrFunc, defaultValue = null) => {
 };
 
 /**
- * @param {string} str
+ * @param {string} jsonString
  * @param {null|*} defaultValue
  * @return {null|*}
  */
-const parseJson = (str, defaultValue = null) => {
+const parseJson = (jsonString, defaultValue = null) => {
   try {
-    return JSON.parse(str);
+    return JSON.parse(jsonString);
   } catch (e) {
-    console.log("Invalid JSON", str);
+    console.log("Invalid JSON", {
+      jsonString,
+      errorStack: e.stack,
+    });
     return defaultValue;
   }
 };
@@ -144,7 +153,21 @@ const isEmpty = (mixedValue) => {
   return false;
 };
 
+/**
+ * String to slug
+ * @param {String} str 
+ * @returns String
+ */
+const slugify = (str) =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 module.exports = {
+  sanitizedCopy,
   NOOP: () => {},
   wait,
   parseJson,
@@ -162,4 +185,5 @@ module.exports = {
   objectToFormData,
 
   getValue,
+  slugify,
 };

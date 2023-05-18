@@ -1,12 +1,19 @@
 const { dashboardView } = require("../http/controllers/homeController");
 const {
+  tapsGetHandler,
+  tapsGetFieldsHandler,
+  tapsPostHandler,
+  tapsMediaHandler,
+} = require("../http/controllers/tapsController");
+const {
   settingsGetHandler,
   settingsPostHandler,
 } = require("../http/controllers/settingsController");
 const {
-  listWidgetsHandler,
-  imageUploadHandler,
-} = require("../http/controllers/widgetsController");
+  breweriesGetHandler,
+  breweriesFieldsHandler,
+  breweriesPostHandler,
+} = require("../http/controllers/breweriesController");
 
 module.exports = [
   {
@@ -23,13 +30,43 @@ module.exports = [
     methods: ["POST"],
     handler: settingsPostHandler,
   },
+
+  // Breweries
   {
-    path: "/api/widgets",
-    handler: listWidgetsHandler,
+    path: "/api/breweries",
+    methods: ["GET"],
+    handler: breweriesGetHandler,
   },
   {
-    path: "/api/widgets/image",
-    methods: ["POST"],
-    handler: imageUploadHandler,
+    path: "/api/breweries",
+    methods: ["POST", "PUT"],
+    handler: breweriesPostHandler,
+  },
+  {
+    path: "/api/breweries/fields",
+    methods: ["GET"],
+    handler: breweriesFieldsHandler,
+  },
+
+  // TAPS
+  {
+    path: "/api/taps",
+    methods: ["GET"],
+    handler: tapsGetHandler,
+  },
+  {
+    path: "/api/taps",
+    methods: ["POST", "PUT"],
+    handler: tapsPostHandler,
+  },
+  {
+    path: "/api/taps/media",
+    methods: ["POST", "PUT"],
+    handler: tapsMediaHandler,
+  },
+  {
+    path: "/api/taps/fields",
+    methods: ["GET"],
+    handler: tapsGetFieldsHandler,
   },
 ];
