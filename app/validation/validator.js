@@ -16,7 +16,15 @@ const parseValidationRules = (rules) => {
 
     if (isArray(rules)) {
       for (let r = 0; r < rules.length; r++) {
-        parsed[key].push(getRule(rules[r]));
+        let rule = rules[r];
+        let args = [];
+        if (rule.indexOf(':') !== -1) {
+          const [ruleName, ...ruleArgs] = rule.split(':');
+          rule = ruleName;
+          args = ruleArgs.map(ra => ra.trim());
+        }
+
+        parsed[key].push(getRule(rules[r], args));
       }
     }
   }
@@ -67,4 +75,7 @@ class Validator {
   }
 }
 
-module.exports = Validator;
+module.exports = {
+  Validator,
+  parseValidationRules,
+};
