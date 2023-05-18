@@ -5,6 +5,12 @@
 const isUndefined = (a) => typeof a === "undefined";
 
 /**
+ * @param {Object|Array} a 
+ * @returns {Object|Array}
+ */
+const sanitizedCopy = (a) => (isObject(a) ? { ...a } : isArray(a) ? [...a] : a);
+
+/**
  * @param {string} str
  * @return {boolean}
  */
@@ -152,6 +158,7 @@ const makeId = () => {
 };
 
 module.exports = {
+  sanitizedCopy,
   NOOP: () => {},
   wait,
   parseJson,

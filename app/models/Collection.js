@@ -2,7 +2,7 @@ const {
   objectHasKey,
   parseJson,
   isObject,
-  isArray,
+  sanitizedCopy,
 } = require("../util/helpers");
 const { makeId } = require("../util/uuid");
 const JSONFileStorage = require("../util/storage");
@@ -10,13 +10,6 @@ const JSONFileStorage = require("../util/storage");
 const MODEL_DEFAULTS = {
   items: [],
 };
-
-/**
- * @TODO move to helpers.js?
- * @param {Object|Array} a 
- * @returns {Object|Array}
- */
-const sanitizedCopy = (a) => (isObject(a) ? { ...a } : isArray(a) ? [...a] : a);
 
 class ModelCollection extends JSONFileStorage {
   constructor(filepath) {
@@ -31,13 +24,13 @@ class ModelCollection extends JSONFileStorage {
 
   get(id) {
     this.refresh();
-    return this.data.items.find(item => item.id === id);
+    return this.data.items.find((item) => item.id === id);
   }
 
   put(data) {
     this.refresh();
-    if (isObject(data) && objectHasKey(data, 'id')) {
-      const i = this.data.items.findIndex(m => m.id === data.id);
+    if (isObject(data) && objectHasKey(data, "id")) {
+      const i = this.data.items.findIndex((m) => m.id === data.id);
       this.data.items[i] = sanitizedCopy(data);
     } else {
       this.data.items.push(sanitizedCopy(data));
@@ -61,7 +54,7 @@ class ModelCollection extends JSONFileStorage {
 
   has(id) {
     this.refresh();
-    return this.data.items.some(item => item.id === id);
+    return this.data.items.some((item) => item.id === id);
   }
 
   refresh() {

@@ -6,7 +6,7 @@ const TAP_DEFAULTS = {
   style: null,
   name: null,
   media: [],
-  
+  active: false,
   
   gravity: { start: 0, end: 0 },
   abv: "0",
