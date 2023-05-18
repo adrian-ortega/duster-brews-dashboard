@@ -1,35 +1,6 @@
 const ValidationError = require("./error");
-const { getRule } = require("./rules");
-const { objectHasKey, isString, isArray } = require("../util/helpers");
-
-const parseValidationRules = (rules) => {
-  const ruleEntries = Object.entries(rules);
-  const parsed = {};
-  for (let i = 0; i < ruleEntries.length; i++) {
-    let [key, rules] = ruleEntries[i];
-
-    parsed[key] = [];
-
-    if (isString(rules)) {
-      rules = [rules];
-    }
-
-    if (isArray(rules)) {
-      for (let r = 0; r < rules.length; r++) {
-        let rule = rules[r];
-        let args = [];
-        if (rule.indexOf(':') !== -1) {
-          const [ruleName, ...ruleArgs] = rule.split(':');
-          rule = ruleName;
-          args = ruleArgs.map(ra => ra.trim());
-        }
-
-        parsed[key].push(getRule(rules[r], args));
-      }
-    }
-  }
-  return parsed;
-};
+const Dictionary = require("./dictionary");
+const { objectHasKey } = require("../util/helpers");
 
 class Validator {
   constructor() {
@@ -40,12 +11,15 @@ class Validator {
   validate(data, rules = {}) {
     try {
       this.data = data;
-      this.rules = parseValidationRules(rules);
+      this.rules = Dictionary.parse(rules);
       const keys = Object.keys(this.rules);
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
         const value = objectHasKey(data, key) ? data[key] : null;
-        const name = keys[i]; // make vars name human readable
+
+        // @TODO make vars name human readable
+        const name = keys[i];
+
         for (let r = 0; r < this.rules[key].length; r++) {
           const rule = this.rules[key][r];
           rule.setName(name).assert(value);
@@ -76,6 +50,5 @@ class Validator {
 }
 
 module.exports = {
-  Validator,
-  parseValidationRules,
+  Validator
 };

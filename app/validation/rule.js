@@ -1,14 +1,15 @@
 const ValidationError = require("./error");
 
+/**
+ * @var String name
+ * @var String template
+ * @var Dictionary dictionary
+ */
 class ValidationRule {
   constructor() {
     this.name = null;
     this.template = null;
-  }
-
-  setTemplate(template) {
-    this.template = template;
-    return this;
+    this.dictionary = null;
   }
 
   setName(name) {
@@ -16,8 +17,28 @@ class ValidationRule {
     return this;
   }
 
+  /**
+   * @TODO Set a template for the error message instead of overriding
+   *       the getErroMessage method
+   * @param {String} template 
+   * @returns 
+   */
+  setTemplate(template) {
+    this.template = template;
+    return this;
+  }
+
+  setDictionary(dictionary) {
+    this.dictionary = dictionary;
+    return this;
+  }
+
   getName() {
     return this.name;
+  }
+
+  getErrorMessage() {
+    return `${this.getName()} is a required field.`;
   }
 
   check(input) {
@@ -31,12 +52,8 @@ class ValidationRule {
     throw this.reportError(input);
   }
 
-  getErrorMessage() {
-    return `${this.getName()} is a required field.`;
-  }
-
   validate(input) {
-    return typeof input !== undefined;
+    return typeof input !== "undefined";
   }
 
   reportError(input) {

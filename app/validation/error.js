@@ -5,7 +5,7 @@ class ValidationError extends Error {
     this.input = input;
     this.failed = true;
     this.field = rule.getName();
-    this.message = rule.getErrorMessage();
+    this.message = rule.getErrorMessage(input);
   }
 }
 
