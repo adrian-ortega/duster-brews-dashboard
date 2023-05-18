@@ -15,3 +15,28 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes fade-from-top-centered {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-15%) translateX(-50%);
+  }
+
+  75% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  90% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5%) translateX(-50%);
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) translateX(-50%);
+  }
+}

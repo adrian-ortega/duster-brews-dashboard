@@ -51,13 +51,27 @@ const renderCreateTapForm = () => {
       fetch("/api/taps", {
         method: "POST",
         body: new FormData(e.target),
-      }).then(() => {
-        if (e.submitter && e.submitter.classList.contains("is-save-plus")) {
-          fireCustomEvent("AddTap");
-        } else {
-          fireCustomEvent("ShowTaps");
-        }
-      });
+      }).then((response) =>
+        response.json().then(({ data, meta }) => {
+          if (data.status === 422) {
+            // @TODO validation failed
+          } else {
+            if (meta && meta.status) {
+              showNotification(
+                meta.status === "created" ? "New tap created" : "Tap updated"
+              );
+            }
+
+            console.log({ data, meta });
+
+            if (e.submitter && e.submitter.classList.contains("is-save-plus")) {
+              fireCustomEvent("AddTap");
+            } else {
+              fireCustomEvent("ShowTaps");
+            }
+          }
+        })
+      );
     });
 
   return $container.querySelector(".settings__container");

@@ -53,7 +53,6 @@ const createWidgetElement = ({
   const keg_percent = parseFloat(keg ? keg.percent_beer_left : "0").toFixed(1);
   const primary_image = media.find((m) => m.primary);
   const brewery_image = brewery.media.find((m) => m.primary);
-  console.log({ brewery, brewery_image, primary_image, media });
   const template = `<div id="tap-${id}" class="widget">
     <div class="widget__image">
       ${imgTemplate(primary_image ? primary_image.src : "", name)}

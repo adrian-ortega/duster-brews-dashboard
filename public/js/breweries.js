@@ -38,7 +38,7 @@ const renderCreateBreweryForm = () => {
                 <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
                 <span class="text">Save</span>
               </button>
-              <button type="submit" class="button is-save-plus is-primary">
+              <button type="submit" class="button is-save-plus">
                 <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
                 <span class="text">Save + another</span>
               </button>

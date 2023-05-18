@@ -47,13 +47,15 @@ const tapsPostHandler = (req, res, next) => {
         422
       );
     }
-    let tap;
+    let tap, status;
     if (formData.id) {
+      status = "updated";
       tap = Taps.get(formData.id);
       tap.brewery_id = formData.brewery_id;
       tap.name = formData.name;
       tap.style = formData.style;
     } else {
+      status = "created";
       tap = Taps.create({
         brewery_id: formData.brewery_id,
         name: formData.name,
@@ -65,7 +67,7 @@ const tapsPostHandler = (req, res, next) => {
       await updateItemPrimaryImage(tap, files.image, Taps);
     }
 
-    return respondWithJSON(res, tap);
+    return respondWithJSON(res, tap, { status });
   });
 };
 

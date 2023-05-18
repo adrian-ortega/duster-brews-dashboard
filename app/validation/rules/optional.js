@@ -1,5 +1,5 @@
 const ValidationRule = require("../rule");
-const { isEmpty } = require("../../util/helpers");
+const { isEmpty, objectHasKey } = require("../../util/helpers");
 const ValidationError = require("../error");
 
 class IsOptionalValidationRule extends ValidationRule {
@@ -10,7 +10,7 @@ class IsOptionalValidationRule extends ValidationRule {
   }
 
   validate(input) {
-    if (isEmpty(input)) {
+    if (isEmpty(input) || (objectHasKey(input, "size") && input.size === 0)) {
       return true;
     }
 

@@ -118,6 +118,26 @@ const fireCustomEvent = (eventName, detail = {}, target = document) => {
   return target.dispatchEvent(customEvent);
 };
 
+/**
+ * Shows a brief notification for the user
+ * @param {String} message
+ * @param {string} type
+ */
+const showNotification = (message, type = "success") => {
+  const { selector } = window[window.APP_NS];
+  const $el =
+    createElementFromTemplate(`<div class="notification notification--${type}">
+    <p>${message}</p>
+  </div>`);
+
+  const $app = document.querySelector(selector);
+  $app.appendChild($el);
+  setTimeout(() => {
+    $el
+    $app.removeChild($el);
+  }, 1000);
+};
+
 const isArray = (arr) => Array.isArray(arr);
 
 /**

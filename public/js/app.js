@@ -65,27 +65,9 @@ const initialize = async () => {
   });
 };
 
-const showNavButtons = () => {
-  document.querySelector(".nav-buttons").classList.add("is-hidden");
-};
-
-const hideNavButtons = () => {
-  document.querySelector(".nav-buttons").classList.remove("is-hidden");
-};
-
 // Go baby go
 (async () => {
   await initialize();
-
-  ["ShowSettings"].forEach((eventName) => {
-    document.addEventListener(eventName, showNavButtons);
-  });
-
-  ["ShowTaps", "EditTaps", "AddTap", "EditBreweries", "AddBrewery"].forEach(
-    (eventName) => {
-      document.addEventListener(eventName, hideNavButtons);
-    }
-  );
 
   [
     "ShowSettings",
@@ -98,12 +80,11 @@ const hideNavButtons = () => {
     document.addEventListener(eventName, () => {
       const $container = getDomContainer();
       const $oldContainers = [
-        ...$container.querySelectorAll(".edit-container"),
+        ...$container.querySelectorAll(".edit-container, .widgets"),
       ];
       if ($oldContainers.length > 0) {
         $oldContainers.forEach(($oc) => $container.removeChild($oc));
       }
-      console.log("Resetting for", eventName);
     });
   });
 

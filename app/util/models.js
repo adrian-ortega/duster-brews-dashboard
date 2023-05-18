@@ -4,7 +4,10 @@ const { moveUploadedFile } = require("./files");
 const { FILE_UPLOADS_FOLDER, FILE_UPLOADS_FOLDER_PATH } = require("./index");
 
 const updateItemPrimaryImage = async (item, file, collection) => {
-  if (!objectHasKey(item, "id")) {
+  if (
+    !objectHasKey(item, "id") ||
+    (objectHasKey(file, "size") && file.size === 0)
+  ) {
     return false;
   }
 

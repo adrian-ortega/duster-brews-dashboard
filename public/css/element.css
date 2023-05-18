@@ -143,3 +143,25 @@
   margin-left: auto;
   opacity: 1;
 }
+
+.notification {
+  position: fixed;
+  top: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+  width: 100%;
+  max-width: 25em;
+  background: var(--background-light);
+  border-radius: var(--radius);
+  padding: 1em;
+  animation: fade-from-top-centered .25s ease-in forwards;
+}
+.notification,
+.notification p {
+  font-family: var(--font-family-labels);
+}
+
+.notification--success {
+  background: var(--success);
+}
