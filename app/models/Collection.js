@@ -31,9 +31,14 @@ class ModelCollection extends JSONFileStorage {
     this.refresh();
     if (isObject(data) && objectHasKey(data, "id")) {
       const i = this.data.items.findIndex((m) => m.id === data.id);
-      this.data.items[i] = sanitizedCopy(data);
+      const copied = sanitizedCopy(data);
+      if (i !== -1) {
+        this.data.items[i] = copied;
+      } else {
+        this.data.items.push(copied);
+      }
     } else {
-      this.data.items.push(sanitizedCopy(data));
+      this.create(data);
     }
     return this.save();
   }

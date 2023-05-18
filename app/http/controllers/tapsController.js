@@ -1,81 +1,44 @@
 const formidable = require("formidable");
 const Taps = require("../../models/Taps");
-const BreweriesCollection = require("../../models/Breweries");
-const { respondWithJSON } = require("../../util/http");
+const Breweries = require("../../models/Breweries");
 const { validate } = require("../../validation");
-const { moveUploadedFile } = require("../../util/files");
-const { FILE_UPLOADS_FOLDER_PATH, FILE_UPLOADS_FOLDER } = require("../../util");
+const { respondWithJSON } = require("../../util/http");
+const { updateItemPrimaryImage } = require("../../util/models");
 
 const tapsGetHandler = (req, res) => respondWithJSON(res, Taps.all());
-const tapsGetFieldsHandler = (req, res) =>
-  respondWithJSON(res, [
-    {
-      label: "Name",
-      name: "name",
-      value: null,
-      type: "text",
-      required: true,
-    },
-    {
-      label: "Brewery",
-      name: "brewery_id",
-      value: null,
-      type: "select",
-      required: true,
-      options: BreweriesCollection.all().map((brewery) => {
-        return {
-          value: brewery.id,
-          text: brewery.name,
-        };
-      }),
-    },
-    {
-      label: "Style",
-      name: "style",
-      value: null,
-      type: "text",
-      required: true,
-    },
-    {
-      label: "Gravity Start",
-      name: "gravity_start",
-      value: null,
-      type: "text",
-    },
-    {
-      label: "Gravity End",
-      name: "gravity_end",
-      value: null,
-      type: "text",
-    },
-    {
-      label: "ABV",
-      name: "abv",
-      value: null,
-      type: "text",
-    },
-    {
-      label: "IBU",
-      name: "ibu",
-      value: null,
-      type: "text",
-    },
-  ]);
+
+const tapsGetFieldsHandler = (req, res) => {
+  let { fields } = require("../../settings/tap.fields.json");
+  const breweryOptions = Breweries.all().map((brewery) => {
+    return {
+      value: brewery.id,
+      text: brewery.name,
+    };
+  });
+  fields = fields.map((field) => {
+    if (field.name === "brewery_id") {
+      field.options = breweryOptions;
+    }
+    return field;
+  });
+  return respondWithJSON(res, fields);
+};
 
 const tapsPostHandler = (req, res, next) => {
   const form = formidable();
-  form.parse(req, (err, formData, files) => {
+  form.parse(req, async (err, formData, files) => {
     if (err) {
       return next(err);
     }
-    const validator = validate(
-      { ...formData, ...files },
-      {
-        name: "required",
-        brewery_id: ["required", "breweryExists"],
-        style: "required",
-      }
-    );
+    const validationRules = {
+      id: ["optional:tapExists"],
+      brewery_id: ["required", "breweryExists"],
+      name: ["required"],
+      image: ["optional:isValidImage"],
+      style: ["required"],
+    };
+
+    const validator = validate({ ...formData, ...files }, validationRules);
 
     if (validator.failed()) {
       return respondWithJSON(
@@ -84,12 +47,23 @@ const tapsPostHandler = (req, res, next) => {
         422
       );
     }
+    let tap;
+    if (formData.id) {
+      tap = Taps.get(formData.id);
+      tap.brewery_id = formData.brewery_id;
+      tap.name = formData.name;
+      tap.style = formData.style;
+    } else {
+      tap = Taps.create({
+        brewery_id: formData.brewery_id,
+        name: formData.name,
+        style: formData.style,
+      });
+    }
 
-    const tap = Taps.create({
-      brewery_id: formData.brewery_id,
-      name: formData.name,
-      style: formData.style,
-    });
+    if (files.image) {
+      await updateItemPrimaryImage(tap, files.image, Taps);
+    }
 
     return respondWithJSON(res, tap);
   });
@@ -116,36 +90,11 @@ const tapsMediaHandler = (req, res, next) => {
       );
     }
 
-    const filename = `${files.media.newFilename}.${files.media.originalFilename
-      .split(".")
-      .pop()}`;
-
-    // This is the object finally stored, and the object returned in the 
-    // result message.
-    //
-    const image = {
-      primary: true,
-      src: `${FILE_UPLOADS_FOLDER}/${filename}`,
-    };
-
-    await moveUploadedFile(
-      files.media.filepath,
-      `${FILE_UPLOADS_FOLDER_PATH}/${filename}`
-    );
-
-    const tap = Taps.get(formData.tap_id);
-
-    // Reset all old images' primary flag.
-    //
-    tap.media = tap.media.map(image => ({ ...image, primary: false }));
-
-    // Add the latest primary image, push to the tap then update.
-    tap.media.push(image);
-    Taps.put(tap);
+    await updateItemPrimaryImage(Taps.get(formData.tap_id), files.media, Taps);
 
     return respondWithJSON(res, {
       status: "success",
-      image,
+      image: Taps.get(formData.tap_id).media[0],
     });
   });
 };

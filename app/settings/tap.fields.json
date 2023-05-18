@@ -1,0 +1,48 @@
+{
+  "fields": [
+    {
+      "label": "Name",
+      "name": "name",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Brewery",
+      "name": "brewery_id",
+      "type": "select",
+      "required": true,
+      "options": []
+    },
+    {
+      "label": "Style",
+      "name": "style",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Image",
+      "name": "image",
+      "type": "image"
+    },
+    {
+      "label": "Gravity Start",
+      "name": "gravity_start",
+      "type": "text"
+    },
+    {
+      "label": "Gravity End",
+      "name": "gravity_end",
+      "type": "text"
+    },
+    {
+      "label": "ABV",
+      "name": "abv",
+      "type": "text"
+    },
+    {
+      "label": "IBU",
+      "name": "ibu",
+      "type": "text"
+    }
+  ]
+}

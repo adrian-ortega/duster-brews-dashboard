@@ -5,7 +5,7 @@
 const isUndefined = (a) => typeof a === "undefined";
 
 /**
- * @param {Object|Array} a 
+ * @param {Object|Array} a
  * @returns {Object|Array}
  */
 const sanitizedCopy = (a) => (isObject(a) ? { ...a } : isArray(a) ? [...a] : a);
@@ -115,7 +115,7 @@ const parseJson = (jsonString, defaultValue = null) => {
   } catch (e) {
     console.log("Invalid JSON", {
       jsonString,
-      errorStack: e.stack
+      errorStack: e.stack,
     });
     return defaultValue;
   }
@@ -153,9 +153,18 @@ const isEmpty = (mixedValue) => {
   return false;
 };
 
-const makeId = () => {
-
-};
+/**
+ * String to slug
+ * @param {String} str 
+ * @returns String
+ */
+const slugify = (str) =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 module.exports = {
   sanitizedCopy,
@@ -176,5 +185,5 @@ module.exports = {
   objectToFormData,
 
   getValue,
-  makeId
+  slugify,
 };
