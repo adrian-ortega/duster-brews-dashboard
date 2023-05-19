@@ -1,3 +1,68 @@
+class SettingsController extends Templateable {
+  renderSettings() {
+    const $container = getDomContainer();
+    const state = getApp().state;
+    const { settings, categories } = state;
+    let activeCategory = Object.keys(categories)[0];
+
+    $container.appendChild(
+      this.createElement(`<div class="settings__container">
+    <h2 class="settings__title">Settings</h2>
+    <form class="settings__form" method="post" action="/">
+      <div class="settings_content">
+        <div class="settings__tabs">
+          <nav>
+            ${Object.entries(categories)
+              .sort((a, b) => a.order - b.order)
+              .map(
+                ([category_id, category]) =>
+                  `<a href="#" class="settings__tab-trigger${
+                    category_id === activeCategory ? " is-active" : ""
+                  }" data-id="${category_id}"><span>${
+                    category.label
+                  }</span></a>`
+              )
+              .join("")}
+          </nav>
+        </div>
+        <div class="settings__view"></div>
+      </div>
+      <div class="settings__footer">
+        <button type="submit" class="button is-save is-primary">
+          <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
+          <span class="text">Save</span>
+        </button>
+        <button class="button is-cancel">Cancel</button>
+      </div>
+    </form>
+  </div>
+  `)
+    );
+
+    // const $form = $container.querySelector(".settings_content");
+    // const $view = $form.querySelector(".settings__view");
+
+    [...$container.querySelectorAll(".settings__tab-trigger")].forEach(($el) =>
+      $el.addEventListener("click", (e) => {
+        e.preventDefault();
+        console.log(e);
+        // activeCategory = category_id;
+        // [...$settingsForm.querySelectorAll(".field")].forEach(($field) => {
+        //   $field.classList.remove("is-hidden");
+        //   if ($field.getAttribute("data-cat") !== active_category_id) {
+        //     $field.classList.add("is-hidden");
+        //   }
+        // });
+
+        // [...$settingsForm.querySelectorAll(".settings__tab-trigger")].forEach(
+        //   ($t) => $t.classList.remove("is-active")
+        // );
+        // $trigger.classList.add("is-active");
+      })
+    );
+  }
+}
+
 const onSettingsSaveStart = () => {
   const $footer = getDomContainer().querySelector(".settings__footer");
   [...$footer.querySelectorAll(".button")].forEach(($button) => {
@@ -44,20 +109,6 @@ const onSettingsCancel = (e) => {
   fireCustomEvent("ShowTaps", null, e.target);
 };
 
-const renderSettingsReset = () => {
-  const $container = getDomContainer();
-  let $settings = $container.querySelector(".settings");
-  if ($settings) {
-    $settings.innerHTML = "";
-  } else {
-    $settings = createElementFromTemplate(
-      `<div class="settings edit-container container"></div>`
-    );
-  }
-  $container.appendChild($settings);
-  return $settings;
-};
-
 const renderSettings = () => {
   const $settings = renderSettingsReset();
   const state = window[window.APP_NS].state;
@@ -87,36 +138,6 @@ const renderSettings = () => {
   );
   const $settingsForm = $settings.querySelector(".settings_content");
   const settingsTabsView = $settingsForm.querySelector(".settings__view");
-
-  Object.entries(categories)
-    .sort((a, b) => a.order - b.order)
-    .forEach(([category_id, category]) => {
-      const $trigger = createElementFromTemplate(
-        `<a href="#" class="settings__tab-trigger${
-          category_id === active_category_id ? " is-active" : ""
-        }" data-id="${category_id}"><span>${category.label}</span></a>`
-      );
-
-      $trigger.addEventListener("click", (e) => {
-        e.preventDefault();
-        active_category_id = category_id;
-        [...$settingsForm.querySelectorAll(".field")].forEach(
-          ($field) => {
-            $field.classList.remove("is-hidden");
-            if ($field.getAttribute("data-cat") !== active_category_id) {
-              $field.classList.add("is-hidden");
-            }
-          }
-        );
-
-        [...$settingsForm.querySelectorAll(".settings__tab-trigger")].forEach(
-          ($t) => $t.classList.remove("is-active")
-        );
-        $trigger.classList.add("is-active");
-      });
-
-      $settingsForm.querySelector(".settings__tabs nav").appendChild($trigger);
-    });
 
   Object.entries(state.fields ?? {}).forEach(([field_id, field]) => {
     let $field;

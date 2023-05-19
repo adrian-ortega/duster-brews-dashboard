@@ -38,13 +38,11 @@ const clearContainersMiddlware = ({ route, router, app }) => {
 const initializeRouter = () => {
   const router = new Router([clearContainersMiddlware]);
   const tapsController = new TapsController;
+  const settingsController = new SettingsController;
 
   router.addRoute("/", "taps", tapsController.renderList.bind(tapsController));
+  router.addRoute("/settings", "settings", settingsController.renderSettings.bind(settingsController));
 
-  router.addRoute("/settings", "settings", () => {
-    renderSettings();
-    window[window.APP_NS].fireAction("refreshSettings");
-  });
   router.addRoute("/settings/add-tap", "add-tap", renderCreateTapForm);
   router.addRoute(
     "/settings/add-brewery",
