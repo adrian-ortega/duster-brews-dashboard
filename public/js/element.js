@@ -1,3 +1,19 @@
+class Templateable {
+  render($container) {
+    $container.appendChild(this.createElement());
+  }
+
+  createElement(template) {
+    if (!template && isFunction(this.template)) {
+      template = this.template();
+    }
+
+    const _div = document.createElement("div");
+    _div.innerHTML = template.trim();
+    return _div.firstChild;
+  }
+}
+
 class Forms {
   static renderFields(fields, $form) {
     fields.forEach((field) => {
@@ -38,7 +54,8 @@ class Forms {
     category = "general",
     required = false,
   }) {
-    const $field = createElementFromTemplate(`
+    const template = new Templateable();
+    const $field = template.createElement(`
     <div class="field field--${type}" data-cat="${category}">
       <div class="label">
         <label for="${Forms.getHtmlID(id)}">
@@ -50,7 +67,7 @@ class Forms {
     `);
 
     $field.appendChild(
-      content instanceof Element ? content : createElementFromTemplate(content)
+      content instanceof Element ? content : template.createElement(content)
     );
 
     return $field;

@@ -16,10 +16,26 @@ const {
 } = require("../http/controllers/breweriesController");
 
 module.exports = [
+  // FRONT END ROUTES
   {
     path: "/",
     handler: dashboardView,
   },
+  {
+    path: "/settings",
+    handler: dashboardView,
+  },
+  {
+    path: "/settings/add-tap",
+    handler: dashboardView,
+  },
+  {
+    path: "/settings/add-brewery",
+    handler: dashboardView,
+  },
+
+  // API ROUTES
+
   {
     path: "/api/settings",
     methods: ["GET"],
@@ -31,7 +47,7 @@ module.exports = [
     handler: settingsPostHandler,
   },
 
-  // Breweries
+  // API - BREWERIES
   {
     path: "/api/breweries",
     methods: ["GET"],
@@ -48,7 +64,7 @@ module.exports = [
     handler: breweriesFieldsHandler,
   },
 
-  // TAPS
+  // API - TAPS
   {
     path: "/api/taps",
     methods: ["GET"],
