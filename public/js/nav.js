@@ -1,5 +1,91 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
+class Route {
+  constructor(path, name, action) {
+    this.path = path;
+    this.name = name;
+    this.action = action;
+  }
+
+  getTitle() {
+    return `Title: ${this.name}`;
+  }
+
+  triggerAction(router) {
+    if (isFunction(this.action)) {
+      this.action({ route: this, router, app: getApp() });
+    }
+  }
+}
+
+class Router {
+  constructor(middleware = []) {
+    this.middleware = middleware;
+    this.route = null;
+    this.routes = [];
+    window.addEventListener("popstate", this.onPopstate.bind(this));
+  }
+
+  addRoute(path, name = "", action = NOOP) {
+    this.routes.push(new Route(path, name, action));
+    return this;
+  }
+
+  getRoute(name) {
+    return this.routes.find((r) => r.name === name);
+  }
+
+  getCurrentRoute() {
+    return this.getRoute(this.route);
+  }
+
+  isRoute(name) {
+    const current = this.getCurrentRoute();
+    return current ? current.name === name : false;
+  }
+
+  onPopstate(event) {
+    const routeName = event.state.name;
+    console.log({ routeName });
+    if (routeName) this.goTo(routeName);
+  }
+
+  goTo(name) {
+    const route = this.getRoute(name);
+    if (route) {
+      this.route = route;
+      getApp().route = route.name;
+      this.runMiddleware();
+      window.history.pushState(
+        { name: route.name },
+        route.getTitle(),
+        route.path
+      );
+      route.triggerAction(this);
+    } else {
+      // go to 404?
+    }
+  }
+
+  runMiddleware() {
+    if (isArray(this.middleware)) {
+      try {
+        for (let i = 0; i < this.middleware.length; i++) {
+          const middleware = this.middleware[i];
+          if (isFunction(middleware)) {
+            middleware.apply(this, [
+              {
+                route: this.route,
+                router: this,
+                app: getApp(),
+              },
+            ]);
+          }
+        }
+      } catch (e) {
+        // wut
+      }
+    }
+  }
+}
 
 const NAVIGATION_BUTTON = {
   text: "",

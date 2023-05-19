@@ -29,16 +29,14 @@
     </div>
     <script type="text/javascript">
       ((n, ns) => {
-        const ONE_SECOND = 1000;
-        const ONE_MINUTE = ONE_SECOND * 60;
         const timestamp = performance.now();
         window.APP_NAME = n;
         window.APP_NS = ns;
         window[window.APP_NS] = {
           route: "home",
           state: {},
-          heartbeat: { timestamp, interval: ONE_SECOND * 3 },
-          widgets: { order: [], timestamp, interval: ONE_MINUTE * 5 },
+          heartbeat: { timestamp, interval: 3000 },
+          widgets: { order: [], timestamp, interval: 300000 },
         };
       })("${APP_NAME}", "${APP_NAMESPACE}");
     </script>

@@ -25,18 +25,52 @@ const burnInGuard = () => {
   setTimeout(() => $el.parentNode.removeChild($el), 3000);
 };
 
+const clearContainersMiddlware = ({ route, router, app }) => {
+  console.log("middleware", { route, router, app });
+  const $container = getDomContainer();
+  const $oldContainers = [
+    ...$container.querySelectorAll(".edit-container, .widgets"),
+  ];
+  if ($oldContainers.length > 0) {
+    $oldContainers.forEach(($oc) => $container.removeChild($oc));
+  }
+};
+
+const initializeRouter = () => {
+  const router = new Router([clearContainersMiddlware]);
+
+  router.addRoute("/", "taps", () => {
+    renderPlaceholders();
+    window[window.APP_NS].fireAction("refreshWidgets");
+  });
+
+  router.addRoute("/settings", "settings", () => {
+    renderSettings();
+    window[window.APP_NS].fireAction("refreshSettings");
+  });
+  router.addRoute("/settings/add-tap", "add-tap", renderCreateTapForm);
+  router.addRoute(
+    "/settings/add-brewery",
+    "add-brewery",
+    renderCreateBreweryForm
+  );
+
+  getApp().router = router;
+};
+
 /**
  * Main
  * @return {Promise<void>}
  */
 const initialize = async () => {
-  window[window.APP_NS].selector = "#app";
-  window[window.APP_NS].ws = false;
+  const app = getApp();
+  app.selector = "#app";
+  app.ws = false;
 
-  const isRoute = (route) => window[APP_NS].route === route;
   const $container = getDomContainer();
   if ($container) $container.innerHTML = "";
 
+  initializeRouter();
   initializeNav();
   renderPlaceholders();
 
@@ -47,19 +81,21 @@ const initialize = async () => {
       }
 
       if (objectHasKey(data, "settings")) {
-        window[APP_NS].state.settings = { ...data.settings };
-        window[APP_NS].state.fields = { ...data.fields };
-        window[APP_NS].state.categories = { ...data.categories };
-        if (isRoute("settings")) renderSettings();
+        // @TODO create a state handler?
+        app.state.settings = { ...data.settings };
+        app.state.fields = { ...data.fields };
+        app.state.categories = { ...data.categories };
+
+        if (app.route === "settings") renderSettings();
       }
 
       if (objectHasKey(data, "breweries")) {
-        window[window.APP_NS].state.breweries = [...data.breweries];
+        app.state.breweries = [...data.breweries];
       }
 
       if (objectHasKey(data, "taps")) {
-        window[window.APP_NS].state.taps = [...data.taps];
-        if (isRoute("home")) updateWidgets(data);
+        app.state.taps = [...data.taps];
+        if (app.route === "home") updateWidgets(data);
       }
     },
   });
@@ -68,50 +104,4 @@ const initialize = async () => {
 // Go baby go
 (async () => {
   await initialize();
-
-  [
-    "ShowSettings",
-    "ShowTaps",
-    "EditTaps",
-    "AddTap",
-    "EditBreweries",
-    "AddBrewery",
-  ].forEach((eventName) => {
-    document.addEventListener(eventName, () => {
-      const $container = getDomContainer();
-      const $oldContainers = [
-        ...$container.querySelectorAll(".edit-container, .widgets"),
-      ];
-      if ($oldContainers.length > 0) {
-        $oldContainers.forEach(($oc) => $container.removeChild($oc));
-      }
-    });
-  });
-
-  document.addEventListener("ShowSettings", () => {
-    renderSettings();
-    window[APP_NS].route = "settings";
-    window[window.APP_NS].fireAction("refreshSettings");
-  });
-  document.addEventListener("ShowTaps", () => {
-    renderPlaceholders();
-    window[window.APP_NS].route = "home";
-    window[window.APP_NS].fireAction("refreshWidgets");
-  });
-  document.addEventListener("EditTaps", () => {
-    window[window.APP_NS].route = "edit-tap";
-    renderEditTapsForm();
-  });
-  document.addEventListener("AddTap", () => {
-    window[window.APP_NS].route = "add-tap";
-    renderCreateTapForm();
-  });
-  document.addEventListener("EditBreweries", () => {
-    window[window.APP_NS].route = "edit-breweries";
-    renderEditBreweriesForm();
-  });
-  document.addEventListener("AddBrewery", () => {
-    window[window.APP_NS].route = "add-brewery";
-    renderCreateBreweryForm();
-  });
 })();

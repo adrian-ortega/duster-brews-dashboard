@@ -22,6 +22,11 @@ const ICON_CLOSE =
 const NOOP = () => {};
 
 /**
+ * @returns {Object}
+ */
+const getApp = () => window[window.APP_NS];
+
+/**
  * Will take a JSON string and try to convert it into an object.
  * On any failure, `defaultValue` will be returned
  * @param {string} str
@@ -133,22 +138,25 @@ const showNotification = (message, type = "success") => {
   const $app = document.querySelector(selector);
   $app.appendChild($el);
   setTimeout(() => {
-    $el
+    $el;
     $app.removeChild($el);
   }, 1000);
 };
 
+/**
+ * Shortcut for Array.isArray
+ * @param {*} arr
+ * @returns {Boolean}
+ */
 const isArray = (arr) => Array.isArray(arr);
 
 /**
- *
  * @param {*} obj
  * @returns {Boolean}
  */
 const isObject = (obj) => typeof obj === "object" && obj !== null;
 
 /**
- * Checks to see if the value passed is function
  * @param {*} value
  * @return {boolean}
  */
@@ -157,7 +165,6 @@ const isFunction = (value) => {
 };
 
 /**
- *
  * @param {Object} object
  * @param {String} key
  * @returns {Boolean}
@@ -177,6 +184,11 @@ const objectHasMethod = (object, method = null) =>
     ? false
     : isFunction(object[method]);
 
+/**
+ * Creates a nano id of random strings
+ * @param {Number} size
+ * @returns {String}
+ */
 const makeId = (size = 5) => {
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
