@@ -1,5 +1,81 @@
-const getTap = (id) =>
-  window[window.APP_NS].state.taps.find((w) => w.id === id);
+class TapsController extends Templateable {
+  getTap(id) {
+    return window[window.APP_NS].state.taps.find((t) => t.id === id);
+  }
+
+  renderList({ app }) {
+    const $container = getDomContainer();
+    const { taps } = app.state;
+    const filteredTaps = taps
+      .filter((tap) => tap.active)
+      .map((tap) => {
+        const image = tap.media.find((m) => m.primary);
+        const brewery = getBrewery(tap.brewery_id);
+        const bImage = brewery.media.find((m) => m.primary);
+        return {
+          name: tap.name,
+          style: tap.style,
+          brewery,
+          ibu: tap.ibu,
+          abv: tap.abv,
+          image: {
+            src: image ? image.src : null,
+            alt: tap.name,
+          },
+          brewery_image: {
+            src: bImage ? bImage.src : null,
+            alt: brewery.name,
+          },
+        };
+      });
+
+    const tapTemplate = (tap) => {
+      const tapImage = tap.image.src
+        ? `<figure><span><img src="${tap.image.src}" alt="${tap.image.alt}"/></span></figure>`
+        : "";
+      const breweryImage = tap.brewery_image.src
+        ? `<figure><span><img src="${tap.brewery_image.src}" alt="${tap.brewery_image.alt}"/></span></figure>`
+        : "";
+      return `
+        <div class="tap">
+          <div class="tap__image">${tapImage}</div>
+          <div class="tap__content">
+            <div class="tap__content-header">
+              <div class="keg__image">${breweryImage}</div>
+              <div class="keg__header">
+                <p class="keg__location">KEG LOCATION</p>
+                <h2 class="keg__name">${tap.name}</h2>
+                <p class="keg__brewery">${tap.brewery.name}</p>
+              </div>
+            </div>
+            <div class="tap__content-footer">
+              <div class="keg__detail"><h3>${tap.style}</h3></div>
+              <div class="keg__detail">
+                <p><span class="icon">${ICON_KEG}</span></p>
+                <h3>0.0%</h3>
+              </div>
+              <div class="keg__detail"><p>ABV</p><h3>${tap.abv}%</h3></div>
+              <div class="keg__detail"><p>IBUS</p><h3>${tap.ibu}</h3></div>
+              <div class="keg__detail"><p>Kegged</p><h3>KEG DATE</h3></div>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    $container.appendChild(
+      this.createElement(
+        `<div class="taps">${filteredTaps.map(tapTemplate)}</div>`
+      )
+    );
+  }
+
+  renderFirstTime() {}
+
+  renderCreateForm() {}
+
+  renderEditForm() {}
+}
 
 const resetTapsContainer = () => {
   const $container = getDomContainer();

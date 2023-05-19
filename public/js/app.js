@@ -26,10 +26,9 @@ const burnInGuard = () => {
 };
 
 const clearContainersMiddlware = ({ route, router, app }) => {
-  console.log("middleware", { route, router, app });
   const $container = getDomContainer();
   const $oldContainers = [
-    ...$container.querySelectorAll(".edit-container, .widgets"),
+    ...$container.querySelectorAll(".edit-container, .taps"),
   ];
   if ($oldContainers.length > 0) {
     $oldContainers.forEach(($oc) => $container.removeChild($oc));
@@ -38,11 +37,9 @@ const clearContainersMiddlware = ({ route, router, app }) => {
 
 const initializeRouter = () => {
   const router = new Router([clearContainersMiddlware]);
+  const tapsController = new TapsController;
 
-  router.addRoute("/", "taps", () => {
-    renderPlaceholders();
-    window[window.APP_NS].fireAction("refreshWidgets");
-  });
+  router.addRoute("/", "taps", tapsController.renderList.bind(tapsController));
 
   router.addRoute("/settings", "settings", () => {
     renderSettings();
@@ -72,7 +69,6 @@ const initialize = async () => {
 
   initializeRouter();
   initializeNav();
-  renderPlaceholders();
 
   await createWebSocket({
     onmessage: (data) => {
@@ -95,7 +91,7 @@ const initialize = async () => {
 
       if (objectHasKey(data, "taps")) {
         app.state.taps = [...data.taps];
-        if (app.route === "home") updateWidgets(data);
+        if (app.route === "home") app.router.goTo('taps');
       }
     },
   });

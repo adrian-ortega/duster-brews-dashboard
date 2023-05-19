@@ -1,37 +1,4 @@
 /**
- * Creates an element as a placeholder for loading widgets
- * @param {Number} i
- * @returns {ChildNode}
- */
-const createWidgetPlaceholder = (i) => {
-  const template = `<div id="keg-P${i}" class="widget is-placeholder">
-    <div class="widget__image"><span class="placeholder is-image"></span></div>
-    <div class="widget__content">
-      <div class="widget__content-header">
-        <div class="keg__image"><span class="placeholder is-image"></span></div>
-        <div class="keg__header">
-          <p class="keg__location"><span class="placeholder is-small"></span></p>
-          <h2 class="keg__name"><span class="placeholder is-tiny"></span><span class="placeholder is-med"></span></h2>
-          <p class="keg__brewery"><span class="placeholder is-tiny"></span><span class="placeholder is-small"></span></p>
-        </div>
-      </div>
-      <div class="widget__content-footer">
-        <div class="keg__detail"><h3><span class="placeholder is-tiny"></span></h3></div>
-        <div class="keg__detail">
-          <p><span class="placeholder is-icon"></span></p>
-          <h3><span class="placeholder is-tiny"></span></h3>
-        </div>
-        <div class="keg__detail"><p><span class="placeholder is-tiny"></span></p><h3><span class="placeholder is-tiny"></span></h3></div>
-        <div class="keg__detail"><p><span class="placeholder is-tiny"></span></p><h3><span class="placeholder is-tiny"></span></h3></div>
-        <div class="keg__detail"><p><span class="placeholder is-small"></span></p><h3><span class="placeholder is-small"></span></h3></div>
-      </div>
-    </div>
-  </div>`;
-
-  return createElementFromTemplate(template);
-};
-
-/**
  * Creates the main Widget DOM Element that displays the information for
  * each tap.
  * @param {object} item
@@ -149,19 +116,6 @@ const createWidgetElement = ({
 const renderFirstTimeWidgets = () => {
   const $widgetsContainer = getEmptyWidgetsContainer();
   $widgetsContainer.innerHTML = "First Time Widgets";
-};
-
-/**
- * Creates five placeholder widgets while the websocket connects and returns a message.
- * @return {Promise<void>}
- */
-const renderPlaceholders = async () => {
-  const $widgetsContainer = getEmptyWidgetsContainer();
-  window[window.APP_NS].$widgets = new Array(5).fill(0).map((_, i) => {
-    const $el = createWidgetPlaceholder(i);
-    $widgetsContainer.appendChild($el);
-    return $el;
-  });
 };
 
 /**

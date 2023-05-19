@@ -1,17 +1,17 @@
-.widgets {
+.taps {
   display: grid;
   grid-gap: 2em;
   padding: 2em;
 }
-.widget {
+.tap {
   display: grid;
   position: relative;
   grid-template-columns: 6em 1fr;
   padding: 1em 2em;
   column-gap: 3em;
 }
-.widget:before,
-.widget:after {
+.tap:before,
+.tap:after {
   display: block;
   content: "";
   position: absolute;
@@ -21,20 +21,20 @@
   border-top: 0.5em solid transparent;
   border-bottom: 0.5em solid transparent;
 }
-.widget:before {
+.tap:before {
   bottom: 0;
   right: 0;
   border-left: 0.5em solid var(--primary);
   transform: rotate(45deg);
 }
-.widget:after {
+.tap:after {
   top: 0;
   right: 0;
   border-left: 0.5em solid var(--tertiary);
   transform: rotate(315deg);
 }
 
-.widget__image {
+.tap__image {
   position: relative;
   background: repeating-linear-gradient(
     45deg,
@@ -44,7 +44,7 @@
     transparent 0.65em
   );
 }
-.widget__image:after {
+.tap__image:after {
   position: absolute;
   top: 0;
   right: 100%;
@@ -60,12 +60,12 @@
     transparent 0.65em
   );
 }
-.widget__image figure {
+.tap__image figure {
   display: block;
   overflow: hidden;
   height: 100%;
 }
-.widget__image figure span {
+.tap__image figure span {
   position: absolute;
   top: 0;
   left: 0;
@@ -73,7 +73,7 @@
   width: 100%;
   padding-bottom: 100%;
 }
-.widget__image-controls {
+.tap__image-controls {
   position: absolute;
   top: 0;
   left: 0;
@@ -88,7 +88,7 @@
   opacity: 0;
   visibility: hidden;
 }
-.widget__image-controls .button {
+.tap__image-controls .button {
   font-size: 2em;
   background: var(--gray);
   border-radius: var(--radius-rounded);
@@ -96,25 +96,25 @@
   width: 1.675em;
   height: 1.675em;
 }
-.widget__image:hover .widget__image-controls,
-.widget__image.is-tapped .widget__image-controls {
+.tap__image:hover .tap__image-controls,
+.tap__image.is-tapped .tap__image-controls {
   transform: translate(0, 0);
   opacity: 1;
   visibility: visible;
 
 }
-.widget__content {
+.tap__content {
   display: flex;
   flex-direction: column;
 }
-.widget__content-header {
+.tap__content-header {
   display: grid;
   grid-template-columns: 1fr 2.5em;
   grid-template-areas: "keg-header keg-image";
   align-items: center;
   column-gap: 1em;
 }
-.widget__content-footer {
+.tap__content-footer {
   margin-top: auto;
   padding-top: 0.1em;
   display: flex;
@@ -181,22 +181,22 @@
 .keg__detail h3 {
   font-size: 1.25em;
 }
-.widget.is-placeholder .keg__image {
+.tap.is-placeholder .keg__image {
   height: 45%;
 }
 
 /* Mobile / Small Tablet only */
 @media screen and (max-width: 768px) {
-  .widgets {
+  .taps {
     padding: 1em;
     font-size: calc(var(--font-base) - 2px);
   }
 
-  .widget {
+  .tap {
     /* grid-template-rows: 8em; */
     gap: 1.5em;
   }
-  .widget:nth-child(odd) {
+  .tap:nth-child(odd) {
     background: rgba(255, 255, 255, 0.025);
   }
 
@@ -204,7 +204,7 @@
     padding-top: 0;
     margin-bottom: 1em;
   }
-  .widget__content-footer {
+  .tap__content-footer {
     flex-wrap: wrap;
 
     justify-content: inherit;
@@ -224,17 +224,17 @@
 
 /* Tablet Portrait */
 @media screen and (min-width: 768px) {
-  .widget {
+  .tap {
     grid-template-rows: 12em;
   }
 }
 
 /* Desktop / Landscape Tablet */
 @media screen and (min-width: 1024px) {
-  .widget {
+  .tap {
     grid-template-columns: 10vw 1fr;
   }
-  .widgets {
+  .taps {
     grid-template-columns: 1fr 1fr;
   }
 }

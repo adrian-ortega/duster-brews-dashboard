@@ -4,7 +4,7 @@
  * @returns {Object}
  */
 const getBrewery = (id) =>
-  window[window.APP_NS].state?.breweries.find((b) => b.id === id);
+  window[window.APP_NS].state.breweries.find((b) => b.id === id);
 
 /**
  * Queries for the Breweries edit container or creates it and returns it.
