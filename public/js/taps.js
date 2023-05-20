@@ -63,11 +63,14 @@ class TapsController extends Templateable {
       `;
     };
 
-    $container.appendChild(
-      this.createElement(
-        `<div class="taps">${filteredTaps.map(tapTemplate)}</div>`
-      )
+    const $el = this.createElement(
+      `<div class="taps">${
+        filteredTaps.length ? filteredTaps.map(tapTemplate) : "None"
+      }</div>`
     );
+
+    $container.appendChild($el);
+    return $el;
   }
 
   renderFirstTime() {}

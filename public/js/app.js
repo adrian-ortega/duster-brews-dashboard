@@ -1,20 +1,3 @@
-/**
- * Callback for the websocket onMessage event
- * @param {Array|Array<{}>} items
- * @param {Number} timestamp
- * @return {Promise<void>}
- */
-const updateWidgets = async ({ taps, breweries, timestamp }) => {
-  timestamp = timestamp || performance.now();
-
-  if (breweries.length === 0) {
-    return renderFirstTimeBreweries();
-  } else if (taps.length === 0) {
-    return renderFirstTimeTaps();
-  }
-  return renderWidgets(taps, timestamp);
-};
-
 const burnInGuard = () => {
   const $el = document.createElement("div");
   $el.innerHTML = '<div class="burn-in-guard__logo"></div>';
@@ -28,7 +11,7 @@ const burnInGuard = () => {
 const clearContainersMiddlware = ({ route, router, app }) => {
   const $container = getDomContainer();
   const $oldContainers = [
-    ...$container.querySelectorAll(".edit-container, .taps"),
+    ...$container.querySelectorAll(".route-view"),
   ];
   if ($oldContainers.length > 0) {
     $oldContainers.forEach(($oc) => $container.removeChild($oc));
@@ -37,11 +20,11 @@ const clearContainersMiddlware = ({ route, router, app }) => {
 
 const initializeRouter = () => {
   const router = new Router([clearContainersMiddlware]);
-  const tapsController = new TapsController;
-  const settingsController = new SettingsController;
+  const taps = new TapsController;
+  const settings = new SettingsController;
 
-  router.addRoute("/", "taps", tapsController.renderList.bind(tapsController));
-  router.addRoute("/settings", "settings", settingsController.renderSettings.bind(settingsController));
+  router.addRoute("/", "home", taps.renderList.bind(taps));
+  router.addRoute("/settings", "settings", settings.renderSettings.bind(settings));
 
   router.addRoute("/settings/add-tap", "add-tap", renderCreateTapForm);
   router.addRoute(

@@ -11,7 +11,10 @@ class Route {
 
   triggerAction(router) {
     if (isFunction(this.action)) {
-      this.action({ route: this, router, app: getApp() });
+      const response = this.action({ route: this, router, app: getApp() });
+      if(response instanceof Element) {
+        response.classList.add('route-view');
+      }
     }
   }
 }
@@ -118,7 +121,7 @@ class Navigation extends Templateable {
       </div>
       <div class="nav-right">
         <div class="nav-item nav-buttons">
-          <a href="/" data-route="taps" class="button nav-button route-link">
+          <a href="/" data-route="home" class="button nav-button route-link">
             <span class="icon"></span>
             <span class="text">Menu</span>
           </a>

@@ -8,7 +8,7 @@ class SettingsController extends Templateable {
   <div class="settings__container">
     <h2 class="settings__title">Settings</h2>
     <form class="settings__form" method="post" action="/">
-      <div class="settings_content">
+      <div class="settings__content">
         <div class="settings__tabs">
           <nav>
           ${Object.entries(state.categories)
