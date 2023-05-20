@@ -1,6 +1,10 @@
 class Templateable {
-  render($container) {
-    $container.appendChild(this.createElement());
+  render(template, $parent) {
+    const $el = this.createElement(template);
+    if ($parent) {
+      $parent.appendChild($el);
+    }
+    return $el;
   }
 
   createElement(template) {
@@ -15,13 +19,17 @@ class Templateable {
 }
 
 class Forms {
-  static renderFields(fields, $form) {
+  static renderFields(fields, $form, eachCallback = NOOP) {
     fields.forEach((field) => {
       let $field;
       const fieldOpts = { ...field, id: field.name };
       switch (field.type) {
         case "select":
           $field = Forms.renderSelectField(field.label, field.value, fieldOpts);
+          break;
+        case "boolean":
+        case "bool":
+          $field = Forms.renderSwitchField(field.label, field.value, fieldOpts);
           break;
         case "image":
           $field = Forms.renderImageField(field.label, field.value, fieldOpts);
@@ -32,6 +40,10 @@ class Forms {
           break;
       }
       $form.appendChild($field);
+
+      if (isFunction(eachCallback)) {
+        eachCallback.apply(null, [$field, field]);
+      }
     });
 
     $form

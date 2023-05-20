@@ -52,7 +52,8 @@ class Router {
   onRouteLinkClick(event) {
     if (
       event.target.matches("a[href]") ||
-      event.target.closest("a").classList.contains("route-link")
+      (event.target.closest("a") &&
+        event.target.closest("a").classList.contains("route-link"))
     ) {
       event.preventDefault();
       const a =
@@ -133,5 +134,5 @@ class Navigation extends Templateable {
 
 function initializeNav() {
   const nav = new Navigation();
-  nav.render(getDomContainer());
+  nav.render(null, getDomContainer());
 }

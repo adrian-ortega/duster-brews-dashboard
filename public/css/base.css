@@ -14,55 +14,17 @@ body {
   font-weight: var(--font-weight-normal);
   color: var(--white);
 }
+
 body {
   background: var(--background);
 }
 
-.icon {
-  display: inline-flex;
-}
-.icon svg {
-  fill: currentColor;
-  width: 1em;
-  height: 1em;
-}
-.icon.is-spinner {
-  animation: spinner 2.5s linear infinite;
-}
-.button {
-  display: inline-flex;
-  appearance: none;
-  border: 1px solid transparent;
-  background: none;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--button-height);
-  color: var(--white);
-  font-size: 1em;
-  font-family: var(--font-family-labels);
-}
-.button:hover {
-  cursor: pointer;
-}
-.button .icon {
-  font-size: 1.5em;
-}
-.button .text:not(.is-hidden) + .icon,
-.button .icon:not(.is-hidden) + .text {
-  margin-left: 0.25em;
-}
-.button[disabled] {
-  opacity: 0.5;
-}
-.button .text small {
-  font-size: 50%;
-  display: block;
-}
 .main-content {
   position: relative;
   z-index: 3;
+  width: 100%;
+  min-height: 100%;
 }
-
 .container {
   width: 100%;
   max-width: 40em;

@@ -1,6 +1,46 @@
 .required {
   color: var(--error);
 }
+.icon {
+  display: inline-flex;
+}
+.icon svg {
+  fill: currentColor;
+  width: 1em;
+  height: 1em;
+}
+.icon.is-spinner {
+  animation: spinner 2.5s linear infinite;
+}
+.button {
+  display: inline-flex;
+  appearance: none;
+  border: 1px solid transparent;
+  background: none;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--button-height);
+  color: var(--white);
+  font-size: 1em;
+  font-family: var(--font-family-labels);
+}
+.button:hover {
+  cursor: pointer;
+}
+.button .icon {
+  font-size: 1.5em;
+}
+.button .text:not(.is-hidden) + .icon,
+.button .icon:not(.is-hidden) + .text {
+  margin-left: 0.25em;
+}
+.button[disabled] {
+  opacity: 0.5;
+}
+.button .text small {
+  font-size: 50%;
+  display: block;
+}
 .field {
   display: grid;
   grid-template-columns: 60% 40%;
@@ -155,7 +195,7 @@
   background: var(--background-light);
   border-radius: var(--radius);
   padding: 1em;
-  animation: fade-from-top-centered .25s ease-in forwards;
+  animation: fade-from-top-centered 0.25s ease-in forwards;
 }
 .notification,
 .notification p {
