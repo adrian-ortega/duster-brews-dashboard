@@ -1,4 +1,4 @@
-class TapsController extends Templateable {
+class TapsController extends PaginatedRouteController {
   getTap(id) {
     return window[window.APP_NS].state.taps.find((t) => t.id === id);
   }
@@ -17,12 +17,21 @@ class TapsController extends Templateable {
     };
   }
 
-  renderGrid({ app, router }) {
-    const $container = getDomContainer();
-    const taps = app.state.taps.map(this.prepareTap);
+  renderGrid({ app, router, params }) {
+    const taps = [...this.paginate(app.state.taps, params)].map(
+      this.prepareTap
+    );
     const $el = this.createElement(`<div class="container">
     <h2 class="page-title">Taps</h2>
     <div class="grid">
+      <div class="grid__actions">
+        <div class="grid__action">
+          <a href="/create-tap" class="button is-success route-link" data-route="add-route">
+            <span class="icon">${ICON_PLUS}</span>
+            <span class="text">Create</span>
+          </a>
+        </div>
+      </div>
       <div class="grid__header">
         <div class="grid__cell name">Beer</div>
         <div class="grid__cell abv">ABV</div>
@@ -61,6 +70,37 @@ class TapsController extends Templateable {
           )
           .join("")}
       </div>
+      <div class="grid__footer">
+        <div>
+          <p>${this.pageStart + 1} - ${this.pageEnd} of ${
+      this.total
+    }</p>
+        </div>
+        <div>
+          ${
+            this.page > 1
+              ? `<div>
+            <a href="${this.getPreviousPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
+                  { page: this.getPreviousPage() }
+                )}' class="button route-link">
+              <span class="icon">${ICON_CHEVRON_LEFT}</span>
+              <span class="text">Prev</span>
+            </a></div>`
+              : ""
+          }
+          ${
+            this.page < this.pages
+              ? `<div>
+            <a href="${this.getNextPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
+                  { page: this.getNextPage() }
+                )}' class="button route-link">
+              <span class="text">Next</span>
+              <span class="icon">${ICON_CHEVRON_RIGHT}</span>
+            </a></div>`
+              : ""
+          }
+      </div>
+      </div>
     </div>
     </div>`);
 
@@ -70,26 +110,29 @@ class TapsController extends Templateable {
         const $btn = $el.classList.contains(".button")
           ? $el
           : $el.closest(".button");
-        const action = $btn.getAttribute("data-action");
         const id = $btn.getAttribute("data-tap-id");
-        switch (action) {
-          case "delete":
-            if (confirm("Are you sure you want to delete this tap?")) {
-              fetch(`/api/taps/${id}`, { method: "DELETE" })
-                .then((response) => response.json())
-                .then(({ data }) => {
-                  if (data.status.toLowerCase() === "success") {
-                    showNotification("Tap was uccessfully deleted.");
-                    app.fireAction("refresh");
-                    const $row = $btn.closest(".grid__item");
-                    $row.parentNode.removeChild($row);
-                  }
-                });
-            }
-            break;
-          case "edit":
-            router.goTo("edit-tap", { id });
-            break;
+        if (id) {
+          e.preventDefault();
+          const action = $btn.getAttribute("data-action");
+          switch (action) {
+            case "delete":
+              if (confirm("Are you sure you want to delete this tap?")) {
+                fetch(`/api/taps/${id}`, { method: "DELETE" })
+                  .then((response) => response.json())
+                  .then(({ data }) => {
+                    if (data.status.toLowerCase() === "success") {
+                      showNotification("Tap was uccessfully deleted.");
+                      app.fireAction("refresh");
+                      const $row = $btn.closest(".grid__item");
+                      $row.parentNode.removeChild($row);
+                    }
+                  });
+              }
+              break;
+            case "edit":
+              router.goTo("edit-tap", { id });
+              break;
+          }
         }
       }
     });
@@ -110,7 +153,8 @@ class TapsController extends Templateable {
       });
     });
 
-    $container.appendChild($el);
+    console.log("Appending Taps Grid");
+    getDomContainer().appendChild($el);
     return $el;
   }
 

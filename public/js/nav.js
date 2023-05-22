@@ -59,13 +59,17 @@ class Router {
   onLoad() {
     const { pathname } = window.location;
     const route = this.getRouteByPath(pathname);
-    if (route) this.goTo(route.name);
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = {};
+    urlParams.forEach((value, key) => {
+      params[key] = value;
+    });
+    if (route) this.goTo(route.name, params);
   }
 
   onPopstate(event) {
     const routeName = event.state.name;
-    console.log({ routeName });
-    if (routeName) this.goTo(routeName);
+    if (routeName) this.goTo(routeName, event.state.params);
   }
 
   onRouteLinkClick(event) {
@@ -79,7 +83,10 @@ class Router {
         event.target.nodeName.toLowerCase() === "a"
           ? event.target
           : event.target.closest("a");
-      this.goTo(a.getAttribute("data-route"));
+
+      let params = a.getAttribute("data-route-params");
+      params = params ? JSON.parse(params) : {};
+      this.goTo(a.getAttribute("data-route"), params);
     }
   }
 
@@ -88,13 +95,15 @@ class Router {
     if (route) {
       this.route = route;
       getApp().route = route.name;
-      this.runMiddleware();
-      const urlParams = Object.entries(params).map(([k, v]) => `${k}=${v}`);
-
+      this.runMiddleware(params);
+      const url = new URL(`${window.location.origin}${route.path}`);
+      Object.entries(params).forEach(([k, v]) => {
+        url.searchParams.set(k, v);
+      });
       window.history.pushState(
         { name: route.name, params },
         route.getTitle(),
-        route.path + (urlParams.length > 0 ? `?${urlParams.join("&")}` : "")
+        url
       );
       route.triggerAction(params, this);
     } else {
@@ -102,7 +111,7 @@ class Router {
     }
   }
 
-  runMiddleware() {
+  runMiddleware(params) {
     if (isArray(this.middleware)) {
       try {
         for (let i = 0; i < this.middleware.length; i++) {
@@ -110,6 +119,7 @@ class Router {
           if (isFunction(middleware)) {
             middleware.apply(this, [
               {
+                params,
                 route: this.route,
                 router: this,
                 app: getApp(),
@@ -121,6 +131,62 @@ class Router {
         // wut
       }
     }
+  }
+}
+
+class RouteController extends Templateable {
+  getQueryParm(key, defaultValue = "") {
+    if (!this.queryParams) {
+      this.queryParams = new URLSearchParams(window.location.search);
+    }
+
+    return this.queryParams.has(key) ? this.queryParams.get(key) : defaultValue;
+  }
+
+  getCurrentUrl() {
+    return new URL(window.location.href);
+  }
+}
+
+class PaginatedRouteController extends RouteController {
+  constructor() {
+    super();
+    this.page = parseInt(this.getQueryParm("page", "1"), 10);
+    this.per = parseInt(this.getQueryParm("per", "10"), 10);
+    this.pages = 1;
+    this.total = 1;
+  }
+
+  getPreviousPage() {
+    return this.page > 1 ? this.page - 1 : 1;
+  }
+
+  getPreviousPageUrl() {
+    const url = this.getCurrentUrl();
+    url.searchParams.set("page", this.getPreviousPage());
+    return url;
+  }
+
+  getNextPage() {
+    return this.page < this.pages ? this.page + 1 : this.pages;
+  }
+
+  getNextPageUrl() {
+    const url = this.getCurrentUrl();
+    url.searchParams.set("page", this.getNextPage());
+    return url;
+  }
+
+  paginate(items, { page, per }) {
+    this.total = items.length;
+    console.log({ page, per });
+    this.page = page ?? parseInt(this.getQueryParm("page", "1"), 10);
+    this.per = per ?? parseInt(this.getQueryParm("per", "10"), 10);
+    this.pages = Math.ceil(items.length / this.per);
+    this.pageStart = (this.page - 1) * this.per;
+    this.pageEnd = this.page < this.pages ? this.page * this.per : this.total;
+    const paginatedItems = [...items.slice(this.pageStart, this.pageEnd)];
+    return paginatedItems;
   }
 }
 

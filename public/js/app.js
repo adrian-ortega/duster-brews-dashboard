@@ -9,25 +9,29 @@ const burnInGuard = () => {
 };
 
 const clearContainersMiddlware = ({ route, router, app }) => {
-  const $container = getDomContainer();
-  const $oldContainers = [
-    ...$container.querySelectorAll(".route-view"),
-  ];
+  const $oldContainers = [...getDomContainer().querySelectorAll(".route-view")];
   if ($oldContainers.length > 0) {
-    $oldContainers.forEach(($oc) => $container.removeChild($oc));
+    for (let i = 0; i < $oldContainers.length; i++) {
+      const $oc = $oldContainers[i];
+      $oc.parentNode.removeChild($oc);
+    }
   }
 };
 
 const initializeRouter = () => {
   const router = new Router([clearContainersMiddlware]);
-  const taps = new TapsController;
-  const settings = new SettingsController;
+  const taps = new TapsController();
+  const settings = new SettingsController();
 
   router.addRoute("/", "home", taps.renderList.bind(taps));
-  router.addRoute("/settings", "settings", settings.renderSettings.bind(settings));
-
+  router.addRoute(
+    "/settings",
+    "settings",
+    settings.renderSettings.bind(settings)
+  );
   router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
-  router.addRoute('/edit-tap', 'edit-tap', taps.renderEditForm.bind(taps))
+  router.addRoute("/create-tap", "edit-tap", taps.renderCreateForm.bind(taps));
+  router.addRoute("/edit-tap", "edit-tap", taps.renderEditForm.bind(taps));
   router.addRoute("/breweries", "breweries", NOOP);
 
   getApp().router = router;

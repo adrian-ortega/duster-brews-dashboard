@@ -28,6 +28,7 @@
   font-size: 1em;
   font-family: var(--button-font-family);
   padding: 0 1em;
+  transition: all 0.25s ease-out;
 }
 .button:hover {
   cursor: pointer;
@@ -50,6 +51,12 @@
 .button.is-icon {
   padding-left: 0.5em;
   padding-right: 0.5em;
+}
+.button.is-success {
+  background-color: var(--success-bis);
+}
+.button.is-success:hover {
+  background-color: var(--success);
 }
 .placeholder,
 .placeholder::before,
@@ -261,9 +268,16 @@
 }
 .grid {
 }
+.grid__actions,
 .grid__header,
-.grid__item {
+.grid__item,
+.grid__footer,
+.grid__footer > div {
   display: flex;
+}
+.grid__actions {
+  padding: 0.5em;
+  justify-content: flex-end;
 }
 .grid__header {
   border-bottom: 2px solid var(--background-border);
@@ -305,4 +319,14 @@
 }
 .grid .button {
   font-size: 0.75em;
+}
+.grid__footer {
+  padding: 1em 0.5em 0.5em;
+}
+.grid__footer > div {
+  flex: 1 1 auto;
+  gap: 0.25em;
+}
+.grid__footer > div:last-child {
+  justify-content: flex-end;
 }
