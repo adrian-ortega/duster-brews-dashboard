@@ -9,11 +9,16 @@ class Route {
     return `Title: ${this.name}`;
   }
 
-  triggerAction(router) {
+  triggerAction(params, router) {
     if (isFunction(this.action)) {
-      const response = this.action({ route: this, router, app: getApp() });
-      if(response instanceof Element) {
-        response.classList.add('route-view');
+      const response = this.action({
+        route: this,
+        router,
+        params,
+        app: getApp(),
+      });
+      if (response instanceof Element) {
+        response.classList.add("route-view");
       }
     }
   }
@@ -67,18 +72,20 @@ class Router {
     }
   }
 
-  goTo(name) {
+  goTo(name, params = {}) {
     const route = this.getRoute(name);
     if (route) {
       this.route = route;
       getApp().route = route.name;
       this.runMiddleware();
+      const urlParams = Object.entries(params).map(([k, v]) => `${k}=${v}`);
+
       window.history.pushState(
-        { name: route.name },
+        { name: route.name, params },
         route.getTitle(),
-        route.path
+        route.path + (urlParams.length > 0 ? `?${urlParams.join("&")}` : "")
       );
-      route.triggerAction(this);
+      route.triggerAction(params, this);
     } else {
       // go to 404?
     }
@@ -120,15 +127,31 @@ class Navigation extends Templateable {
         </div>
       </div>
       <div class="nav-right">
-        <div class="nav-item nav-buttons">
-          <a href="/" data-route="home" class="button nav-button route-link">
-            <span class="icon"></span>
-            <span class="text">Menu</span>
+        <div class="nav-item">
+          <a href="/" data-route="home" class="button nav-button route-link" title="Taps">
+            <span class="icon">${ICON_BEER_OUTLINE}</span>
           </a>
-          <a href="/settings" data-route="settings" class="button nav-button route-link">
-            <span class="icon"></span>
-            <span class="text">Settings</span>
+        </div>
+        <div class="nav-item has-sub">
+          <a href="/settings" data-route="settings" class="button nav-button route-link" title="Settings">
+            <span class="icon">${ICON_COG_OUTLINE}</span>
           </a>
+          <div class="nav-sub">
+            <h3>Manage</h3>
+            <a href="/taps" data-route="taps" class="button nav-button route-link" title="Settings">
+              <span class="icon">${ICON_COG_OUTLINE}</span>
+              <span class="text">Taps</span>
+            </a>
+            <a href="/breweries" data-route="breweries" class="button nav-button route-link" title="Settings">
+              <span class="icon">${ICON_COG_OUTLINE}</span>
+              <span class="text">Breweries</span>
+            </a>
+            <hr/>
+            <a href="/settings" data-route="settings" class="button nav-button route-link" title="Settings">
+              <span class="icon">${ICON_COG_OUTLINE}</span>
+              <span class="text">Settings</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>`;

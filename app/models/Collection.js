@@ -50,11 +50,9 @@ class ModelCollection extends JSONFileStorage {
 
   remove(id) {
     this.refresh();
-    if (objectHasKey(this.data.items, id)) {
-      delete this.data.items[id];
-    }
+    this.data.items = this.data.items.filter((t) => t.id !== id);
     this.save();
-    return !objectHasKey(this.data.items, id);
+    return true;
   }
 
   has(id) {

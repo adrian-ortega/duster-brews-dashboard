@@ -54,6 +54,7 @@ const tapsPostHandler = (req, res, next) => {
       tap.brewery_id = formData.brewery_id;
       tap.name = formData.name;
       tap.style = formData.style;
+      Taps.put(tap);
     } else {
       status = "created";
       tap = Taps.create({
@@ -101,9 +102,61 @@ const tapsMediaHandler = (req, res, next) => {
   });
 };
 
+const tapToggleHandler = (req, res, next) => {
+  const form = formidable();
+  form.parse(req, (err, formData, files) => {
+    if (err) {
+      return next(err);
+    }
+    const validationRules = {
+      id: ["optional:tapExists"],
+      active: ["required"],
+    };
+
+    const validator = validate({ ...formData, ...files }, validationRules);
+
+    if (validator.failed()) {
+      return respondWithJSON(
+        res,
+        { status: 422, errors: validator.getErrors() },
+        422
+      );
+    }
+
+    const tap = Taps.get(formData.id);
+    tap.active = formData.active;
+    Taps.put(tap);
+
+    return respondWithJSON(res, tap, { status: "Updated" });
+  });
+};
+
+const tapsDestroyHandler = (req, res) => {
+  const { id } = req.params;
+  if (!Taps.has(id)) {
+    return respondWithJSON(
+      res,
+      {
+        status: "error",
+        message: "Tap not found",
+      },
+      404
+    );
+  }
+
+  Taps.remove(id);
+
+  return respondWithJSON(res, {
+    status: "Success",
+    id,
+  });
+};
+
 module.exports = {
   tapsGetHandler,
   tapsGetFieldsHandler,
   tapsPostHandler,
   tapsMediaHandler,
+  tapToggleHandler,
+  tapsDestroyHandler,
 };

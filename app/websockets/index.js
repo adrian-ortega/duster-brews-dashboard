@@ -48,7 +48,7 @@ const onConnectionMessage = async (data, ws) => {
   if (data.action) {
     const response = {};
     switch (data.action) {
-      case "refreshWidgets":
+      case "refresh":
         response.breweries = await Breweries.all();
         response.taps = await Taps.all();
         break;

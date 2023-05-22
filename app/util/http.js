@@ -1,6 +1,6 @@
 const respondWithJSON = (res, data, meta, status = 200) => {
   const response = { data };
-  if (!isNaN(meta)) {
+  if (meta && !isNaN(meta)) {
     status = meta;
     meta = undefined;
   }

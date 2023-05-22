@@ -26,12 +26,9 @@ const initializeRouter = () => {
   router.addRoute("/", "home", taps.renderList.bind(taps));
   router.addRoute("/settings", "settings", settings.renderSettings.bind(settings));
 
-  router.addRoute("/settings/add-tap", "add-tap", renderCreateTapForm);
-  router.addRoute(
-    "/settings/add-brewery",
-    "add-brewery",
-    renderCreateBreweryForm
-  );
+  router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
+  router.addRoute('/edit-tap', 'edit-tap', taps.renderEditForm.bind(taps))
+  router.addRoute("/breweries", "breweries", NOOP);
 
   getApp().router = router;
 };

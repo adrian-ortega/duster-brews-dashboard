@@ -132,7 +132,7 @@ class Forms {
           <span class="image-input__file-l">New file:</span>
           <span class="image-input__file-v">Something.gif</span>
         </label>
-        <label for="${htmlID}" class="image-input__trigger">
+        <label for="${htmlID}" class="button image-input__trigger">
           <input type="file" id="${htmlID}" name="${id}"/>
           <span class="image-input__trigger-text">Edit</span>
         </label>

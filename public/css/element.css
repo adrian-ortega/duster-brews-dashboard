@@ -1,6 +1,9 @@
 .required {
   color: var(--error);
 }
+.is-hidden {
+  display: none !important;
+}
 .icon {
   display: inline-flex;
 }
@@ -16,16 +19,19 @@
   display: inline-flex;
   appearance: none;
   border: 1px solid transparent;
-  background: none;
+  background: var(--button-bg);
+  border-radius: var(--button-radius);
   align-items: center;
   justify-content: center;
   min-height: var(--button-height);
   color: var(--white);
   font-size: 1em;
-  font-family: var(--font-family-labels);
+  font-family: var(--button-font-family);
+  padding: 0 1em;
 }
 .button:hover {
   cursor: pointer;
+  background: var(--button-hover-bg);
 }
 .button .icon {
   font-size: 1.5em;
@@ -41,10 +47,74 @@
   font-size: 50%;
   display: block;
 }
+.button.is-icon {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+.placeholder,
+.placeholder::before,
+.placeholder::after {
+  display: inline-block;
+}
+.placeholder {
+  height: 0.85em;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0.05em;
+  margin-bottom: 0.25em;
+  border-radius: var(--radius);
+  opacity: 0.25;
+}
+.placeholder:before,
+.placeholder:after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.placeholder:before {
+  background: currentColor;
+}
+.placeholder::after {
+  animation-duration: 2.25s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeholder_shine;
+  animation-timing-function: linear;
+  background: linear-gradient(
+    to right,
+    transparent 10%,
+    rgba(0, 0, 0, 0.1) 18%,
+    transparent 33%
+  );
+  background-size: 20em 10em;
+}
+.placeholder.is-image,
+.placeholder.is-image::after {
+  height: 100%;
+}
+.placeholder.is-icon {
+  width: 1em;
+  height: 1em;
+}
+.placeholder.is-large {
+  width: 10em;
+}
+.placeholder.is-med {
+  width: 8em;
+}
+.placeholder.is-small {
+  width: 5em;
+}
+.placeholder.is-tiny {
+  width: 2.5em;
+}
 .field {
   display: grid;
   grid-template-columns: 60% 40%;
-  font-family: var(--font-family-labels);
 }
 .field:not(.is-hidden) + .field {
   margin-top: 2em;
@@ -113,23 +183,13 @@
 }
 .image-input__file,
 .image-input__preview,
-.image-input__trigger,
 .image-input__preview > span {
   position: relative;
   display: flex;
   border-radius: var(--radius);
 }
-
 .image-input__trigger {
-  appearance: none;
-  height: var(--button-height);
-  background: var(--background-light);
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-rounded);
-  font-family: var(--font-family-labels);
-  font-size: 0.9em;
-  font-weight: var(--font-weight-bold);
+  display: flex;
 }
 .image-input__trigger input {
   display: none;
@@ -163,7 +223,8 @@
   border-radius: var(--radius-rounded);
   display: inline-flex;
   align-items: center;
-  background: var(--white);
+  background: var(--button-bg);
+  border: 1px solid var(--gray-bis);
   padding: 0 0.1em;
   cursor: pointer;
 }
@@ -173,17 +234,15 @@
 .switch span {
   display: block;
   border-radius: var(--radius-rounded);
-  background: var(--tertiary);
+  background: var(--gray-bis);
   width: 0.9em;
   height: 0.9em;
-  opacity: 0.65;
-  transition: all 0.1s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 .switch input:checked + span {
   margin-left: auto;
-  opacity: 1;
+  background: var(--primary);
 }
-
 .notification {
   position: fixed;
   top: 1em;
@@ -197,11 +256,53 @@
   padding: 1em;
   animation: fade-from-top-centered 0.25s ease-in forwards;
 }
-.notification,
-.notification p {
-  font-family: var(--font-family-labels);
-}
-
 .notification--success {
   background: var(--success);
+}
+.grid {
+}
+.grid__header,
+.grid__item {
+  display: flex;
+}
+.grid__header {
+  border-bottom: 2px solid var(--background-border);
+  margin-bottom: 1em;
+}
+.grid__header .grid__cell {
+  padding-bottom: 0.5em;
+  color: var(--gray-bis);
+}
+.grid__item {
+  padding: 0.5em 0;
+}
+.grid__item {
+  border-bottom: 1px solid var(--background-border);
+}
+.grid__cell {
+  padding: 0 0.5em;
+  flex: 1 1 auto;
+}
+.grid__cell.name {
+  width: 50%;
+}
+.grid__cell.actions {
+  display: flex;
+  gap: 0.2em;
+  min-width: 5em;
+}
+.grid__cell.abv,
+.grid__cell.ibu {
+  width: 2em;
+}
+.grid__cell.actions,
+.grid__cell.abv,
+.grid__cell.ibu {
+  text-align: right;
+}
+.grid__item h2 {
+  font-size: 1.25em;
+}
+.grid .button {
+  font-size: 0.75em;
 }

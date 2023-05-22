@@ -4,6 +4,8 @@ const {
   tapsGetFieldsHandler,
   tapsPostHandler,
   tapsMediaHandler,
+  tapToggleHandler,
+  tapsDestroyHandler,
 } = require("../http/controllers/tapsController");
 const {
   settingsGetHandler,
@@ -26,11 +28,15 @@ module.exports = [
     handler: dashboardView,
   },
   {
-    path: "/settings/add-tap",
+    path: "/taps",
     handler: dashboardView,
   },
   {
-    path: "/settings/add-brewery",
+    path: "/edit-tap",
+    handler: dashboardView,
+  },
+  {
+    path: "/breweries",
     handler: dashboardView,
   },
 
@@ -74,6 +80,16 @@ module.exports = [
     path: "/api/taps",
     methods: ["POST", "PUT"],
     handler: tapsPostHandler,
+  },
+  {
+    path: "/api/taps/:id",
+    methods: ["DELETE"],
+    handler: tapsDestroyHandler,
+  },
+  {
+    path: "/api/taps/toggle",
+    methods: ["POST", "PUT"],
+    handler: tapToggleHandler,
   },
   {
     path: "/api/taps/media",

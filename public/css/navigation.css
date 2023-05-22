@@ -3,92 +3,87 @@
   height: var(--header-height);
   background: transparent;
   z-index: 3;
+  margin-bottom: 1em;
 }
-
 .nav,
 .nav-right,
 .nav-left,
 .nav-item {
   display: flex;
 }
-
 .nav-right {
   margin-left: auto;
 }
-
 .nav-item {
-  padding: 0 1em;
+  padding: 0 0.25em;
 }
-
 .nav-item figure,
 .nav-item figure span,
 .nav-item img {
   display: block;
 }
-
 .nav-item figure {
   display: flex;
   align-items: center;
 }
-
 .nav-item img {
   height: 100%;
   width: auto;
 }
-
 .nav-item.logo figure span {
   height: 80%;
 }
-.nav-buttons {
-  position: relative;
-}
 .nav-button {
-  font-family: var(--font-family-labels);
-  color: var(--tertiary);
+  color: var(--header-color);
   font-size: 1.2em;
+  padding: 0 0.5em;
+  opacity: 0.5;
+  border: none;
+  background: none;
 }
-
-.nav-button .text,
-.nav-button .icon {
-}
-
-.nav-sub {
-  position: absolute;
-  top: 100%;
-  right: 1em;
-  background: var(--black);
-  padding: 1em 0 0.5em;
-  border-radius: var(--radius);
-  z-index: 99;
-}
-.nav-sub hr {
-  margin: 0.5em 0;
+.nav-button:focus,
+.nav-button:hover {
+  opacity: 1;
   border: none;
 }
-.nav-sub h3 {
-  font-size: 1em;
-  font-family: var(--font-family-labels);
-  font-weight: var(--font-weight-bold);
-  color: var(--white);
-  padding: 0 0 0.5em 1em;
+.nav-item.has-sub {
+  position: relative;
+  z-index: 99;
 }
-.nav-sub h3,
+.nav-item.has-sub:hover .nav-sub {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+.nav-sub {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  background: var(--header-nav-sub-bg);
+  padding: 0.5em 0;
+  min-width: 12em;
+  border-radius: var(--radius);
+  transform: translateY(-10%);
+  transition: all 0.1s linear;
+  opacity: 0;
+  visibility: hidden;
+}
 .nav-sub hr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-  opacity: 0.25;
+  height: 1px;
+  border: none;
+  background: var(--black);
+  margin: 0.5em 0;
 }
-.nav-sub .nav-button + h3 {
-  margin-top: 1em;
+.nav-sub h3 {
+  margin-bottom: 1em;
+  color: var(--header-nav-sub-title-color);
+  font-weight: var(--font-weight-bold);
+  font-size: 0.8em;
+  padding: 1em 1em 0 1em;
 }
 .nav-sub .nav-button {
   width: 100%;
-  padding: 0 2em;
-  height: var(--button-height);
-  justify-content: flex-start;
-  font-size: 1em;
   white-space: nowrap;
-}
-.nav-sub .nav-button:hover {
-  background: var(--black-bis);
-  color: var(--white);
+  justify-content: flex-start;
+  padding: 0 1em;
 }
