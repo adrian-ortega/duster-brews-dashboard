@@ -29,6 +29,7 @@ class Router {
     this.middleware = middleware;
     this.route = null;
     this.routes = [];
+    window.addEventListener("load", this.onLoad.bind(this));
     window.addEventListener("popstate", this.onPopstate.bind(this));
     document.addEventListener("click", this.onRouteLinkClick.bind(this));
   }
@@ -42,6 +43,10 @@ class Router {
     return this.routes.find((r) => r.name === name);
   }
 
+  getRouteByPath(path) {
+    return this.routes.find((r) => r.path === path);
+  }
+
   getCurrentRoute() {
     return this.getRoute(this.route);
   }
@@ -49,6 +54,12 @@ class Router {
   isRoute(name) {
     const current = this.getCurrentRoute();
     return current ? current.name === name : false;
+  }
+
+  onLoad() {
+    const { pathname } = window.location;
+    const route = this.getRouteByPath(pathname);
+    if (route) this.goTo(route.name);
   }
 
   onPopstate(event) {

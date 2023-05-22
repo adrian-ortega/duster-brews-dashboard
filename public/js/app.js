@@ -69,7 +69,6 @@ const initialize = async () => {
 
       if (objectHasKey(data, "taps")) {
         app.state.taps = [...data.taps];
-        if (app.route === "home") app.router.goTo('taps');
       }
     },
   });
