@@ -1,6 +1,5 @@
 const { faker } = require("@faker-js/faker");
 const path = require("path");
-const fs = require("fs");
 const { saveFile } = require("./app/util/files");
 
 const generateImage = () => ({
