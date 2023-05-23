@@ -63,8 +63,6 @@ const initialize = async () => {
         app.state.settings = { ...data.settings };
         app.state.fields = { ...data.fields };
         app.state.categories = { ...data.categories };
-
-        if (app.route === "settings") renderSettings();
       }
 
       if (objectHasKey(data, "breweries")) {

@@ -72,9 +72,7 @@ class TapsController extends PaginatedRouteController {
       </div>
       <div class="grid__footer">
         <div>
-          <p>${this.pageStart + 1} - ${this.pageEnd} of ${
-      this.total
-    }</p>
+          <p>${this.pageStart + 1} - ${this.pageEnd} of ${this.total}</p>
         </div>
         <div>
           ${
@@ -200,7 +198,7 @@ class TapsController extends PaginatedRouteController {
     const $el = this.createElement(
       `<div class="taps">${
         filteredTaps.length
-          ? filteredTaps.map(tapTemplate)
+          ? filteredTaps.map(tapTemplate).join("")
           : `<p>You have no taps, <a href="/settings/add-tap" class="router-link" data-route="add-tap">Create one</a></p>`
       }</div>`
     );
