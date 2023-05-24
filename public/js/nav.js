@@ -72,21 +72,14 @@ class Router {
     if (routeName) this.goTo(routeName, event.state.params);
   }
 
-  onRouteLinkClick(event) {
-    if (
-      event.target.matches("a[href]") ||
-      (event.target.closest("a") &&
-        event.target.closest("a").classList.contains("route-link"))
-    ) {
-      event.preventDefault();
-      const a =
-        event.target.nodeName.toLowerCase() === "a"
-          ? event.target
-          : event.target.closest("a");
-
-      let params = a.getAttribute("data-route-params");
+  onRouteLinkClick(e) {
+    const $el = e.target;
+    if ($el.matches("a.route-link, a.route-link *")) {
+      e.preventDefault();
+      const $a = $el.nodeName.toLowerCase() === "a" ? $el : $el.closest("a");
+      let params = $a.getAttribute("data-route-params");
       params = params ? JSON.parse(params) : {};
-      this.goTo(a.getAttribute("data-route"), params);
+      this.goTo($a.getAttribute("data-route"), params);
     }
   }
 
@@ -135,6 +128,14 @@ class Router {
 }
 
 class RouteController extends Templateable {
+  getTap(id) {
+    return window[window.APP_NS].state.taps.find((t) => t.id === id);
+  }
+
+  getBrewery(id) {
+    return window[window.APP_NS].state.breweries.find((b) => b.id === id);
+  }
+
   getQueryParm(key, defaultValue = "") {
     if (!this.queryParams) {
       this.queryParams = new URLSearchParams(window.location.search);
@@ -151,8 +152,8 @@ class RouteController extends Templateable {
 class PaginatedRouteController extends RouteController {
   constructor() {
     super();
-    this.page = parseInt(this.getQueryParm("page", "1"), 10);
-    this.per = parseInt(this.getQueryParm("per", "10"), 10);
+    this.page = 1;
+    this.per = 10;
     this.pages = 1;
     this.total = 1;
   }
@@ -179,7 +180,6 @@ class PaginatedRouteController extends RouteController {
 
   paginate(items, { page, per }) {
     this.total = items.length;
-    console.log({ page, per });
     this.page = page ?? parseInt(this.getQueryParm("page", "1"), 10);
     this.per = per ?? parseInt(this.getQueryParm("per", "10"), 10);
     this.pages = Math.ceil(items.length / this.per);
