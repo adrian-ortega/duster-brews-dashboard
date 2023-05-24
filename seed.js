@@ -19,16 +19,39 @@ const generateBreweries = async () => {
 
   return items;
 };
-const generateTaps = async (breweries) => {
+
+const generateTapLocations = async () => {
+  const items = new Array(5).fill(0).map((_, i) => {
+    return {
+      name: `Tap ${i + 1}`,
+      active: true
+    };
+  });
+
+  saveFile(path.resolve("storage/tap-locations.db.json"), { items });
+
+  return items;
+};
+
+const generateTaps = async (breweries, locations) => {
+  let locs = [...locations];
   const items = new Array(25).fill(0).map(() => {
+    let active = faker.datatype.boolean();
+    let location_id = null;
     const brewery = breweries[Math.floor(Math.random() * breweries.length)];
+
+    if (active && locs.length) {
+      location_id = locs.pop().id;
+    }
+
     return {
       id: faker.string.nanoid(),
       brewery_id: brewery.id,
+      location_id,
       name: faker.commerce.product(),
       style: faker.commerce.productAdjective(),
       media: [generateImage()],
-      active: faker.datatype.boolean(),
+      active,
       gravity: {
         start: faker.number.float({ min: 1, max: 2, precision: 0.001 }),
         end: faker.number.float({ min: 1, max: 2, precision: 0.001 }),
@@ -44,7 +67,10 @@ const generateTaps = async (breweries) => {
 };
 
 const generate = async () => {
-  const items = await generateTaps(await generateBreweries());
+  const items = await generateTaps(
+    await generateBreweries(),
+    await generateTapLocations()
+  );
   console.log(`Created ${items.length} items`);
 };
 
