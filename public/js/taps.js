@@ -13,20 +13,30 @@ class TapsController extends PaginatedRouteController {
     };
   }
 
+  prepareLocation(location) {
+    const { taps } = getApp().state;
+    location.tap = taps.find((t) => t.location_id === location.id);
+    return location;
+  }
+
   renderGrid({ app, router, params }) {
     const taps = [...this.paginate(app.state.taps, params)].map(
       this.prepareTap.bind(this)
     );
     let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no taps, <a href="/taps/add" class="route-link">create one</a></div></div>`;
-    if(taps && taps.length > 0) {
-      gridContent = taps.map((tap) => `
+    if (taps && taps.length > 0) {
+      gridContent = taps
+        .map(
+          (tap) => `
       <div class="grid__item">
         <div class="grid__cell name"><h2>${tap.name}</h2></div>
         <div class="grid__cell abv">${tap.abv}</div>
         <div class="grid__cell ibu">${tap.ibu}</div>
         <div class="grid__cell active">
           <label class="switch">
-            <input type="checkbox" value="1" ${tap.active ? 'checked="checked"' : ""} data-id="${tap.id}"/>
+            <input type="checkbox" value="1" ${
+              tap.active ? 'checked="checked"' : ""
+            } data-id="${tap.id}"/>
             <span></span>
           </label>
         </div>
@@ -36,12 +46,16 @@ class TapsController extends PaginatedRouteController {
               <span class="icon"></span>
               <span class="text">Edit</span>
             </button>
-            <button class="button is-icon" data-id="${tap.id}" data-action="delete">
+            <button class="button is-icon" data-id="${
+              tap.id
+            }" data-action="delete">
               <span class="icon">${ICON_DELETE}</span>
             </button>
           </div>
         </div>
-      </div>`).join("")
+      </div>`
+        )
+        .join("");
     }
 
     const $el = this.createElement(`<div class="container">
@@ -143,11 +157,39 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 
-  renderLocations() {
-    const { tapLocations: locations } = getApp().state;
+  renderLocations({ app, params }) {
+    const tap_locations = [
+      ...this.paginate(app.state.tap_locations, params),
+    ].map(this.prepareLocation.bind(this));
     let gridContent = `<div class="grid__item">
     <div class="grid__cell">No tap locations, please <a href="/taps/add" class="route-link">add one</a></div>
   </div>`;
+
+    if (tap_locations && tap_locations.length > 0) {
+      gridContent = tap_locations
+        .map(
+          (location) => `<div class="grid__item">
+      <div class="grid__cell name">
+        <h2>${location.name}</h2>
+        ${location.tap ? `<p>${location.tap.name}</p>` : ''}
+      </div>
+      <div class="grid__cell tap-count">${location.percentage}%</div>
+      <div class="grid__cell actions">
+        <div>
+        <button class="button" data-id="${location.id}" data-action="edit">
+          <span class="icon"></span>
+          <span class="text">Edit</span>
+        </button>
+        <button class="button is-icon" data-id="${location.id}" data-action="delete">
+          <span class="icon">${ICON_DELETE}</span>
+        </button>
+        </div>
+      </div>
+    </div>`
+        )
+        .join("");
+    }
+
     const $el = this.createElement(`<div class="container">
       <h2 class="page-title">Tap Locations</h2>
       <div class="grid">
@@ -171,7 +213,6 @@ class TapsController extends PaginatedRouteController {
       </div>
       <div class="grid__header">
         <div class="grid__cell name">Location</div>
-        <div class="grid__cell abv">In Use</div>
         <div class="grid__cell ibu">Keg %</div>
         <div class="grid__cell actions"></div>
       </div>

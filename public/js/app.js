@@ -33,7 +33,11 @@ const initializeRouter = () => {
   );
 
   router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
-  router.addRoute('/taps/locations', 'tap-locations', taps.renderLocations.bind(taps));
+  router.addRoute(
+    "/taps/locations",
+    "tap-locations",
+    taps.renderLocations.bind(taps)
+  );
   router.addRoute("/taps/add", "add-tap", taps.renderCreateForm.bind(taps));
   router.addRoute("/taps/edit", "edit-tap", taps.renderEditForm.bind(taps));
 
@@ -78,6 +82,10 @@ const initialize = async () => {
         app.state.settings = { ...data.settings };
         app.state.fields = { ...data.fields };
         app.state.categories = { ...data.categories };
+      }
+
+      if (objectHasKey(data, "tap_locations")) {
+        app.state.tap_locations = [...data.tap_locations];
       }
 
       if (objectHasKey(data, "breweries")) {

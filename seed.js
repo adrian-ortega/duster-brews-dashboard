@@ -21,9 +21,12 @@ const generateBreweries = async () => {
 };
 
 const generateTapLocations = async () => {
-  const items = new Array(5).fill(0).map((_, i) => {
+  const items = new Array(13).fill(0).map((_, i) => {
     return {
+      id: faker.string.nanoid(),
       name: `Tap ${i + 1}`,
+      token: faker.string.nanoid(),
+      percentage: faker.number.float({min: 0, max: 100, precision: 0.01 }),
       active: true
     };
   });
@@ -41,7 +44,8 @@ const generateTaps = async (breweries, locations) => {
     const brewery = breweries[Math.floor(Math.random() * breweries.length)];
 
     if (active && locs.length) {
-      location_id = locs.pop().id;
+      const loc = locs.pop();
+      location_id = loc.id;
     }
 
     return {
