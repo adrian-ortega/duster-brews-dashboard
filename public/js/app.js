@@ -20,19 +20,21 @@ const clearContainersMiddlware = ({ route, router, app }) => {
 
 const initializeRouter = () => {
   const router = new Router([clearContainersMiddlware]);
+
   const taps = new TapsController();
   const settings = new SettingsController();
+  const brews = new BreweriesController();
 
   router.addRoute("/", "home", taps.renderList.bind(taps));
-  router.addRoute(
-    "/settings",
-    "settings",
-    settings.renderSettings.bind(settings)
-  );
+  router.addRoute("/settings", "settings", settings.renderSettings.bind(settings));
+
   router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
-  router.addRoute("/create-tap", "edit-tap", taps.renderCreateForm.bind(taps));
+  router.addRoute("/add-tap", "add-tap", taps.renderCreateForm.bind(taps));
   router.addRoute("/edit-tap", "edit-tap", taps.renderEditForm.bind(taps));
-  router.addRoute("/breweries", "breweries", NOOP);
+
+  router.addRoute("/breweries", "breweries", brews.renderGrid.bind(brews));
+  router.addRoute("/add-brewery", "add-brewery", brews.renderCreateForm.bind(brews));
+  router.addRoute("/edit-brewery", "edit-brewery", brews.renderEditForm.bind(brews));
 
   getApp().router = router;
 };

@@ -1,11 +1,7 @@
 class TapsController extends PaginatedRouteController {
-  getTap(id) {
-    return window[window.APP_NS].state.taps.find((t) => t.id === id);
-  }
-
   prepareTap(tap) {
     const image = tap.media.find((m) => m.primary);
-    const brewery = getBrewery(tap.brewery_id);
+    const brewery = this.getBrewery(tap.brewery_id);
     const bImage = brewery.media.find((m) => m.primary);
     return {
       ...tap,
@@ -19,14 +15,14 @@ class TapsController extends PaginatedRouteController {
 
   renderGrid({ app, router, params }) {
     const taps = [...this.paginate(app.state.taps, params)].map(
-      this.prepareTap
+      this.prepareTap.bind(this)
     );
     const $el = this.createElement(`<div class="container">
     <h2 class="page-title">Taps</h2>
     <div class="grid">
       <div class="grid__actions">
         <div class="grid__action">
-          <a href="/create-tap" class="button is-success route-link" data-route="add-route">
+          <a href="/create-tap" class="button is-success route-link" data-route="add-tap">
             <span class="icon">${ICON_PLUS}</span>
             <span class="text">Create</span>
           </a>
@@ -51,20 +47,22 @@ class TapsController extends PaginatedRouteController {
               <label class="switch">
                 <input type="checkbox" value="1" ${
                   tap.active ? 'checked="checked"' : ""
-                } data-tap-id="${tap.id}"/>
+                } data-id="${tap.id}"/>
                 <span></span>
               </label>
             </div>
             <div class="grid__cell actions">
-              <button class="button" data-tap-id="${tap.id}" data-action="edit">
-                <span class="icon"></span>
-                <span class="text">Edit</span>
-              </button>
-              <button class="button is-icon" data-tap-id="${
-                tap.id
-              }" data-action="delete">
-                <span class="icon">${ICON_DELETE}</span>
-              </button>
+              <div>
+                <button class="button" data-id="${tap.id}" data-action="edit">
+                  <span class="icon"></span>
+                  <span class="text">Edit</span>
+                </button>
+                <button class="button is-icon" data-id="${
+                  tap.id
+                }" data-action="delete">
+                  <span class="icon">${ICON_DELETE}</span>
+                </button>
+              </div>
             </div>
         </div>`
           )
@@ -104,11 +102,15 @@ class TapsController extends PaginatedRouteController {
 
     $el.addEventListener("click", (e) => {
       const $el = e.target;
-      if ($el.classList.contains(".button") || $el.closest(".button")) {
+      if (
+        $el.matches(
+          ".grid__item .button[data-action], .grid__item .button[data-action] *"
+        )
+      ) {
         const $btn = $el.classList.contains(".button")
           ? $el
           : $el.closest(".button");
-        const id = $btn.getAttribute("data-tap-id");
+        const id = $btn.getAttribute("data-id");
         if (id) {
           e.preventDefault();
           const action = $btn.getAttribute("data-action");
@@ -135,10 +137,10 @@ class TapsController extends PaginatedRouteController {
       }
     });
 
-    [...$el.querySelectorAll("input[data-tap-id]")].forEach(($input) => {
+    [...$el.querySelectorAll("input[data-id]")].forEach(($input) => {
       $input.addEventListener("change", async (e) => {
         const body = new FormData();
-        body.append("id", e.target.getAttribute("data-tap-id"));
+        body.append("id", e.target.getAttribute("data-id"));
         body.append("active", e.target.checked);
         const response = await fetch("/api/taps/toggle", {
           method: "POST",
@@ -151,7 +153,6 @@ class TapsController extends PaginatedRouteController {
       });
     });
 
-    console.log("Appending Taps Grid");
     getDomContainer().appendChild($el);
     return $el;
   }
