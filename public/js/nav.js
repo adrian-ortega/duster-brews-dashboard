@@ -11,7 +11,7 @@ class Route {
 
   triggerAction(params, router) {
     if (isFunction(this.action)) {
-      const response = this.action({
+      const response = this.action.call(this.action, {
         route: this,
         router,
         params,
@@ -44,10 +44,7 @@ class Router {
   }
 
   getRouteByPath(path) {
-    return this.routes.find((r) => {
-      console.log({ r_path: r.path, path });
-      return r.path === path;
-    });
+    return this.routes.find((r) => r.path === path);
   }
 
   getCurrentRoute() {
