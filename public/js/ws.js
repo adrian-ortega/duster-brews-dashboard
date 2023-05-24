@@ -7,18 +7,23 @@
  * @param {function} onerror
  * @return {Promise<WebSocket>}
  */
-const createWebSocket = ({namespace = 'DBDAPP', onmessage = NOOP, onerror = NOOP}) => {
-    return new Promise((resolve) => {
-        const {port, hostname} = window.location;
-        const ws = new WebSocket(`ws://${hostname}:${port}/websockets`);
-        ws.onopen = () => {
-            window[namespace].ws = true;
-        }
-        ws.onerror = (error) => onerror(error);
-        ws.onmessage = ({data}) => onmessage(parseJson(data));
+const createWebSocket = ({
+  namespace = "DBDAPP",
+  onmessage = NOOP,
+  onerror = NOOP,
+}) => {
+  return new Promise((resolve) => {
+    const { port, hostname } = window.location;
+    const ws = new WebSocket(`ws://${hostname}:${port}/websockets`);
+    ws.onopen = () => {
+      window[namespace].ws = true;
+    };
+    ws.onerror = (error) => onerror(error);
+    ws.onmessage = ({ data }) => onmessage(parseJson(data));
 
-        window[namespace].WebSocket = ws;
-        window[namespace].fireAction = (action, data = null) => ws.send(JSON.stringify({ action, data }));
-        resolve(ws);
-    });
+    window[namespace].WebSocket = ws;
+    window[namespace].fireAction = (action, data = null) =>
+      ws.send(JSON.stringify({ action, data }));
+    resolve(ws);
+  });
 };

@@ -160,7 +160,9 @@ class TapsController extends PaginatedRouteController {
   renderList({ app }) {
     const $container = getDomContainer();
     const { taps } = app.state;
-    const filteredTaps = taps.filter((tap) => tap.active).map(this.prepareTap);
+    const filteredTaps = taps
+      .filter((tap) => tap.active)
+      .map(this.prepareTap.bind(this));
 
     const tapTemplate = (tap) => {
       const tapImage = tap.image.src
@@ -279,20 +281,3 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 }
-
-const renderFirstTimeTaps = () => {
-  removeWidgetsContainer();
-  const $form = renderCreateTapForm();
-  const $title = $form.querySelector(".settings__title");
-  $title.classList.add("is-first-time");
-  $title.innerHTML = "You have no taps!";
-  $title.after(
-    createElementFromTemplate(`<div class="first-time">
-      <p>It looks like you've already added some <strong>Breweries</strong>, GREAT JOB! Now lets add your first <strong>Tap</strong></p>
-    </div>`)
-  );
-  const $cancelBtn = $form.querySelector(".button.is-cancel");
-  if ($cancelBtn) {
-    $cancelBtn.parentNode.removeChild($cancelBtn);
-  }
-};

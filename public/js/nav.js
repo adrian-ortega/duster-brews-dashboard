@@ -191,6 +191,10 @@ class PaginatedRouteController extends RouteController {
 }
 
 class Navigation extends Templateable {
+  static init() {
+    const nav = new Navigation();
+    nav.render(null, getDomContainer());
+  }
   template() {
     // @TODO change these two variables to pull from saved data within
     //       the settings json file
@@ -233,9 +237,4 @@ class Navigation extends Templateable {
       </div>
     </div>`;
   }
-}
-
-function initializeNav() {
-  const nav = new Navigation();
-  nav.render(null, getDomContainer());
 }

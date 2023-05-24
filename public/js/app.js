@@ -26,15 +26,27 @@ const initializeRouter = () => {
   const brews = new BreweriesController();
 
   router.addRoute("/", "home", taps.renderList.bind(taps));
-  router.addRoute("/settings", "settings", settings.renderSettings.bind(settings));
+  router.addRoute(
+    "/settings",
+    "settings",
+    settings.renderSettings.bind(settings)
+  );
 
   router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
   router.addRoute("/add-tap", "add-tap", taps.renderCreateForm.bind(taps));
   router.addRoute("/edit-tap", "edit-tap", taps.renderEditForm.bind(taps));
 
   router.addRoute("/breweries", "breweries", brews.renderGrid.bind(brews));
-  router.addRoute("/add-brewery", "add-brewery", brews.renderCreateForm.bind(brews));
-  router.addRoute("/edit-brewery", "edit-brewery", brews.renderEditForm.bind(brews));
+  router.addRoute(
+    "/add-brewery",
+    "add-brewery",
+    brews.renderCreateForm.bind(brews)
+  );
+  router.addRoute(
+    "/edit-brewery",
+    "edit-brewery",
+    brews.renderEditForm.bind(brews)
+  );
 
   getApp().router = router;
 };
@@ -52,7 +64,7 @@ const initialize = async () => {
   if ($container) $container.innerHTML = "";
 
   initializeRouter();
-  initializeNav();
+  Navigation.init();
 
   await createWebSocket({
     onmessage: (data) => {
@@ -79,6 +91,4 @@ const initialize = async () => {
 };
 
 // Go baby go
-(async () => {
-  await initialize();
-})();
+(async () => await initialize())();
