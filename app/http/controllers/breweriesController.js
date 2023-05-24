@@ -55,8 +55,24 @@ const breweriesPostHandler = (req, res, next) => {
   });
 };
 
+const breweriesDestroyHandler = (req, res) => {
+  const { id } = req.params;
+  if (!Breweries.has(id)) {
+    return respondWithJSON(
+      res,
+      { status: "error", message: "Brewery not found" },
+      404
+    );
+  }
+
+  Breweries.remove(id);
+
+  return respondWithJSON(res, { status: "Success", id });
+};
+
 module.exports = {
   breweriesGetHandler,
   breweriesFieldsHandler,
   breweriesPostHandler,
+  breweriesDestroyHandler,
 };

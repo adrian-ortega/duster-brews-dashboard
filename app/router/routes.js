@@ -15,31 +15,10 @@ const {
   breweriesGetHandler,
   breweriesFieldsHandler,
   breweriesPostHandler,
+  breweriesDestroyHandler,
 } = require("../http/controllers/breweriesController");
 
 module.exports = [
-  // FRONT END ROUTES
-  {
-    path: "/",
-    handler: dashboardView,
-  },
-  {
-    path: "/settings",
-    handler: dashboardView,
-  },
-  {
-    path: "/taps",
-    handler: dashboardView,
-  },
-  {
-    path: "/edit-tap",
-    handler: dashboardView,
-  },
-  {
-    path: "/breweries",
-    handler: dashboardView,
-  },
-
   // API ROUTES
 
   {
@@ -63,6 +42,11 @@ module.exports = [
     path: "/api/breweries",
     methods: ["POST", "PUT"],
     handler: breweriesPostHandler,
+  },
+  {
+    path: "/api/breweries/:id",
+    methods: ["DELETE"],
+    handler: breweriesDestroyHandler,
   },
   {
     path: "/api/breweries/fields",
@@ -100,5 +84,10 @@ module.exports = [
     path: "/api/taps/fields",
     methods: ["GET"],
     handler: tapsGetFieldsHandler,
+  },
+
+  {
+    path: "/*",
+    handler: dashboardView,
   },
 ];

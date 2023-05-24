@@ -136,20 +136,14 @@ const tapsDestroyHandler = (req, res) => {
   if (!Taps.has(id)) {
     return respondWithJSON(
       res,
-      {
-        status: "error",
-        message: "Tap not found",
-      },
+      { status: "error", message: "Tap not found" },
       404
     );
   }
 
   Taps.remove(id);
 
-  return respondWithJSON(res, {
-    status: "Success",
-    id,
-  });
+  return respondWithJSON(res, { status: "Success", id });
 };
 
 module.exports = {
