@@ -122,12 +122,12 @@ class BreweriesController extends PaginatedRouteController {
     return $el;
   }
   renderCreateForm() {
-    const $el = this.createElement(`<div class="container">Create</div>`);
+    const $el = this.createElement(`<div class="container">Create Brewery</div>`);
     getDomContainer().appendChild($el);
     return $el;
   }
   renderEditForm() {
-    const $el = this.createElement(`<div class="container">Edit</div>`);
+    const $el = this.createElement(`<div class="container">Edit Brewery</div>`);
     getDomContainer().appendChild($el);
     return $el;
   }

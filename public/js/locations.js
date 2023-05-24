@@ -5,7 +5,7 @@ class TapLocationsController extends PaginatedRouteController {
     return location;
   }
 
-  renderGrid({ app, params }) {
+  renderGrid({ app, params, router }) {
     const locations = [...this.paginate(app.state.tap_locations, params)].map(
       this.prepareLocation.bind(this)
     );
@@ -76,10 +76,60 @@ class TapLocationsController extends PaginatedRouteController {
     </div>
     </div>`);
 
+    $el.addEventListener("click", (e) => {
+      const $el = e.target;
+      if (
+        $el.matches(
+          ".grid__item .button[data-action], .grid__item .button[data-action] *"
+        )
+      ) {
+        const $btn = $el.classList.contains(".button")
+          ? $el
+          : $el.closest(".button");
+        const id = $btn.getAttribute("data-id");
+        if (id) {
+          e.preventDefault();
+          const action = $btn.getAttribute("data-action");
+          switch (action) {
+            case "delete":
+              if (confirm("Are you sure you want to delete this location?")) {
+                fetch(`/api/taps/locations/${id}`, { method: "DELETE" })
+                  .then((response) => response.json())
+                  .then(({ data }) => {
+                    if (data.status.toLowerCase() === "success") {
+                      showNotification("Tap Location was uccessfully deleted.");
+                      app.fireAction("refresh");
+                      const $row = $btn.closest(".grid__item");
+                      $row.parentNode.removeChild($row);
+                    }
+                  });
+              }
+              break;
+            case "edit":
+              router.goTo("edit-location", { id });
+              break;
+          }
+        }
+      }
+    });
+
     getDomContainer().appendChild($el);
     return $el;
   }
 
-  renderCreateForm() {}
-  renderEditForm() {}
+  renderCreateForm() {
+    const $el = this.createElement(
+      `<div class="container">Create Location</div>`
+    );
+    getDomContainer().appendChild($el);
+    return $el;
+  }
+
+  renderEditForm() {
+    const $el = this.createElement(
+      `<div class="container">Edit Location</div>`
+    );
+    getDomContainer().appendChild($el);
+    return $el;
+  }
 }

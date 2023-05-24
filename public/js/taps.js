@@ -204,7 +204,11 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 
-  renderCreateForm() {}
+  renderCreateForm() {
+    const $el = this.createElement(`<div class="container">Create Brewery</div>`);
+    getDomContainer().appendChild($el);
+    return $el;
+  }
 
   renderEditForm({ params, router }) {
     const $container = getDomContainer();
