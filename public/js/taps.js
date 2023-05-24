@@ -17,15 +17,56 @@ class TapsController extends PaginatedRouteController {
     const taps = [...this.paginate(app.state.taps, params)].map(
       this.prepareTap.bind(this)
     );
+    let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no taps, <a href="/taps/add" class="route-link">create one</a></div></div>`;
+    if(taps && taps.length > 0) {
+      gridContent = taps.map((tap) => `
+      <div class="grid__item">
+        <div class="grid__cell name"><h2>${tap.name}</h2></div>
+        <div class="grid__cell abv">${tap.abv}</div>
+        <div class="grid__cell ibu">${tap.ibu}</div>
+        <div class="grid__cell active">
+          <label class="switch">
+            <input type="checkbox" value="1" ${tap.active ? 'checked="checked"' : ""} data-id="${tap.id}"/>
+            <span></span>
+          </label>
+        </div>
+        <div class="grid__cell actions">
+          <div>
+            <button class="button" data-id="${tap.id}" data-action="edit">
+              <span class="icon"></span>
+              <span class="text">Edit</span>
+            </button>
+            <button class="button is-icon" data-id="${tap.id}" data-action="delete">
+              <span class="icon">${ICON_DELETE}</span>
+            </button>
+          </div>
+        </div>
+      </div>`).join("")
+    }
+
     const $el = this.createElement(`<div class="container">
     <h2 class="page-title">Taps</h2>
     <div class="grid">
       <div class="grid__actions">
-        <div class="grid__action">
-          <a href="/create-tap" class="button is-success route-link" data-route="add-tap">
-            <span class="icon">${ICON_PLUS}</span>
-            <span class="text">Create</span>
-          </a>
+        <div class="grid__action-group">
+          <div class="grid__action">
+            <a href="/taps/locations" class="button route-link" data-route="tap-locations" title="Tap locations">
+              <span class="icon">${ICON_FAUCET}</span>
+              <span class="text">Locations</span>
+            </a>
+          </div>
+          <div class="grid__action">
+            <a href="/breweries" class="button route-link" data-route="breweries" title="Breweries">
+              <span class="icon">${ICON_BARLEY}</span>
+              <span class="text">Breweries</span>
+            </a>
+          </div>
+          <div class="grid__action">
+            <a href="/create-tap" class="button is-success route-link" data-route="add-tap" title="Add Tap">
+              <span class="icon">${ICON_PLUS}</span>
+              <span class="text">Create</span>
+            </a>
+          </div>
         </div>
       </div>
       <div class="grid__header">
@@ -36,65 +77,10 @@ class TapsController extends PaginatedRouteController {
         <div class="grid__cell actions"></div>
       </div>
       <div class="grid__content">
-        ${taps
-          .map(
-            (tap) => `
-        <div class="grid__item">
-            <div class="grid__cell name"><h2>${tap.name}</h2></div>
-            <div class="grid__cell abv">${tap.abv}</div>
-            <div class="grid__cell ibu">${tap.ibu}</div>
-            <div class="grid__cell active">
-              <label class="switch">
-                <input type="checkbox" value="1" ${
-                  tap.active ? 'checked="checked"' : ""
-                } data-id="${tap.id}"/>
-                <span></span>
-              </label>
-            </div>
-            <div class="grid__cell actions">
-              <div>
-                <button class="button" data-id="${tap.id}" data-action="edit">
-                  <span class="icon"></span>
-                  <span class="text">Edit</span>
-                </button>
-                <button class="button is-icon" data-id="${
-                  tap.id
-                }" data-action="delete">
-                  <span class="icon">${ICON_DELETE}</span>
-                </button>
-              </div>
-            </div>
-        </div>`
-          )
-          .join("")}
+        ${gridContent}
       </div>
       <div class="grid__footer">
-        <div>
-          <p>${this.pageStart + 1} - ${this.pageEnd} of ${this.total}</p>
-        </div>
-        <div>
-          ${
-            this.page > 1
-              ? `<div>
-            <a href="${this.getPreviousPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
-                  { page: this.getPreviousPage() }
-                )}' class="button route-link">
-              <span class="icon">${ICON_CHEVRON_LEFT}</span>
-              <span class="text">Prev</span>
-            </a></div>`
-              : ""
-          }
-          ${
-            this.page < this.pages
-              ? `<div>
-            <a href="${this.getNextPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
-                  { page: this.getNextPage() }
-                )}' class="button route-link">
-              <span class="text">Next</span>
-              <span class="icon">${ICON_CHEVRON_RIGHT}</span>
-            </a></div>`
-              : ""
-          }
+        ${this.getPaginatorFooterTemplate()}
       </div>
       </div>
     </div>
@@ -157,6 +143,51 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 
+  renderLocations() {
+    const { tapLocations: locations } = getApp().state;
+    let gridContent = `<div class="grid__item">
+    <div class="grid__cell">No tap locations, please <a href="/taps/add" class="route-link">add one</a></div>
+  </div>`;
+    const $el = this.createElement(`<div class="container">
+      <h2 class="page-title">Tap Locations</h2>
+      <div class="grid">
+      <div class="grid__actions has-groups">
+        <div class="grid__action-group">
+          <div class="grid__action">
+            <a href="/taps/locations" class="button route-link" data-route="taps" title="Taps">
+              <span class="icon">${ICON_CHEVRON_LEFT}</span>
+              <span class="text">Taps</span>
+            </a>
+          </div>
+        </div>
+        <div class="grid__action-group">
+        <div class="grid__action">
+            <a href="/taps" class="button is-success route-link" data-route="add-tap" title="Create Tap">
+              <span class="icon">${ICON_PLUS}</span>
+              <span class="text">Create</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="grid__header">
+        <div class="grid__cell name">Location</div>
+        <div class="grid__cell abv">In Use</div>
+        <div class="grid__cell ibu">Keg %</div>
+        <div class="grid__cell actions"></div>
+      </div>
+      <div class="grid__content">
+        ${gridContent}
+      </div>
+      <div class="grid__footer">
+        ${this.getPaginatorFooterTemplate()}
+      </div>
+    </div>
+    </div>`);
+
+    getDomContainer().appendChild($el);
+    return $el;
+  }
+
   renderList({ app }) {
     const $container = getDomContainer();
     const { taps } = app.state;
@@ -209,8 +240,6 @@ class TapsController extends PaginatedRouteController {
     $container.appendChild($el);
     return $el;
   }
-
-  renderFirstTime() {}
 
   renderCreateForm() {}
 

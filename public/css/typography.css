@@ -11,7 +11,9 @@ a {
   display: inline-flex;
   text-decoration: none;
 }
-a:not(.button) {
+a:not(.button),
+a:not(.button):visited {
+  color: var(--primary);
   border-bottom: 1px solid transparent;
 }
 a:not(.button):hover {

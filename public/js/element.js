@@ -101,7 +101,10 @@ class Forms {
   static renderSelectField(label, value, fieldOptions) {
     const { id, options } = fieldOptions;
     const optionTransformer = (option) => {
-      const oText = isObject(option) ? option.text : option;
+      const oText = (isObject(option) ? option.text : option).replace(
+        /^-*(.)|-+(.)/g,
+        (s, c, d) => (c ? c.toUpperCase() : " " + d.toUpperCase())
+      );
       const oValue = isObject(option) ? option.value : option;
       const oSel = oValue === value ? ' selected="selected"' : "";
       return `<option value="${oValue}"${oSel}>${oText}</option>`;

@@ -33,17 +33,18 @@ const initializeRouter = () => {
   );
 
   router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
-  router.addRoute("/add-tap", "add-tap", taps.renderCreateForm.bind(taps));
-  router.addRoute("/edit-tap", "edit-tap", taps.renderEditForm.bind(taps));
+  router.addRoute('/taps/locations', 'tap-locations', taps.renderLocations.bind(taps));
+  router.addRoute("/taps/add", "add-tap", taps.renderCreateForm.bind(taps));
+  router.addRoute("/taps/edit", "edit-tap", taps.renderEditForm.bind(taps));
 
   router.addRoute("/breweries", "breweries", brews.renderGrid.bind(brews));
   router.addRoute(
-    "/add-brewery",
+    "/breweries/add",
     "add-brewery",
     brews.renderCreateForm.bind(brews)
   );
   router.addRoute(
-    "/edit-brewery",
+    "/breweries/edit",
     "edit-brewery",
     brews.renderEditForm.bind(brews)
   );

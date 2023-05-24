@@ -19,15 +19,46 @@ class BreweriesController extends PaginatedRouteController {
     const breweries = [...this.paginate(app.state.breweries, params)].map(
       this.prepareBrewery.bind(this)
     );
+    let gridContent = `<div class="grid__item">
+      <div class="grid__cell">No Breweries, <a href="/breweries/add">create one</a>.</div>
+    </div>`;
+
+    if (breweries && breweries.length > 0) {
+      gridContent = breweries.map((brewery) => `<div class="grid__item">
+        <div class="grid__cell name"><h2>${brewery.name}</h2></div>
+        <div class="grid__cell tap-count">${brewery.count.active}/${brewery.count.total}</div>
+        <div class="grid__cell actions">
+          <div>
+          <button class="button" data-id="${brewery.id}" data-action="edit">
+            <span class="icon"></span>
+            <span class="text">Edit</span>
+          </button>
+          <button class="button is-icon" data-id="${brewery.id}" data-action="delete">
+            <span class="icon">${ICON_DELETE}</span>
+          </button>
+          </div>
+        </div>
+      </div>`).join("");
+    }
+
     const $el = this.createElement(`<div class="container">
       <h2 class="page-title">Breweries</h2>
       <div class="grid">
         <div class="grid__actions">
-          <div class="grid__action">
-            <a href="/create-brewery" class="button is-success route-link" data-route="add-brewery">
-              <span class="icon">${ICON_PLUS}</span>
-              <span class="text">Create</span>
-            </a>
+          <div class="grid__action-group"></div>
+          <div class="grid__action-group">
+            <div class="grid__action">
+              <a href="/taps" class="button route-link" data-route="taps">
+                <span class="icon">${ICON_BEER_OUTLINE}</span>
+                <span class="text">Taps</span>
+              </a>
+            </div>
+            <div class="grid__action">
+              <a href="/create-brewery" class="button is-success route-link" data-route="add-brewery">
+                <span class="icon">${ICON_PLUS}</span>
+                <span class="text">Create</span>
+              </a>
+            </div>
           </div>
         </div>
         <div class="grid__header">
@@ -36,56 +67,10 @@ class BreweriesController extends PaginatedRouteController {
           <div class="grid__cell actions">&nbsp;</div>
         </div>
         <div class="grid__content">
-          ${breweries
-            .map(
-              (brewery) => `
-          <div class="grid__item">
-            <div class="grid__cell name"><h2>${brewery.name}</h2></div>
-            <div class="grid__cell tap-count">${brewery.count.active}/${brewery.count.total}</div>
-            <div class="grid__cell actions">
-              <div>
-              <button class="button" data-id="${brewery.id}" data-action="edit">
-                <span class="icon"></span>
-                <span class="text">Edit</span>
-              </button>
-              <button class="button is-icon" data-id="${brewery.id}" data-action="delete">
-                <span class="icon">${ICON_DELETE}</span>
-              </button>
-              </div>
-            </div>
-          </div>
-          `
-            )
-            .join("")}
+          ${gridContent}
         </div>
         <div class="grid__footer">
-          <div>
-            <p>${this.pageStart + 1} - ${this.pageEnd} of ${this.total}</p>
-          </div>
-          <div>
-            ${
-              this.page > 1
-                ? `<div>
-              <a href="${this.getPreviousPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
-                    { page: this.getPreviousPage() }
-                  )}' class="button route-link">
-                <span class="icon">${ICON_CHEVRON_LEFT}</span>
-                <span class="text">Prev</span>
-              </a></div>`
-                : ""
-            }
-            ${
-              this.page < this.pages
-                ? `<div>
-              <a href="${this.getNextPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
-                    { page: this.getNextPage() }
-                  )}' class="button route-link">
-                <span class="text">Next</span>
-                <span class="icon">${ICON_CHEVRON_RIGHT}</span>
-              </a></div>`
-                : ""
-            }
-          </div>
+          ${this.getPaginatorFooterTemplate()}
         </div>
       </div>
     </div>`);

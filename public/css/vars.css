@@ -24,6 +24,7 @@
   --header-height: 55px;
   --header-color: var(--white);
   --header-nav-sub-bg: var(--background-light);
+  --header-nav-sub-hover-bg: var(--black);
   --header-nav-sub-title-color: var(--gray-bis);
 
   --button-height: 2.1875em;

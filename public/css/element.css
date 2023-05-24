@@ -268,6 +268,10 @@
 }
 .grid {
 }
+.page-title + .grid .grid__actions {
+  margin-top: -1em;
+  margin-bottom: 1em;
+}
 .grid__actions,
 .grid__header,
 .grid__item,
@@ -279,6 +283,19 @@
 }
 .grid__actions {
   padding: 0.5em;
+  justify-content: flex-end;
+}
+.grid__actions,
+.grid__action-group {
+  gap: 0.2em;
+}
+.grid__actions.has-groups {
+}
+.grid__action-group {
+  display: flex;
+  flex-basis: 50%;
+}
+.grid__action-group:last-child {
   justify-content: flex-end;
 }
 .grid__header {

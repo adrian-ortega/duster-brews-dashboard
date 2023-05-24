@@ -44,7 +44,10 @@ class Router {
   }
 
   getRouteByPath(path) {
-    return this.routes.find((r) => r.path === path);
+    return this.routes.find((r) => {
+      console.log({ r_path: r.path, path });
+      return r.path === path;
+    });
   }
 
   getCurrentRoute() {
@@ -77,9 +80,15 @@ class Router {
     if ($el.matches("a.route-link, a.route-link *")) {
       e.preventDefault();
       const $a = $el.nodeName.toLowerCase() === "a" ? $el : $el.closest("a");
+      let route = $a.getAttribute("data-route");
       let params = $a.getAttribute("data-route-params");
       params = params ? JSON.parse(params) : {};
-      this.goTo($a.getAttribute("data-route"), params);
+
+      if (!route && this.getRouteByPath($a.getAttribute("href"))) {
+        route = this.getRouteByPath($a.getAttribute("href")).name;
+      }
+
+      this.goTo(route, params);
     }
   }
 
@@ -155,7 +164,42 @@ class PaginatedRouteController extends RouteController {
     this.page = 1;
     this.per = 10;
     this.pages = 1;
-    this.total = 1;
+    this.total = 0;
+    this.pageStart = 0;
+    this.pageEnd = 0;
+  }
+
+  getPaginatorFooterTemplate() {
+    let template = "";
+
+    if (this.total > 0) {
+      template += `<div><p>${this.pageStart + 1} - ${this.pageEnd} of ${
+        this.total
+      }</p></div>`;
+      if (this.page > 1 || this.page < this.pages) {
+        template += "<div>";
+        if (this.page > 1) {
+          template += `<div>
+          <a href="${this.getPreviousPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
+            { page: this.getPreviousPage() }
+          )}' class="button route-link">
+            <span class="icon">${ICON_CHEVRON_LEFT}</span>
+            <span class="text">Prev</span>
+          </a></div>`;
+        }
+        if (this.page < this.pages) {
+          template += `<div>
+          <a href="${this.getNextPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
+            { page: this.getNextPage() }
+          )}' class="button route-link">
+            <span class="text">Next</span>
+            <span class="icon">${ICON_CHEVRON_RIGHT}</span>
+          </a></div>`;
+        }
+        template += "</div>";
+      }
+    }
+    return template;
   }
 
   getPreviousPage() {
@@ -210,7 +254,7 @@ class Navigation extends Templateable {
       <div class="nav-right">
         <div class="nav-item">
           <a href="/" data-route="home" class="button nav-button route-link" title="Taps">
-            <span class="icon">${ICON_BEER_OUTLINE}</span>
+            <span class="icon">${ICON_FORMATTED_LIST}</span>
           </a>
         </div>
         <div class="nav-item has-sub">
@@ -220,11 +264,11 @@ class Navigation extends Templateable {
           <div class="nav-sub">
             <h3>Manage</h3>
             <a href="/taps" data-route="taps" class="button nav-button route-link" title="Settings">
-              <span class="icon">${ICON_COG_OUTLINE}</span>
+              <span class="icon">${ICON_BEER_OUTLINE}</span>
               <span class="text">Taps</span>
             </a>
             <a href="/breweries" data-route="breweries" class="button nav-button route-link" title="Settings">
-              <span class="icon">${ICON_COG_OUTLINE}</span>
+              <span class="icon">${ICON_BARLEY}</span>
               <span class="text">Breweries</span>
             </a>
             <hr/>
