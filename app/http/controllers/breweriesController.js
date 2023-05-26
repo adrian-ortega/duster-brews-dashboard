@@ -41,6 +41,7 @@ const breweriesPostHandler = (req, res, next) => {
     if (formData.id) {
       brewery = Breweries.get(formData.id);
       brewery.name = formData.name;
+      Breweries.put(brewery);
     } else {
       brewery = Breweries.create({
         name: formData.name,

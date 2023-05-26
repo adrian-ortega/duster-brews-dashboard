@@ -18,8 +18,19 @@ const clearContainersMiddlware = ({ route, router, app }) => {
   }
 };
 
+const themeAndViewMiddleware = ({ route }) => {
+  const { settings } = getApp().state;
+  const $el = document;
+  $el.className = '';
+  $el.classList.add(`theme-${settings.theme}`);
+  $el.classList.add(`route-${route.getName()}`)
+}
+
 const initializeRouter = () => {
-  const router = new Router([clearContainersMiddlware]);
+  const router = new Router([
+    clearContainersMiddlware,
+    themeAndViewMiddleware,
+  ]);
 
   const taps = new TapsController();
   const locations = new TapLocationsController();

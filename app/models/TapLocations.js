@@ -3,6 +3,8 @@ const ModelCollection = require("./Collection");
 
 const TAP_LOCATION_DEFAULTS = {
   name: null,
+  token: null,
+  percentage: 0,
   active: false,
 };
 

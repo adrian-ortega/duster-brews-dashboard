@@ -1,5 +1,9 @@
 const { dashboardView } = require("../http/controllers/homeController");
 const {
+  settingsGetHandler,
+  settingsPostHandler,
+} = require("../http/controllers/settingsController");
+const {
   tapsGetHandler,
   tapsGetFieldsHandler,
   tapsPostHandler,
@@ -8,9 +12,8 @@ const {
   tapsDestroyHandler,
 } = require("../http/controllers/tapsController");
 const {
-  settingsGetHandler,
-  settingsPostHandler,
-} = require("../http/controllers/settingsController");
+  locationsGetHandler, locationsPostHandler, locationsDestroyHandler, locationsFieldsHandler
+} = require("../http/controllers/locationsController");
 const {
   breweriesGetHandler,
   breweriesFieldsHandler,
@@ -84,6 +87,28 @@ module.exports = [
     path: "/api/taps/fields",
     methods: ["GET"],
     handler: tapsGetFieldsHandler,
+  },
+
+  // API - Locations
+  {
+    path: "/api/locations",
+    methods: ["GET"],
+    handler: locationsGetHandler,
+  },
+  {
+    path: "/api/locations",
+    methods: ["POST", "PUT"],
+    handler: locationsPostHandler,
+  },
+  {
+    path: "/api/locations/:id",
+    methods: ["DELETE"],
+    handler: locationsDestroyHandler,
+  },
+  {
+    path: "/api/locations/fields",
+    methods: ["GET"],
+    handler: locationsFieldsHandler,
   },
 
   {

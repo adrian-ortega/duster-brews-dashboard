@@ -1,4 +1,5 @@
-:root {
+:root,
+:root.default {
   /* Colors */
   --white: #feeece;
   --gray: #c2bfbc; 
