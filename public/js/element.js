@@ -46,11 +46,13 @@ class Forms {
       }
     });
 
-    $form
-      .querySelector(".field:first-child")
-      .querySelector(".input")
-      .querySelectorAll("select, input, textarea")[0]
-      .focus();
+    const $firstField = $form.querySelector(".field:first-child");
+    if ($firstField) {
+      $firstField
+        .querySelector(".input")
+        .querySelectorAll("select, input, textarea")[0]
+        .focus();
+    }
   }
 
   static getHtmlID(id) {

@@ -38,12 +38,14 @@ const breweriesPostHandler = (req, res, next) => {
         422
       );
     }
-    let brewery;
+    let brewery, status;
     if (formData.id) {
+      status = "updated";
       brewery = Breweries.get(formData.id);
       brewery.name = formData.name;
       Breweries.put(brewery);
     } else {
+      status = "created";
       brewery = Breweries.create({
         name: formData.name,
       });
@@ -53,7 +55,7 @@ const breweriesPostHandler = (req, res, next) => {
       await updateItemPrimaryImage(brewery, files.image, Breweries);
     }
 
-    return respondWithJSON(res, Breweries.get(brewery.id));
+    return respondWithJSON(res, { status });
   });
 };
 

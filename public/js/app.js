@@ -27,10 +27,7 @@ const themeAndViewMiddleware = ({ route }) => {
 };
 
 const initializeRouter = () => {
-  const router = new Router([
-    clearContainersMiddlware,
-    themeAndViewMiddleware,
-  ]);
+  const router = new Router([clearContainersMiddlware, themeAndViewMiddleware]);
 
   const taps = new TapsController();
   const locations = new TapLocationsController();
@@ -38,19 +35,43 @@ const initializeRouter = () => {
   const brews = new BreweriesController();
 
   router.addRoute("/", "home", taps.renderList.bind(taps));
-  router.addRoute("/settings", "settings", settings.renderSettings.bind(settings));
+  router.addRoute(
+    "/settings",
+    "settings",
+    settings.renderSettings.bind(settings)
+  );
 
   router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
   router.addRoute("/taps/add", "add-tap", taps.renderCreateForm.bind(taps));
   router.addRoute("/taps/edit", "edit-tap", taps.renderEditForm.bind(taps));
 
-  router.addRoute("/taps/locations", "locations", locations.renderGrid.bind(locations));
-  router.addRoute("/taps/locations/add", "add-location", locations.renderCreateForm.bind(locations));
-  router.addRoute("/taps/locations/edit", "edit-location", locations.renderEditForm.bind(locations));
+  router.addRoute(
+    "/taps/locations",
+    "locations",
+    locations.renderGrid.bind(locations)
+  );
+  router.addRoute(
+    "/taps/locations/add",
+    "add-location",
+    locations.renderCreateForm.bind(locations)
+  );
+  router.addRoute(
+    "/taps/locations/edit",
+    "edit-location",
+    locations.renderEditForm.bind(locations)
+  );
 
   router.addRoute("/breweries", "breweries", brews.renderGrid.bind(brews));
-  router.addRoute("/breweries/add", "add-brewery", brews.renderCreateForm.bind(brews));
-  router.addRoute("/breweries/edit", "edit-brewery", brews.renderEditForm.bind(brews));
+  router.addRoute(
+    "/breweries/add",
+    "add-brewery",
+    brews.renderCreateForm.bind(brews)
+  );
+  router.addRoute(
+    "/breweries/edit",
+    "edit-brewery",
+    brews.renderEditForm.bind(brews)
+  );
   router.addAction("generate-breweries", brews.autoGenerate.bind(brews));
 
   getApp().router = router;

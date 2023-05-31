@@ -77,7 +77,7 @@ class JSONFileStorage {
   }
 
   refresh(defaultValue = {}) {
-    this.data = loadFile(this.path);
+    this.data = loadFile(this.path, defaultValue);
     if (!isObject(this.data) || this.data === null) {
       this.data = defaultValue;
     }

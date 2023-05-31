@@ -59,6 +59,7 @@ class BreweriesController extends PaginatedRouteController {
     reset();
     console.log(data);
   }
+
   prepareBrewery(brewery) {
     brewery.count = getApp().state.taps.reduce(
       (c, { brewery_id, active }) => {
@@ -75,7 +76,21 @@ class BreweriesController extends PaginatedRouteController {
     );
     return brewery;
   }
-  renderGrid({ app, router, params }) {
+
+  getFields() {
+    return fetch("/api/breweries/fields")
+      .then((r) => r.json())
+      .then(({ data }) => data);
+  }
+
+  async refresh() {
+    const response = await fetch("/api/breweries");
+    const { data } = await response.json();
+    getApp().state.breweries = data;
+  }
+
+  async renderGrid({ app, router, params }) {
+    await this.refresh();
     const breweries = [...this.paginate(app.state.breweries, params)].map(
       this.prepareBrewery.bind(this)
     );
@@ -180,18 +195,47 @@ class BreweriesController extends PaginatedRouteController {
     getDomContainer().appendChild($el);
     return $el;
   }
+
   renderList() {
     const $el = this.createElement(`<div class="container">List</div>`);
     getDomContainer().appendChild($el);
     return $el;
   }
-  renderCreateForm() {
-    const $el = this.createElement(
-      `<div class="container">Create Brewery</div>`
-    );
+
+  async renderCreateForm({ router, app }) {
+    const $el = this.createElement(BreweriesController.FORM_TEMPLATE);
+    const fields = await this.getFields();
+    $el.querySelector(".settings__title").innerHTML = "Create Brewery";
+    app.Forms.renderFields(fields, $el.querySelector(".settings__view"));
+
+    $el.querySelector(".button.is-cancel").addEventListener("click", (e) => {
+      e.preventDefault();
+      return router.goTo("breweries");
+    });
+
+    $el
+      .querySelector(".settings__form")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const response = await fetch("/api/breweries", {
+          method: "POST",
+          body: new FormData($el.querySelector(".settings__form")),
+        });
+        const { data, meta } = await response.json();
+        if (data.status === 422) {
+          // @TODO validation failed
+        } else {
+          if (meta && meta.status) {
+            showNotification("Brewery saved");
+          }
+          router.goTo("breweries");
+        }
+      });
+
     getDomContainer().appendChild($el);
     return $el;
   }
+
   renderEditForm() {
     const $el = this.createElement(`<div class="container">Edit Brewery</div>`);
     getDomContainer().appendChild($el);

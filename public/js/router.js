@@ -73,9 +73,9 @@ class Router {
     return this;
   }
 
-  addRoute(path, name = "", action = NOOP) {
+  addRoute(path, name = "", action = NOOP, middleware = []) {
     const route = new Route(path, name, action);
-    route.setMiddleware([...this.middleware]);
+    route.setMiddleware([...middleware, ...this.middleware]);
     this.routes.push(route);
     return this;
   }
@@ -159,13 +159,13 @@ class Router {
         router: this,
         route,
         params,
-        target
+        target,
       });
       // Routes clear the page through middleware,
       // since actions do not, we pass the target.
       // Actions are a cheaty way to loop into
       // existing 'click' event functionality.
-      // 
+      //
       route.triggerAction(params, this, target);
     } else {
       // go to 404?

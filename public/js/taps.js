@@ -13,24 +13,6 @@ class TapsController extends PaginatedRouteController {
     };
   }
 
-  static get FORM_TEMPLATE() {
-    return `<div class="container">
-    <div class="settings__container">
-      <h2 class="settings__title"></h2>
-      <form class="settings__form" method="post" action="/">
-        <div class="settings__content"><div class="settings__view"></div></div>
-        <div class="settings__footer">
-          <button type="submit" class="button is-save is-primary">
-            <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
-            <span class="text">Save</span>
-          </button>
-          <button class="button is-cancel">Cancel</button>
-      </div>
-      </form>
-    </div>
-    </div>`;
-  }
-
   async refresh() {
     const response = await fetch("/api/taps");
     const { data } = await response.json();
@@ -171,8 +153,8 @@ class TapsController extends PaginatedRouteController {
           method: "POST",
           body,
         });
-        const { meta } = await response.json();
-        if (meta.status && meta.status.toLowerCase() === "updated") {
+        const { data } = await response.json();
+        if (data.status && data.status.toLowerCase() === "updated") {
           showNotification("Tap Updated");
         }
       });
@@ -182,22 +164,14 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 
-  async renderList({ app }) {
-    await this.refresh();
-    const $container = getDomContainer();
-    const { taps } = app.state;
-    const filteredTaps = isArray(taps)
-      ? taps.filter((tap) => tap.active).map(this.prepareTap.bind(this))
-      : [];
-
-    const tapTemplate = (tap) => {
-      const tapImage = tap.image.src
-        ? `<figure><span><img src="${tap.image.src}" alt="${tap.image.alt}"/></span></figure>`
-        : "";
-      const breweryImage = tap.brewery_image.src
-        ? `<figure><span><img src="${tap.brewery_image.src}" alt="${tap.brewery_image.alt}"/></span></figure>`
-        : "";
-      return `
+  renderListItem(tap) {
+    const tapImage = tap.image.src
+      ? `<figure><span><img src="${tap.image.src}" alt="${tap.image.alt}"/></span></figure>`
+      : "";
+    const breweryImage = tap.brewery_image.src
+      ? `<figure><span><img src="${tap.brewery_image.src}" alt="${tap.brewery_image.alt}"/></span></figure>`
+      : "";
+    return `
         <div class="tap">
           <div class="tap__image">${tapImage}</div>
           <div class="tap__content">
@@ -222,17 +196,42 @@ class TapsController extends PaginatedRouteController {
           </div>
         </div>
       `;
-    };
+  }
 
-    const $el = this.createElement(
-      `<div class="taps">${
-        filteredTaps.length
-          ? filteredTaps.map(tapTemplate).join("")
-          : `<p>You have no taps, <a class="route-link" data-route="add-tap">Create one</a></p>`
-      }</div>`
-    );
+  async renderList({ app }) {
+    await this.refresh();
+    const { taps, breweries } = app.state;
+    const filteredTaps = isArray(taps)
+      ? taps.filter((tap) => tap.active).map(this.prepareTap.bind(this))
+      : [];
 
-    $container.appendChild($el);
+    const $el = this.createElement(`<div class="taps"></div>`);
+
+    if (filteredTaps.length > 0) {
+      $el.appendChild(
+        this.createElement(filteredTaps.map(this.renderListItem).join(""))
+      );
+    } else if (breweries.length === 0) {
+      $el.appendChild(
+        this.createElement(
+          `<p>No breweries found! <a class="route-link" data-route="add-brewery">Create one</a></p>`
+        )
+      );
+    } else if (taps.length === 0) {
+      $el.appendChild(
+        this.createElement(
+          `<p>No Taps found! <a class="route-link" data-route="add-tap">Create one</a></p>`
+        )
+      );
+    } else {
+      $el.appendChild(
+        this.createElement(
+          `<p>No <strong>active</strong> taps found! <a class="route-link" data-route="taps">Manage</a></p>`
+        )
+      );
+    }
+
+    getDomContainer().appendChild($el);
     return $el;
   }
 

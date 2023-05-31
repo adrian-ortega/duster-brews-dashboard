@@ -1,4 +1,22 @@
 class RouteController extends Templateable {
+  static get FORM_TEMPLATE() {
+    return `<div class="container">
+    <div class="settings__container">
+      <h2 class="settings__title"></h2>
+      <form class="settings__form" method="post" action="/">
+        <div class="settings__content"><div class="settings__view"></div></div>
+        <div class="settings__footer">
+          <button type="submit" class="button is-save is-primary">
+            <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
+            <span class="text">Save</span>
+          </button>
+          <button class="button is-cancel">Cancel</button>
+      </div>
+      </form>
+    </div>
+    </div>`;
+  }
+
   getTap(id) {
     return window[window.APP_NS].state.taps.find((t) => t.id === id);
   }
@@ -29,6 +47,10 @@ class PaginatedRouteController extends RouteController {
     this.total = 0;
     this.pageStart = 0;
     this.pageEnd = 0;
+  }
+
+  getFields() {
+    return [];
   }
 
   getPaginatorFooterTemplate() {
