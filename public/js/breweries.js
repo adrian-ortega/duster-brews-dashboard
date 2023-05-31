@@ -20,7 +20,7 @@ class BreweriesController extends PaginatedRouteController {
       this.prepareBrewery.bind(this)
     );
     let gridContent = `<div class="grid__item">
-      <div class="grid__cell">No Breweries, <a href="/breweries/add">create one</a>.</div>
+      <div class="grid__cell">No Breweries, <a class="route-link" data-route="add-brewery">create one</a>.</div>
     </div>`;
 
     if (breweries && breweries.length > 0) {

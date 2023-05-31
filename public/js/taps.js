@@ -17,7 +17,7 @@ class TapsController extends PaginatedRouteController {
     const taps = [...this.paginate(app.state.taps, params)].map(
       this.prepareTap.bind(this)
     );
-    let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no taps, <a href="/taps/add" class="route-link">create one</a></div></div>`;
+    let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no taps, <a data-route="add-tap" class="route-link">create one</a></div></div>`;
     if (taps && taps.length > 0) {
       gridContent = taps
         .map(
@@ -196,7 +196,7 @@ class TapsController extends PaginatedRouteController {
       `<div class="taps">${
         filteredTaps.length
           ? filteredTaps.map(tapTemplate).join("")
-          : `<p>You have no taps, <a href="/settings/add-tap" class="router-link" data-route="add-tap">Create one</a></p>`
+          : `<p>You have no taps, <a class="route-link" data-route="add-tap">Create one</a></p>`
       }</div>`
     );
 

@@ -64,7 +64,13 @@ class Router {
     urlParams.forEach((value, key) => {
       params[key] = value;
     });
+
     if (route) this.goTo(route.name, params);
+
+    [...document.querySelectorAll("a.route-link")].forEach(($a) => {
+      const route = this.getRoute($a.getAttribute("data-route"));
+      if (route) $a.setAttribute("href", route.path);
+    });
   }
 
   onPopstate(event) {
