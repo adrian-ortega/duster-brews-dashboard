@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const ICON_FORMATTED_LIST = 
+const ICON_FORMATTED_LIST =
   '<svg viewBox="0 0 24 24"><path d="M2 14H8V20H2M16 8H10V10H16M2 10H8V4H2M10 4V6H22V4M10 20H16V18H10M10 16H22V14H10" /></svg>';
 const ICON_MENU_DOWN =
   '<svg viewBox="0 0 24 24"><path d="M7,10L12,15L17,10H7Z" /></svg>';
@@ -59,17 +59,6 @@ const getDomContainer = () =>
   document.querySelector(window[window.APP_NS].selector || "#app");
 
 /**
- * Helper, creates a DOM element from a string
- * @param template
- * @return {ChildNode}
- */
-const createElementFromTemplate = (template) => {
-  const _div = document.createElement("div");
-  _div.innerHTML = template.trim();
-  return _div.firstChild;
-};
-
-/**
  *
  * @param {String} eventName
  * @param {null|Object} detail
@@ -91,8 +80,8 @@ const fireCustomEvent = (eventName, detail = {}, target = document) => {
  */
 const showNotification = (message, type = "success") => {
   const { selector } = window[window.APP_NS];
-  const $el =
-    createElementFromTemplate(`<div class="notification notification--${type}">
+  const $el = window[window.APP_NS]
+    .createElement(`<div class="notification notification--${type}">
     <p>${message}</p>
   </div>`);
 
@@ -117,13 +106,16 @@ const isArray = (arr) => Array.isArray(arr);
  */
 const isObject = (obj) => typeof obj === "object" && obj !== null;
 
+const isAsyncFunction = (value) =>
+  value && {}.toString.call(value) === "[object AsyncFunction]";
+
 /**
  * @param {*} value
  * @return {boolean}
  */
-const isFunction = (value) => {
-  return value && {}.toString.call(value) === "[object Function]";
-};
+const isFunction = (value) =>
+  (value && {}.toString.call(value) === "[object Function]") ||
+  isAsyncFunction(value);
 
 /**
  * @param {Object} object
