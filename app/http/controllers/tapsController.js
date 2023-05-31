@@ -2,6 +2,7 @@ const formidable = require("formidable");
 const Taps = require("../../models/Taps");
 const Breweries = require("../../models/Breweries");
 const { validate } = require("../../validation");
+const { isString } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 
@@ -129,10 +130,12 @@ const tapToggleHandler = (req, res, next) => {
     }
 
     const tap = Taps.get(formData.id);
-    tap.active = formData.active;
+    tap.active = isString(formData.active)
+      ? formData.active.toString() !== "false"
+      : !!formData.active;
     Taps.put(tap);
 
-    return respondWithJSON(res, tap, { status: "Updated" });
+    return respondWithJSON(res, { status: "updated" });
   });
 };
 
