@@ -1,6 +1,6 @@
 
-.settings form {
-  padding: 2em 0;
+.settings__form {
+  position: relative;
 }
 .page-title,
 .first-time h2,

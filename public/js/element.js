@@ -128,7 +128,7 @@ class Forms {
   static renderImageField(label, value, fieldOptions) {
     const { id } = fieldOptions;
     const htmlID = Forms.getHtmlID(id);
-    const $content = createElementFromTemplate(
+    const $content = window[window.APP_NS].createElement(
       `<div class="input image-input">
         <label for="${htmlID}" class="image-input__preview is-hidden"><span></span></label>
         <label class="image-input__file is-hidden">
@@ -174,3 +174,8 @@ class Forms {
     return Forms.renderField({ ...fieldOptions, label, content });
   }
 }
+
+window[window.APP_NS].Forms = Forms;
+window[window.APP_NS].render = (t, p) => new Templateable().render(t, p);
+window[window.APP_NS].createElement = (t) =>
+  new Templateable().createElement(t);

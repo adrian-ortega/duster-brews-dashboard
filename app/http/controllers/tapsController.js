@@ -18,6 +18,11 @@ const tapsGetFieldsHandler = (req, res) => {
   fields = fields.map((field) => {
     if (field.name === "brewery_id") {
       field.options = breweryOptions;
+      if (breweryOptions.length === 0) {
+        const createLink = `<a class="route-link" data-route="add-brewery">Create one</a>`;
+        const genLink = `<a class="route-link" data-route="generate-breweries">auto generate<a></a>`;
+        field.help = `⚠️ ${createLink} or ${genLink} ⚠️`;
+      }
     }
     return field;
   });

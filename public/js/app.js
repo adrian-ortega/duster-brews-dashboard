@@ -21,10 +21,10 @@ const clearContainersMiddlware = ({ route, router, app }) => {
 const themeAndViewMiddleware = ({ route }) => {
   const { settings } = getApp().state;
   const $el = document;
-  $el.className = '';
+  $el.className = "";
   $el.classList.add(`theme-${settings.theme}`);
-  $el.classList.add(`route-${route.getName()}`)
-}
+  $el.classList.add(`route-${route.getName()}`);
+};
 
 const initializeRouter = () => {
   const router = new Router([
@@ -51,6 +51,7 @@ const initializeRouter = () => {
   router.addRoute("/breweries", "breweries", brews.renderGrid.bind(brews));
   router.addRoute("/breweries/add", "add-brewery", brews.renderCreateForm.bind(brews));
   router.addRoute("/breweries/edit", "edit-brewery", brews.renderEditForm.bind(brews));
+  router.addAction("generate-breweries", brews.autoGenerate.bind(brews));
 
   getApp().router = router;
 };

@@ -1,4 +1,5 @@
 const { dashboardView } = require("../http/controllers/homeController");
+const { getJoke } = require("../http/controllers/jokeController");
 const {
   settingsGetHandler,
   settingsPostHandler,
@@ -12,18 +13,27 @@ const {
   tapsDestroyHandler,
 } = require("../http/controllers/tapsController");
 const {
-  locationsGetHandler, locationsPostHandler, locationsDestroyHandler, locationsFieldsHandler
+  locationsGetHandler,
+  locationsPostHandler,
+  locationsDestroyHandler,
+  locationsFieldsHandler,
 } = require("../http/controllers/locationsController");
 const {
   breweriesGetHandler,
   breweriesFieldsHandler,
   breweriesPostHandler,
   breweriesDestroyHandler,
+  breweriesGenerateHandler,
 } = require("../http/controllers/breweriesController");
 
 module.exports = [
   // API ROUTES
 
+  {
+    path: "/api/joke",
+    methods: ["GET"],
+    handler: getJoke
+  },
   {
     path: "/api/settings",
     methods: ["GET"],
@@ -37,6 +47,21 @@ module.exports = [
 
   // API - BREWERIES
   {
+    path: "/api/breweries/auto-generate",
+    methods: ["GET", "POST", "PUT", "PATCH"],
+    handler: breweriesGenerateHandler,
+  },
+  {
+    path: "/api/breweries/fields",
+    methods: ["GET"],
+    handler: breweriesFieldsHandler,
+  },
+  {
+    path: "/api/breweries/:id",
+    methods: ["DELETE"],
+    handler: breweriesDestroyHandler,
+  },
+  {
     path: "/api/breweries",
     methods: ["GET"],
     handler: breweriesGetHandler,
@@ -45,16 +70,6 @@ module.exports = [
     path: "/api/breweries",
     methods: ["POST", "PUT"],
     handler: breweriesPostHandler,
-  },
-  {
-    path: "/api/breweries/:id",
-    methods: ["DELETE"],
-    handler: breweriesDestroyHandler,
-  },
-  {
-    path: "/api/breweries/fields",
-    methods: ["GET"],
-    handler: breweriesFieldsHandler,
   },
 
   // API - TAPS
@@ -110,9 +125,19 @@ module.exports = [
     methods: ["GET"],
     handler: locationsFieldsHandler,
   },
+  // {
+  //   path: "/api(/*)?",
+  //   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  //   handler(req, res) {
+  //     return respondWithJSON(res, {
+  //       path: req.originalPath,
+  //       message: "Does not exist",
+  //     });
+  //   },
+  // },
 
   {
-    path: "/*",
+    path: "*",
     handler: dashboardView,
   },
 ];

@@ -13,7 +13,38 @@ class TapsController extends PaginatedRouteController {
     };
   }
 
-  renderGrid({ app, router, params }) {
+  static get FORM_TEMPLATE() {
+    return `<div class="container">
+    <div class="settings__container">
+      <h2 class="settings__title"></h2>
+      <form class="settings__form" method="post" action="/">
+        <div class="settings__content"><div class="settings__view"></div></div>
+        <div class="settings__footer">
+          <button type="submit" class="button is-save is-primary">
+            <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
+            <span class="text">Save</span>
+          </button>
+          <button class="button is-cancel">Cancel</button>
+      </div>
+      </form>
+    </div>
+    </div>`;
+  }
+
+  async refresh() {
+    const response = await fetch("/api/taps");
+    const { data } = await response.json();
+    getApp().state.taps = data;
+  }
+
+  async getFields() {
+    return fetch("/api/taps/fields")
+      .then((res) => res.json())
+      .then(({ data }) => data);
+  }
+
+  async renderGrid({ app, router, params }) {
+    await this.refresh();
     const taps = [...this.paginate(app.state.taps, params)].map(
       this.prepareTap.bind(this)
     );
@@ -151,12 +182,13 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 
-  renderList({ app }) {
+  async renderList({ app }) {
+    await this.refresh();
     const $container = getDomContainer();
     const { taps } = app.state;
-    const filteredTaps = taps
-      .filter((tap) => tap.active)
-      .map(this.prepareTap.bind(this));
+    const filteredTaps = isArray(taps)
+      ? taps.filter((tap) => tap.active).map(this.prepareTap.bind(this))
+      : [];
 
     const tapTemplate = (tap) => {
       const tapImage = tap.image.src
@@ -204,8 +236,37 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 
-  renderCreateForm() {
-    const $el = this.createElement(`<div class="container">Create Brewery</div>`);
+  async renderCreateForm({ router }) {
+    const $el = this.createElement(TapsController.FORM_TEMPLATE);
+    const fields = await this.getFields();
+
+    $el.querySelector(".settings__title").innerHTML = "Create Tap";
+    Forms.renderFields(fields, $el.querySelector(".settings__view"));
+
+    $el.querySelector(".button.is-cancel").addEventListener("click", (e) => {
+      e.preventDefault();
+      return router.goTo("taps");
+    });
+
+    $el
+      .querySelector(".settings__form")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const response = await fetch("/api/taps", {
+          method: "POST",
+          body: new FormData($el.querySelector(".settings__form")),
+        });
+        const { data, meta } = await response.json();
+        if (data.status === 422) {
+          // @TODO validation failed
+        } else {
+          if (meta && meta.status) {
+            showNotification("Tap saved");
+          }
+          router.goTo("taps");
+        }
+      });
+
     getDomContainer().appendChild($el);
     return $el;
   }

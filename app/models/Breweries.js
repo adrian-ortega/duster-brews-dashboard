@@ -11,8 +11,8 @@ class BreweriesCollection extends ModelCollection {
         super(path.resolve("storage/breweries.db.json"))
     }
 
-    create (data) {
-        return super.create({ ...BREWERY_DEFAULTS, ...data });
+    sanitize(data) {
+        return super.sanitize({ ...BREWERY_DEFAULTS, ...data });
     }
 }
 

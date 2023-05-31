@@ -1,5 +1,6 @@
 const formidable = require("formidable");
 const Breweries = require("../../models/Breweries");
+const axios = require("axios");
 const { validate } = require("../../validation");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
@@ -71,9 +72,38 @@ const breweriesDestroyHandler = (req, res) => {
   return respondWithJSON(res, { status: "Success", id });
 };
 
+const breweriesGenerateHandler = async (req, res) => {
+  const getPage = (page = 1, per_page = 10) => {
+    return axios
+      .get("https://api.openbrewerydb.org/v1/breweries", {
+        params: { page, per_page },
+      })
+      .then(({ data }) => {
+        return data.map((b) => ({
+          id: b.id,
+          name: b.name,
+        }));
+      });
+  };
+
+  const { data } = await axios.get(
+    "https://api.openbrewerydb.org/v1/breweries/meta"
+  );
+  const total = parseInt(data.total, 10);
+  let page = parseInt(data.page, 10);
+  let breweries = [];
+  while (breweries.length < total) {
+    breweries = [...breweries, ...(await getPage(page, data.per_page))];
+    Breweries.put(breweries);
+    page++;
+  }
+  return respondWithJSON(res, breweries);
+};
+
 module.exports = {
   breweriesGetHandler,
   breweriesFieldsHandler,
   breweriesPostHandler,
   breweriesDestroyHandler,
+  breweriesGenerateHandler,
 };

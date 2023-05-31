@@ -1,4 +1,64 @@
 class BreweriesController extends PaginatedRouteController {
+  async autoGenerate({ target, app }) {
+    const startedAt = new Date();
+    let reset = NOOP;
+    if (target) {
+      const $form = target.closest("form");
+      if ($form) {
+        [...$form.querySelectorAll(".button")].forEach(($b) => {
+          $b.classList.add("disabled");
+          $b.setAttribute("disabled", "disabled");
+          $b.disabled = true;
+        });
+        let jokeId, eId;
+        const $spinner = app.createElement(
+          `<div class="loading-spinner">
+            <span class="progress"></span>
+            <span class="title">Do you like Jokes?🤔 This might take a while.</span>
+            <span class="icon is-spinner">${ICON_RELOAD}</span>
+          </div>`
+        );
+        $form.appendChild($spinner);
+        const getElapsedTime = () => {
+          const pad = (n) => (n < 10 ? `0${n}` : n);
+          const now = new Date();
+          let diff = now.getTime() - startedAt.getTime();
+          const m = Math.floor(diff / (1000 * 60));
+          diff -= m * (1000 * 60);
+          const s = Math.floor(diff / 1000);
+          $spinner.querySelector(".progress").innerHTML = `Time Elapsed ${pad(
+            m
+          )}:${pad(s)}`;
+          eId = setTimeout(getElapsedTime, 100);
+        };
+        const getJoke = () => {
+          fetch("/api/joke")
+            .then((r) => r.json())
+            .then(({ data }) => {
+              $spinner.querySelector(".title").innerHTML = data;
+              jokeId = setTimeout(getJoke, 30000);
+            });
+        };
+        eId = setTimeout(getElapsedTime, 100);
+        jokeId = setTimeout(getJoke, 10000);
+        reset = () => {
+          [...$form.querySelectorAll(".button")].forEach(($b) => {
+            $b.classList.remove("disabled");
+            $b.removeAttribute("disabled");
+            $b.disabled = false;
+          });
+          $form.removeChild($spinner);
+          clearTimeout(jokeId);
+          clearTimeout(eId);
+        };
+      }
+    }
+
+    const response = await fetch("/api/breweries/generate", { method: "POST" });
+    const data = await response.json();
+    reset();
+    console.log(data);
+  }
   prepareBrewery(brewery) {
     brewery.count = getApp().state.taps.reduce(
       (c, { brewery_id, active }) => {
@@ -24,7 +84,9 @@ class BreweriesController extends PaginatedRouteController {
     </div>`;
 
     if (breweries && breweries.length > 0) {
-      gridContent = breweries.map((brewery) => `<div class="grid__item">
+      gridContent = breweries
+        .map(
+          (brewery) => `<div class="grid__item">
         <div class="grid__cell name"><h2>${brewery.name}</h2></div>
         <div class="grid__cell tap-count">${brewery.count.active}/${brewery.count.total}</div>
         <div class="grid__cell actions">
@@ -38,7 +100,9 @@ class BreweriesController extends PaginatedRouteController {
           </button>
           </div>
         </div>
-      </div>`).join("");
+      </div>`
+        )
+        .join("");
     }
 
     const $el = this.createElement(`<div class="container">
@@ -122,7 +186,9 @@ class BreweriesController extends PaginatedRouteController {
     return $el;
   }
   renderCreateForm() {
-    const $el = this.createElement(`<div class="container">Create Brewery</div>`);
+    const $el = this.createElement(
+      `<div class="container">Create Brewery</div>`
+    );
     getDomContainer().appendChild($el);
     return $el;
   }

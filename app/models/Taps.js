@@ -18,8 +18,8 @@ class TapsCollection extends ModelCollection {
     super(path.resolve("storage/taps.db.json"));
   }
 
-  create(data) {
-    return super.create({ ...TAP_DEFAULTS, ...data });
+  sanitize(data) {
+    return super.sanitize({ ...TAP_DEFAULTS, ...data });
   }
 }
 
