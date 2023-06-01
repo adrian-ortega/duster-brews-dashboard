@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-${theme}">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -10,46 +10,44 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>${title}</title>
 
-    <link rel="icon" href="images/favicon.svg" sizes="any" />
-    <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/images/favicon.svg" sizes="any" />
+    <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bayon&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bayon&family=Work+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" data-autoreload href="css/app.css" />
+    <link rel="stylesheet" data-autoreload href="/css/app.css" />
   </head>
   <body>
-    <div class="main-content dashboard">
-      <div id="app">
-        <!-- This will be filled in with JS -->
-      </div>
+    <div id="app" class="main-content">
+      <!-- This will be filled in with JS -->
     </div>
     <script type="text/javascript">
       ((n, ns) => {
-        const ONE_SECOND = 1000;
-        const ONE_MINUTE = ONE_SECOND * 60;
         const timestamp = performance.now();
         window.APP_NAME = n;
         window.APP_NS = ns;
         window[window.APP_NS] = {
           route: "home",
           state: {},
-          heartbeat: { timestamp, interval: ONE_SECOND * 3 },
-          widgets: { order: [], timestamp, interval: ONE_MINUTE * 5 },
+          heartbeat: { timestamp, interval: 3000 },
+          widgets: { order: [], timestamp, interval: 300000 },
         };
       })("${APP_NAME}", "${APP_NAMESPACE}");
     </script>
-    <script type="text/javascript" src="js/util.js"></script>
-    <script type="text/javascript" src="js/element.js"></script>
-    <script type="text/javascript" src="js/ws.js"></script>
-    <script type="text/javascript" src="js/nav.js"></script>
-    <script type="text/javascript" src="js/taps.js"></script>
-    <script type="text/javascript" src="js/breweries.js"></script>
-    <script type="text/javascript" src="js/widget.js"></script>
-    <script type="text/javascript" src="js/settings.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="/js/util.js"></script>
+    <script type="text/javascript" src="/js/element.js"></script>
+    <script type="text/javascript" src="/js/ws.js"></script>
+    <script type="text/javascript" src="/js/router.js"></script>
+    <script type="text/javascript" src="/js/controller.js"></script>
+    <script type="text/javascript" src="/js/nav.js"></script>
+    <script type="text/javascript" src="/js/locations.js"></script>
+    <script type="text/javascript" src="/js/taps.js"></script>
+    <script type="text/javascript" src="/js/breweries.js"></script>
+    <script type="text/javascript" src="/js/settings.js"></script>
+    <script type="text/javascript" src="/js/app.js"></script>
   </body>
 </html>

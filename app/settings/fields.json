@@ -8,7 +8,7 @@
   "theme": {
     "label": "App Theme",
     "help": "",
-    "type": "options",
+    "type": "select",
     "category": "appearance",
     "options": ["default", "dark", "chalk"]
   },
@@ -24,6 +24,7 @@
   },
   "enable_plaato": {
     "label": "Enable PLAATO",
+    "help": "Will add PLAATO key inputs to Tap Positions and check the API for values.",
     "category": "general",
     "type": "boolean"
   }

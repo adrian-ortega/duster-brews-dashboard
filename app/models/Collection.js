@@ -3,6 +3,7 @@ const {
   parseJson,
   isObject,
   sanitizedCopy,
+  isArray,
 } = require("../util/helpers");
 const { makeId } = require("../util/uuid");
 const JSONFileStorage = require("../util/storage");
@@ -27,16 +28,26 @@ class ModelCollection extends JSONFileStorage {
     return this.data.items.find((item) => item.id === id);
   }
 
+  sanitize(item) {
+    return sanitizedCopy(item);
+  }
+
   put(data) {
     this.refresh();
-    if (isObject(data) && objectHasKey(data, "id")) {
-      const i = this.data.items.findIndex((m) => m.id === data.id);
-      const copied = sanitizedCopy(data);
+    const isValidItem = (a) => isObject(a) && objectHasKey(a, "id");
+    const putItem = (item) => {
+      const i = this.data.items.findIndex((m) => m.id === item.id);
+      const copied = this.sanitize(item);
       if (i !== -1) {
         this.data.items[i] = copied;
       } else {
         this.data.items.push(copied);
       }
+    };
+    if (isValidItem(data)) {
+      putItem(data);
+    } else if (isArray(data) && data.every(isValidItem)) {
+      data.forEach(putItem);
     } else {
       this.create(data);
     }
@@ -50,11 +61,9 @@ class ModelCollection extends JSONFileStorage {
 
   remove(id) {
     this.refresh();
-    if (objectHasKey(this.data.items, id)) {
-      delete this.data.items[id];
-    }
+    this.data.items = this.data.items.filter((t) => t.id !== id);
     this.save();
-    return !objectHasKey(this.data.items, id);
+    return true;
   }
 
   has(id) {
@@ -64,6 +73,10 @@ class ModelCollection extends JSONFileStorage {
 
   refresh() {
     return super.refresh(sanitizedCopy(MODEL_DEFAULTS));
+  }
+
+  fillables() {
+    return ["id"];
   }
 }
 

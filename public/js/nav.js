@@ -1,175 +1,52 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
-
-const NAVIGATION_BUTTON = {
-  text: "",
-  icon: null,
-  iconOnly: false,
-  onClick: NOOP,
-  children: [],
-};
-const NAVIGATION_BUTTONS = [
-  {
-    text: "Refresh",
-    iconOnly: true,
-    icon: ICON_RELOAD,
-    onClick(e) {
-      e.preventDefault();
-      fireCustomEvent("ShowTaps", null, e.target);
-    },
-  },
-  {
-    text: "Settings",
-    iconOnly: true,
-    icon: ICON_DOTS_HORZ,
-    children: [
-      {
-        text: "Add Tap",
-        onClick(e) {
-          e.preventDefault();
-          fireCustomEvent("AddTap", null, e.target);
-        },
-      },
-      {
-        text: "Add Brewery",
-        onClick(e) {
-          e.preventDefault();
-          fireCustomEvent("AddBrewery", null, e.target);
-        },
-      },
-      {
-        text: "Edit Breweries",
-        onClick(e) {
-          e.preventDefault();
-          fireCustomEvent("EditBreweries", null, e.target);
-        },
-      },
-      {
-        title: "",
-      },
-      {
-        text: "Settings",
-        onClick(e) {
-          e.preventDefault();
-          fireCustomEvent("ShowSettings", null, e.target);
-        },
-      },
-    ],
-  },
-].map((b) => ({ ...NAVIGATION_BUTTON, id: makeId(), ...b }));
-
-const createNavLogo = () => {
-  return createElementFromTemplate(
-    `<div class="nav-item logo">${imgTemplate(
-      "/images/logo-duster_brews-dashboard.svg",
-      "Logo"
-    )}</div>`
-  );
-};
-
-const createNavButton = (options) => {
-  if (typeof options.title !== "undefined") {
-    return options.title !== ""
-      ? createElementFromTemplate(`<h3>${options.title}</h3>`)
-      : createElementFromTemplate("<hr/>");
+class Navigation extends Templateable {
+  static init() {
+    const nav = new Navigation();
+    nav.render(null, getDomContainer());
   }
-
-  const $button = createElementFromTemplate(
-    `<button class="button nav-button" title="${options.text}"></button>`
-  );
-
-  if (options.icon) {
-    const $buttonIcon = document.createElement("span");
-    $buttonIcon.classList.add("icon");
-    $button.appendChild($buttonIcon);
-    $buttonIcon.innerHTML = options.icon;
+  template() {
+    // @TODO change these two variables to pull from saved data within
+    //       the settings json file
+    //
+    const src = "/images/duster-brews-logo.svg";
+    const alt = "Duster Brews";
+    return `<div class="nav">
+      <div class="nav-left">
+        <div class="nav-item logo">
+          <figure><span><img src="${src}" alt="${alt}"/></span></figure>
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-item">
+          <a href="/" data-route="home" class="button nav-button route-link" title="Taps">
+            <span class="icon">${ICON_FORMATTED_LIST}</span>
+          </a>
+        </div>
+        <div class="nav-item has-sub">
+          <a href="/settings" data-route="settings" class="button nav-button route-link" title="Settings">
+            <span class="icon">${ICON_COG_OUTLINE}</span>
+          </a>
+          <div class="nav-sub">
+            <h3>Manage</h3>
+            <a data-route="taps" class="button nav-button route-link" title="Taps">
+              <span class="icon">${ICON_BEER_OUTLINE}</span>
+              <span class="text">Taps</span>
+            </a>
+            <a data-route="locations" class="button nav-button route-link" title="Tap Locations">
+              <span class="icon">${ICON_FAUCET}</span>
+              <span class="text">Tap Locations</span>
+            </a>
+            <a data-route="breweries" class="button nav-button route-link" title="Breweries">
+              <span class="icon">${ICON_BARLEY}</span>
+              <span class="text">Breweries</span>
+            </a>
+            <hr/>
+            <a data-route="settings" class="button nav-button route-link" title="Settings">
+              <span class="icon">${ICON_COG_OUTLINE}</span>
+              <span class="text">Settings</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>`;
   }
-
-  if (!options.iconOnly) {
-    $button.appendChild(
-      createElementFromTemplate(`<span class="text">${options.text}</span>`)
-    );
-  }
-
-  if (options.onClick) {
-    $button.addEventListener("click", (...args) =>
-      options.onClick.apply($button, args)
-    );
-  }
-
-  return $button;
-};
-
-const createNavButtons = () => {
-  const $nav = createElementFromTemplate(
-    '<div class="nav-item nav-buttons"></div>'
-  );
-
-  NAVIGATION_BUTTONS.forEach((b) => {
-    const $button = createNavButton(b);
-
-    if (isArray(b.children) && b.children.length > 0) {
-      const close = () => {
-        const $children = $nav.querySelector(`[data-parent="${b.id}"]`);
-        $nav.removeChild($children);
-        document.removeEventListener("click", outsideClickHandler, false);
-        document.removeEventListener("keydown", escKeyHandler);
-      };
-      const outsideClickHandler = (e) => {
-        if (
-          e.target !== $button ||
-          (!$button.contains(e.target) && !$nav.contains(e.target))
-        ) {
-          close();
-        }
-      };
-      const escKeyHandler = (e) => e.keyCode === 27 && close();
-      $button.addEventListener("click", (e) => {
-        e.preventDefault();
-        const $children = createElementFromTemplate(
-          `<div class="nav-sub" data-parent="${b.id}"></div>`
-        );
-        b.children.forEach((child) => {
-          $children.appendChild(createNavButton(child));
-        });
-
-        $nav.appendChild($children);
-        setTimeout(() => {
-          document.addEventListener("click", outsideClickHandler, false);
-          document.addEventListener("keydown", escKeyHandler, false);
-        }, 1);
-      });
-    }
-
-    $nav.appendChild($button);
-  });
-
-  return $nav;
-};
-
-const createNavElements = ($nav) => {
-  let $left = createElementFromTemplate('<div class="nav-left"></div>');
-  let $right = createElementFromTemplate('<div class="nav-right"></div>');
-
-  $left.appendChild(createNavLogo());
-  $right.appendChild(createNavButtons());
-
-  $nav.appendChild($left);
-  $nav.appendChild($right);
-};
-
-const initializeNav = () => {
-  const $container = getDomContainer();
-  if (!$container) {
-    // Something went wrong
-    return;
-  }
-
-  let $navContainer = $container.querySelector(".nav");
-  if (!$navContainer) {
-    $navContainer = createElementFromTemplate('<nav class="nav"></nav>');
-    $container.appendChild($navContainer);
-  }
-
-  createNavElements($navContainer);
-};
+}

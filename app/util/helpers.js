@@ -34,13 +34,20 @@ const isObject = (obj) => {
   return typeof obj === "object" && obj !== null;
 };
 
+const isAsyncFunction = (value) => {
+  return value && {}.toString.call(value) === "[object AsyncFunction]";
+};
+
 /**
  * Checks to see if the value passed is function
  * @param {*} value
  * @return {boolean}
  */
 const isFunction = (value) => {
-  return value && {}.toString.call(value) === "[object Function]";
+  return (
+    (value && {}.toString.call(value) === "[object Function]") ||
+    isAsyncFunction(value)
+  );
 };
 
 /**
@@ -155,7 +162,7 @@ const isEmpty = (mixedValue) => {
 
 /**
  * String to slug
- * @param {String} str 
+ * @param {String} str
  * @returns String
  */
 const slugify = (str) =>

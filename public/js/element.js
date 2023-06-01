@@ -1,11 +1,35 @@
+class Templateable {
+  render(template, $parent) {
+    const $el = this.createElement(template);
+    if ($parent) {
+      $parent.appendChild($el);
+    }
+    return $el;
+  }
+
+  createElement(template) {
+    if (!template && isFunction(this.template)) {
+      template = this.template();
+    }
+
+    const _div = document.createElement("div");
+    _div.innerHTML = template.trim();
+    return _div.firstChild;
+  }
+}
+
 class Forms {
-  static renderFields(fields, $form) {
+  static renderFields(fields, $form, eachCallback = NOOP) {
     fields.forEach((field) => {
       let $field;
       const fieldOpts = { ...field, id: field.name };
       switch (field.type) {
         case "select":
           $field = Forms.renderSelectField(field.label, field.value, fieldOpts);
+          break;
+        case "boolean":
+        case "bool":
+          $field = Forms.renderSwitchField(field.label, field.value, fieldOpts);
           break;
         case "image":
           $field = Forms.renderImageField(field.label, field.value, fieldOpts);
@@ -16,13 +40,36 @@ class Forms {
           break;
       }
       $form.appendChild($field);
+
+      if (isFunction(eachCallback)) {
+        eachCallback.apply(null, [$field, field]);
+      }
     });
 
-    $form
-      .querySelector(".field:first-child")
-      .querySelector(".input")
-      .querySelectorAll("select, input, textarea")[0]
-      .focus();
+    const $firstField = $form.querySelector(".field:first-child");
+    if ($firstField) {
+      $firstField
+        .querySelector(".input")
+        .querySelectorAll("select, input, textarea")[0]
+        .focus();
+    }
+  }
+
+  static fillFields(fields, model, $form) {
+    for (let i = 0; i < fields.length; i++) {
+      const { name, type } = fields[i];
+      const $input = $form.querySelector(`[name="${name}"]`);
+      switch (type) {
+        case "image":
+          // @TODO needs to change since we're using a file, the file input should be temp
+          break;
+        default:
+          if (objectHasKey(model, name)) {
+            $input.value = model[name];
+          }
+          break;
+      }
+    }
   }
 
   static getHtmlID(id) {
@@ -38,7 +85,8 @@ class Forms {
     category = "general",
     required = false,
   }) {
-    const $field = createElementFromTemplate(`
+    const template = new Templateable();
+    const $field = template.createElement(`
     <div class="field field--${type}" data-cat="${category}">
       <div class="label">
         <label for="${Forms.getHtmlID(id)}">
@@ -50,7 +98,7 @@ class Forms {
     `);
 
     $field.appendChild(
-      content instanceof Element ? content : createElementFromTemplate(content)
+      content instanceof Element ? content : template.createElement(content)
     );
 
     return $field;
@@ -72,7 +120,10 @@ class Forms {
   static renderSelectField(label, value, fieldOptions) {
     const { id, options } = fieldOptions;
     const optionTransformer = (option) => {
-      const oText = isObject(option) ? option.text : option;
+      const oText = (isObject(option) ? option.text : option).replace(
+        /^-*(.)|-+(.)/g,
+        (s, c, d) => (c ? c.toUpperCase() : " " + d.toUpperCase())
+      );
       const oValue = isObject(option) ? option.value : option;
       const oSel = oValue === value ? ' selected="selected"' : "";
       return `<option value="${oValue}"${oSel}>${oText}</option>`;
@@ -96,14 +147,14 @@ class Forms {
   static renderImageField(label, value, fieldOptions) {
     const { id } = fieldOptions;
     const htmlID = Forms.getHtmlID(id);
-    const $content = createElementFromTemplate(
+    const $content = window[window.APP_NS].createElement(
       `<div class="input image-input">
         <label for="${htmlID}" class="image-input__preview is-hidden"><span></span></label>
         <label class="image-input__file is-hidden">
           <span class="image-input__file-l">New file:</span>
           <span class="image-input__file-v">Something.gif</span>
         </label>
-        <label for="${htmlID}" class="image-input__trigger">
+        <label for="${htmlID}" class="button image-input__trigger">
           <input type="file" id="${htmlID}" name="${id}"/>
           <span class="image-input__trigger-text">Edit</span>
         </label>
@@ -142,3 +193,8 @@ class Forms {
     return Forms.renderField({ ...fieldOptions, label, content });
   }
 }
+
+window[window.APP_NS].Forms = Forms;
+window[window.APP_NS].render = (t, p) => new Templateable().render(t, p);
+window[window.APP_NS].createElement = (t) =>
+  new Templateable().createElement(t);

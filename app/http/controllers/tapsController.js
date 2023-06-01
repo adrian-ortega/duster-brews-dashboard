@@ -1,7 +1,9 @@
 const formidable = require("formidable");
 const Taps = require("../../models/Taps");
 const Breweries = require("../../models/Breweries");
+const Locations = require("../../models/TapLocations");
 const { validate } = require("../../validation");
+const { isString, objectHasKey } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 
@@ -9,6 +11,12 @@ const tapsGetHandler = (req, res) => respondWithJSON(res, Taps.all());
 
 const tapsGetFieldsHandler = (req, res) => {
   let { fields } = require("../../settings/tap.fields.json");
+  const locationOptions = Locations.all().map((location) => {
+    return {
+      value: location.id,
+      text: location.name,
+    };
+  });
   const breweryOptions = Breweries.all().map((brewery) => {
     return {
       value: brewery.id,
@@ -18,6 +26,14 @@ const tapsGetFieldsHandler = (req, res) => {
   fields = fields.map((field) => {
     if (field.name === "brewery_id") {
       field.options = breweryOptions;
+      if (breweryOptions.length === 0) {
+        const createLink = `<a class="route-link" data-route="add-brewery">Create one</a>`;
+        const genLink = `<a class="route-link" data-route="generate-breweries">auto generate<a></a>`;
+        field.help = `⚠️ ${createLink} or ${genLink} ⚠️`;
+      }
+    }
+    if (field.name === "location_id") {
+      field.options = [{ value: "-1", text: "N/A" }, ...locationOptions];
     }
     return field;
   });
@@ -47,20 +63,27 @@ const tapsPostHandler = (req, res, next) => {
         422
       );
     }
-    let tap, status;
+    let tap = {};
+    let status;
+
     if (formData.id) {
       status = "updated";
       tap = Taps.get(formData.id);
-      tap.brewery_id = formData.brewery_id;
-      tap.name = formData.name;
-      tap.style = formData.style;
+      Taps.fillables().forEach((key) => {
+        if (objectHasKey(formData, key)) {
+          tap[key] = formData[key];
+        }
+      });
+      Taps.put(tap);
     } else {
       status = "created";
-      tap = Taps.create({
-        brewery_id: formData.brewery_id,
-        name: formData.name,
-        style: formData.style,
+
+      Taps.fillables().forEach((key) => {
+        if (objectHasKey(formData, key)) {
+          tap[key] = formData[key];
+        }
       });
+      tap = Taps.create(tap);
     }
 
     if (files.image) {
@@ -101,9 +124,57 @@ const tapsMediaHandler = (req, res, next) => {
   });
 };
 
+const tapToggleHandler = (req, res, next) => {
+  const form = formidable();
+  form.parse(req, (err, formData, files) => {
+    if (err) {
+      return next(err);
+    }
+    const validationRules = {
+      id: ["optional:tapExists"],
+      active: ["required"],
+    };
+
+    const validator = validate({ ...formData, ...files }, validationRules);
+
+    if (validator.failed()) {
+      return respondWithJSON(
+        res,
+        { status: 422, errors: validator.getErrors() },
+        422
+      );
+    }
+
+    const tap = Taps.get(formData.id);
+    tap.active = isString(formData.active)
+      ? formData.active.toString() !== "false"
+      : !!formData.active;
+    Taps.put(tap);
+
+    return respondWithJSON(res, { status: "updated" });
+  });
+};
+
+const tapsDestroyHandler = (req, res) => {
+  const { id } = req.params;
+  if (!Taps.has(id)) {
+    return respondWithJSON(
+      res,
+      { status: "error", message: "Tap not found" },
+      404
+    );
+  }
+
+  Taps.remove(id);
+
+  return respondWithJSON(res, { status: "Success", id });
+};
+
 module.exports = {
   tapsGetHandler,
   tapsGetFieldsHandler,
   tapsPostHandler,
   tapsMediaHandler,
+  tapToggleHandler,
+  tapsDestroyHandler,
 };
