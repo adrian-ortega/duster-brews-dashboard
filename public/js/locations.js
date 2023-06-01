@@ -60,6 +60,12 @@ class TapLocationsController extends PaginatedRouteController {
           </a>
         </div>
         <div class="grid__action">
+          <a class="button route-link" data-route="breweries" title="breweries">
+            <span class="icon">${ICON_BARLEY}</span>
+            <span class="text">Breweries</span>
+          </a>
+        </div>
+        <div class="grid__action">
           <a class="button is-success route-link" data-route="add-location" title="Create Tap">
             <span class="icon">${ICON_PLUS}</span>
             <span class="text">Create</span>

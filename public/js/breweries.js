@@ -127,6 +127,12 @@ class BreweriesController extends PaginatedRouteController {
           <div class="grid__action-group"></div>
           <div class="grid__action-group">
             <div class="grid__action">
+              <a href="/taps" class="button route-link" data-route="locations">
+                <span class="icon">${ICON_FAUCET}</span>
+                <span class="text">Locations</span>
+              </a>
+            </div>
+            <div class="grid__action">
               <a href="/taps" class="button route-link" data-route="taps">
                 <span class="icon">${ICON_BEER_OUTLINE}</span>
                 <span class="text">Taps</span>
