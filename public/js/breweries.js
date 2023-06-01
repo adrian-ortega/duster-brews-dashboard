@@ -236,9 +236,19 @@ class BreweriesController extends PaginatedRouteController {
     return $el;
   }
 
-  renderEditForm() {
-    const $el = this.createElement(`<div class="container">Edit Brewery</div>`);
-    getDomContainer().appendChild($el);
+  async renderEditForm({ router, app, params }) {
+    const brewery = this.getBrewery(params.id);
+    const $el = await this.renderCreateForm({ router, app });
+    app.Forms.fillFields(await this.getFields(), brewery, $el);
+
+    $el
+      .querySelector(".settings__form")
+      .appendChild(
+        this.createElement(
+          `<input type="hidden" name="id" value="${brewery.id}"/>`
+        )
+      );
+
     return $el;
   }
 }

@@ -270,70 +270,17 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 
-  renderEditForm({ params, router }) {
-    const $container = getDomContainer();
-    const { id } = params;
-    //@TODO reject taps that don't exists
-    const tap = this.getTap(id);
-    const $el = this.createElement(`
-    <div class="container">
-      <div class="settings__container">
-        <h2 class="settings__title">Edit Tap</h2>
-          <form class="settings__form" method="post" action="/">
-            <div class="settings__content">
-              <div class="settings__view"></div>
-            </div>
-            <div class="settings__footer">
-              <button type="submit" class="button is-save is-primary">
-                <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
-                <span class="text">Save</span>
-              </button>
-              <button class="button is-cancel">Cancel</button>
-            </div>
-        </form>
-      </div>
-    </div>
-    `);
+  async renderEditForm({ params, router, app }) {
+    const tap = this.getTap(params.id);
+    const $el = await this.renderCreateForm({ router, app });
+    app.Forms.fillFields(await this.getFields(), tap, $el);
 
-    fetch("/api/taps/fields").then(async (response) => {
-      const { data } = await response.json();
-      for (let i = 0; i < data.length; i++) {
-        if (tap[data[i].name]) {
-          data[i].value = tap[data[i].name];
-        }
-      }
-      Forms.renderFields(data, $el.querySelector(".settings__view"));
-    });
-
-    $el.querySelector(".button.is-cancel").addEventListener("click", (e) => {
-      e.preventDefault();
-      return router.goTo("taps");
-    });
-
-    const $form = $el.querySelector(".settings__form");
-    $form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      fetch("/api/taps", {
-        method: "POST",
-        body: new FormData($el.querySelector(".settings__form")),
-      }).then((response) =>
-        response.json().then(({ data, meta }) => {
-          if (data.status === 422) {
-            // @TODO validation failed
-          } else {
-            if (meta && meta.status) {
-              showNotification("Tap saved");
-            }
-            router.goTo("taps");
-          }
-        })
+    $el
+      .querySelector(".settings__form")
+      .appendChild(
+        this.createElement(`<input type="hidden" name="id" value="${tap.id}"/>`)
       );
-    });
 
-    $form.appendChild(
-      this.createElement(`<input type="hidden" name="id" value="${tap.id}"/>`)
-    );
-    $container.appendChild($el);
     return $el;
   }
 }

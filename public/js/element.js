@@ -55,6 +55,24 @@ class Forms {
     }
   }
 
+  static fillFields(fields, model, $form) {
+    for (let i = 0; i < fields.length; i++) {
+      const { name, type } = fields[i];
+      const $input = $form.querySelector(`[name="${name}"]`);
+      console.log({ model, $input, name, type });
+      switch (type) {
+        case "image":
+          // @TODO needs to change since we're using a file, the file input should be temp
+          break;
+        default:
+          if (objectHasKey(model, name)) {
+            $input.value = model[name];
+          }
+          break;
+      }
+    }
+  }
+
   static getHtmlID(id) {
     return `input-${id}`;
   }
