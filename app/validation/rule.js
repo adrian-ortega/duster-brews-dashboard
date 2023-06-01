@@ -1,4 +1,4 @@
-const ValidationError = require("./error");
+const { ValidationError } = require("./error");
 
 /**
  * @var String name
@@ -20,8 +20,8 @@ class ValidationRule {
   /**
    * @TODO Set a template for the error message instead of overriding
    *       the getErroMessage method
-   * @param {String} template 
-   * @returns 
+   * @param {String} template
+   * @returns
    */
   setTemplate(template) {
     this.template = template;

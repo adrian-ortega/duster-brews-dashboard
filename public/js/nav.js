@@ -7,7 +7,7 @@ class Navigation extends Templateable {
     // @TODO change these two variables to pull from saved data within
     //       the settings json file
     //
-    const src = "/images/duster-brews-logo.svg";
+    const src = getApp().state.settings.logo;
     const alt = "Duster Brews";
     return `<div class="nav">
       <div class="nav-left">

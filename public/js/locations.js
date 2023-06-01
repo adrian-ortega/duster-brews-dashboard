@@ -11,7 +11,13 @@ class TapLocationsController extends PaginatedRouteController {
       .then(({ data }) => data);
   }
 
-  renderGrid({ app, params, router }) {
+  async refresh() {
+    const { data } = await apiGet("/api/locations");
+    getApp().state.tap_locations = data;
+  }
+
+  async renderGrid({ app, params, router }) {
+    await this.refresh();
     const locations = [...this.paginate(app.state.tap_locations, params)].map(
       this.prepareLocation.bind(this)
     );

@@ -15,12 +15,14 @@
   "refresh_rate": {
     "label": "Refresh Rate",
     "help": "Minutes between refresh calls, defaults to 60 mins.",
-    "category": "general"
+    "category": "general",
+    "type": "number"
   },
   "burn_in_guard_refresh_rate": {
     "label": "Burn-in Guard Refresh Rate",
     "help": "Minutes between refresh calls, defaults to 15 mins.",
-    "category": "general"
+    "category": "general",
+    "type": "number"
   },
   "enable_plaato": {
     "label": "Enable PLAATO",

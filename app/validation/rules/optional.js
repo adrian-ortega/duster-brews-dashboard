@@ -1,6 +1,6 @@
 const ValidationRule = require("../rule");
 const { isEmpty, objectHasKey } = require("../../util/helpers");
-const ValidationError = require("../error");
+const { ValidationError } = require("../error");
 
 class IsOptionalValidationRule extends ValidationRule {
   constructor(parsedRules) {

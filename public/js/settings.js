@@ -1,97 +1,94 @@
-class SettingsController extends Templateable {
-  renderSettings() {
-    const $container = getDomContainer();
-    const { state } = getApp();
-    let activeId = Object.keys(state.categories)[0];
-    const $el = this.render(
-      `<div class="container">
-  <div class="settings__container">
-    <h2 class="settings__title">Settings</h2>
-    <form class="settings__form" method="post" action="/">
-      <div class="settings__content">
-        <div class="settings__tabs">
-          <nav>
-          ${Object.entries(state.categories)
-            .sort((a, b) => a.order - b.order)
-            .map(
-              ([id, c]) =>
-                `<a href="#" class="settings__tab-trigger${
-                  id === activeId ? " is-active" : ""
-                }" data-id="${id}"><span>${c.label}</span></a>`
-            )
-            .join("")}
-          </nav>
-        </div>
-        <div class="settings__view"></div>
-      </div>
-      <div class="settings__footer">
-        <button type="submit" class="button is-save is-primary">
-          <span class="icon is-spinner is-hidden">${ICON_RELOAD}</span>
-          <span class="text">Save</span>
-        </button>
-        <button class="button is-cancel">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>`,
-      $container
-    );
-    const $form = $el.querySelector(".settings__form");
-
-    [...$el.querySelectorAll(".settings__tab-trigger")].forEach(($trigger) =>
-      $trigger.addEventListener("click", (e) => {
-        e.preventDefault();
-        activeId = $trigger.getAttribute("data-id");
-
-        [...$form.querySelectorAll(".field")].forEach(($field) => {
-          $field.classList.remove("is-hidden");
-          if ($field.getAttribute("data-cat") !== activeId) {
-            $field.classList.add("is-hidden");
-          }
-        });
-
-        [...$form.querySelectorAll(".settings__tab-trigger")].forEach(($t) =>
-          $t.classList.remove("is-active")
-        );
-        $trigger.classList.add("is-active");
-      })
-    );
-
-    Forms.renderFields(
-      [...Object.entries(state.fields)].map(([name, field]) => ({
-        name,
-        ...field,
-      })),
-      $form.querySelector(".settings__view"),
-      ($field, field) => {
-        if (field.category !== activeId) {
-          $field.classList.add("is-hidden");
-        }
-      }
-    );
-
-    return $el;
-  }
-
-  async onSubmit(e) {
-    const $form = e.target;
-    const { state } = getApp();
-    const settings = state.settings ?? {};
-    const fields = state.fields ?? {};
-
-    Object.entries(fields).forEach(([field_id, field]) => {
-      const $input = $form[field_id];
-      settings[field_id] = $input.value;
-    });
-
-    const response = await fetch("/api/settings", {
-      method: "POST",
-      body: new FormData($form),
-    });
+class SettingsController extends RouteController {
+  async renderSettings({ app }) {
+    const response = await fetch("/api/settings");
     const { data } = await response.json();
 
-    console.log("Settings Saved", data);
-  }
+    let { values, fields, categories } = data;
+    let cat = Object.keys(categories || []).shift();
 
-  cancelSubmit() {}
+    const $el = this.createElement(SettingsController.FORM_TEMPLATE);
+    const $view = $el.querySelector(".settings__view");
+    const $triggers = this.createElement(
+      `<div class="settings__tabs"><nav>${Object.entries(categories)
+        .sort((a, b) => (a.order === b.order ? 0 : a.order > b.order ? -1 : 1))
+        .map(([id, c]) => {
+          const active = id === cat ? " is-active" : "";
+          return `<a href="#" class="button settings__tab-trigger ${active}" data-id="${id}">
+            <span class="text">${c.label}</span>
+            </a>`;
+        })
+        .join("")}</nav></div>`
+    );
+    $el.querySelector(".settings__title").innerHTML = "Settings";
+    $el.querySelector(".settings__content").insertBefore($triggers, $view);
+
+    [...$triggers.querySelectorAll(".button")].forEach(($btn) => {
+      $btn.addEventListener("click", (e) => {
+        cat = $btn.getAttribute("data-id");
+        [...$el.querySelectorAll(".settings__form .field")].forEach(
+          ($field) => {
+            $field.classList.remove("is-hidden");
+            if ($field.getAttribute("data-cat") !== cat) {
+              $field.classList.add("is-hidden");
+            }
+          }
+        );
+        [...$el.querySelectorAll(".settings__tab-trigger")].forEach(($b) =>
+          $b.classList.remove("is-active")
+        );
+        $btn.classList.add("is-active");
+        e.preventDefault();
+      });
+    });
+
+    const fieldAndValues = [...Object.entries(fields)].map(([name, field]) => ({
+      name,
+      value: values[name],
+      ...field,
+    }));
+
+    app.Forms.renderFields(
+      fieldAndValues,
+      $view,
+      ($el, { category }) => category !== cat && $el.classList.add("is-hidden")
+    );
+
+    $el
+      .querySelector(".settings__form")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const response = await fetch("/api/settings", {
+          method: "POST",
+          body: new FormData($el.querySelector(".settings__form")),
+        });
+        const { data } = await response.json();
+        if (data.updated) {
+          fieldAndValues.forEach(({ name, type }) => {
+            const value = data.values[name];
+            if (type === "image") {
+              const $field = $el.querySelector(
+                `.input.image-input[data-id="${name}"]`
+              );
+              [...$field.querySelectorAll(".image-input__file")].map(($f) =>
+                $f.classList.add("is-hidden")
+              );
+              [
+                ...$field.querySelectorAll(
+                  ".image-input__preview, .button.is-remove"
+                ),
+              ].map(($f) => $f.classList.remove("is-hidden"));
+
+              $field.querySelector(
+                ".image-input__img"
+              ).innerHTML = `<img src="${value}" alt="Preview"/>`;
+            }
+          });
+        }
+
+        showNotification("Settings Saved");
+      });
+
+    getDomContainer().appendChild($el);
+    return $el;
+  }
 }

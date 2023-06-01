@@ -22,14 +22,15 @@ class RouteController extends Templateable {
   }
 
   getState() {
-    return this.getApp().state;
+    return window[window.APP_NS].state;
   }
 
   getTap(id) {
     const { taps } = this.getState();
-    const item = taps.find((t) => t.id === id);
+    const item = taps ? taps.find((t) => t.id === id) : null;
     if (item) {
-      item.image = item.media.find((m) => m.primary).src;
+      const img = item.media.find((m) => m.primary);
+      item.image = img ? img.src : null;
     }
     return item;
   }
@@ -142,7 +143,6 @@ class PaginatedRouteController extends RouteController {
   }
 
   paginate(items, { page, per }) {
-    console.log({ items, page, per });
     this.total = items.length;
     this.page = page ?? parseInt(this.getQueryParm("page", "1"), 10);
     this.per = per ?? parseInt(this.getQueryParm("per", "10"), 10);

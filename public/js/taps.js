@@ -14,8 +14,7 @@ class TapsController extends PaginatedRouteController {
   }
 
   async refresh() {
-    const response = await fetch("/api/taps");
-    const { data } = await response.json();
+    const { data } = await apiGet("/api/taps");
     getApp().state.taps = data;
   }
 

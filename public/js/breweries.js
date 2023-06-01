@@ -85,8 +85,7 @@ class BreweriesController extends PaginatedRouteController {
   }
 
   async refresh() {
-    const response = await fetch("/api/breweries");
-    const { data } = await response.json();
+    const { data } = await apiGet("/api/breweries");
     getApp().state.breweries = data;
   }
 
@@ -100,7 +99,6 @@ class BreweriesController extends PaginatedRouteController {
     </div>`;
 
     if (breweries && breweries.length > 0) {
-      console.log(breweries[0]);
       gridContent = breweries
         .map(
           (brewery) => `<div class="grid__item">

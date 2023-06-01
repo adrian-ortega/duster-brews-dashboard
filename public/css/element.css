@@ -84,6 +84,13 @@
   padding-left: 0.5em;
   padding-right: 0.5em;
 }
+.button.is-primary {
+  background-color: var(--primary-bis);
+  color: var(--white);
+}
+.button.is-primary:hover {
+  background-color: var(--primary);
+}
 .button.is-success {
   background-color: var(--success-bis);
 }
@@ -266,8 +273,13 @@
   transform: translate(-50%, -50%);
   transition: transform 150ms ease-in-out;
 }
-.image-input__trigger {
+.image-input__buttons {
   display: flex;
+  gap: 0.5em;
+}
+.image-input__trigger,
+.image-input__buttons .button {
+  flex: 1 1 auto;
 }
 .image-input__trigger input {
   display: none;
@@ -341,8 +353,6 @@
   color: var(--black);
   background: var(--warning);
 }
-.grid {
-}
 .page-title + .grid .grid__actions {
   margin-top: -1em;
   margin-bottom: 1em;
@@ -363,8 +373,6 @@
 .grid__actions,
 .grid__action-group {
   gap: 0.2em;
-}
-.grid__actions.has-groups {
 }
 .grid__action-group {
   display: flex;
