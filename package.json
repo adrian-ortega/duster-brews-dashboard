@@ -6,6 +6,7 @@
   "scripts": {
     "nodemon-watch": "nodemon ./server.js -e *",
     "start": "NODE_ENV=development & npm-run-all --parallel nodemon-watch",
+    "seed": "node ./seed.js",
     "dev": "npm run start",
     "serve": "npm install & NODE_ENV=production & node ./server.js"
   },
