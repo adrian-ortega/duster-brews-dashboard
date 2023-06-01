@@ -60,16 +60,17 @@ class Forms {
       const { name, type } = fields[i];
       const value = objectHasKey(model, name) ? model[name] : null;
       const $input = $form.querySelector(`[name="${name}"]`);
-      console.log({ name, type, value });
       switch (type) {
         case "image":
           if (value) {
             const $field = $input.closest(".field");
             const $preview = $field.querySelector(".image-input__preview");
+            const src = objectHasKey(value, "src") ? value.src : value;
             $preview.querySelector(
               ".image-input__img"
-            ).innerHTML = `<img src="${value}" alt="Preview"/>`;
+            ).innerHTML = `<img src="${src}" alt="Preview"/>`;
             $preview.classList.remove("is-hidden");
+            console.log({ name, type, value: src });
           }
           break;
         default:

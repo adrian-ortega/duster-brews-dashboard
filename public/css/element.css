@@ -394,6 +394,19 @@
 .grid__cell.name {
   width: 50%;
 }
+.item {
+  display: grid;
+}
+.item.has-image {
+  grid-template-columns: 4em 1fr;
+  gap: 1em;
+}
+.item__content h2 {
+  margin-bottom: 0.25em;
+}
+.item__content p {
+  color: var(--primary);
+}
 .grid__cell.actions {
   flex-grow: 1;
   align-items: flex-start;
