@@ -298,6 +298,10 @@
 .notification--success {
   background: var(--success);
 }
+.notification--warning {
+  color: var(--black);
+  background: var(--warning);
+}
 .grid {
 }
 .page-title + .grid .grid__actions {

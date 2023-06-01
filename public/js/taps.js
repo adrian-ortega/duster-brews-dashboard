@@ -272,7 +272,13 @@ class TapsController extends PaginatedRouteController {
 
   async renderEditForm({ params, router, app }) {
     const tap = this.getTap(params.id);
+    if (!tap) {
+      showNotification("Tap not found", "warning");
+      return router.goTo("taps");
+    }
+
     const $el = await this.renderCreateForm({ router, app });
+    $el.querySelector(".settings__title").innerHTML = "Edit Tap";
     app.Forms.fillFields(await this.getFields(), tap, $el);
 
     $el

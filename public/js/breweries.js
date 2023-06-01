@@ -238,7 +238,13 @@ class BreweriesController extends PaginatedRouteController {
 
   async renderEditForm({ router, app, params }) {
     const brewery = this.getBrewery(params.id);
+    if (!brewery) {
+      showNotification("Brewery not found", "warning");
+      return router.goTo("breweries");
+    }
+
     const $el = await this.renderCreateForm({ router, app });
+    $el.querySelector(".settings__title").innerHTML = "Edit Brewery";
     app.Forms.fillFields(await this.getFields(), brewery, $el);
 
     $el

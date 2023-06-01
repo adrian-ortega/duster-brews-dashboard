@@ -25,6 +25,10 @@ class RouteController extends Templateable {
     return window[window.APP_NS].state.breweries.find((b) => b.id === id);
   }
 
+  getLocation(id) {
+    return window[window.APP_NS].state.tap_locations.find((b) => b.id === id);
+  }
+
   getQueryParm(key, defaultValue = "") {
     if (!this.queryParams) {
       this.queryParams = new URLSearchParams(window.location.search);
@@ -49,15 +53,27 @@ class PaginatedRouteController extends RouteController {
     this.pageEnd = 0;
   }
 
+  static get TABLE_TEMPLATE() {
+    return `<div class="container">
+    <h2 class="page-title">Table</h2>
+    <div class="grid">
+      <div class="grid__actions"></div>
+      <div class="grid__header"></div>
+      <div class="grid__content"></div>
+      <div class="grid__footer"></div>
+    </div>
+    </div>`;
+  }
+
   getFields() {
     return [];
   }
 
   getPaginatorFooterTemplate() {
-    let template = "";
+    let template = "<div></div>";
 
     if (this.total > 0) {
-      template += `<div><p>${this.pageStart + 1} - ${this.pageEnd} of ${
+      template = `<div><p>${this.pageStart + 1} - ${this.pageEnd} of ${
         this.total
       }</p></div>`;
       if (this.page > 1 || this.page < this.pages) {
@@ -107,6 +123,7 @@ class PaginatedRouteController extends RouteController {
   }
 
   paginate(items, { page, per }) {
+    console.log({ items, page, per });
     this.total = items.length;
     this.page = page ?? parseInt(this.getQueryParm("page", "1"), 10);
     this.per = per ?? parseInt(this.getQueryParm("per", "10"), 10);

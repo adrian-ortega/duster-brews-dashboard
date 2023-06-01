@@ -8,6 +8,7 @@ const locationsFieldsHandler = (req, res) => {
   const { fields } = require("../../settings/location.fields.json");
   return respondWithJSON(res, fields);
 };
+
 const locationsPostHandler = (req, res, next) => {
   const form = formidable();
   form.parse(req, async (err, formData) => {
@@ -37,6 +38,7 @@ const locationsPostHandler = (req, res, next) => {
     return respondWithJSON(res, Locations.get(location.id));
   });
 };
+
 const locationsDestroyHandler = (req, res) => {
   const { id } = req.params;
   if (!Locations.has(id)) {

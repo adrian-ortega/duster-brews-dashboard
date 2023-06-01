@@ -5,76 +5,76 @@ class TapLocationsController extends PaginatedRouteController {
     return location;
   }
 
+  async getFields() {
+    return fetch("/api/locations/fields")
+      .then((res) => res.json())
+      .then(({ data }) => data);
+  }
+
   renderGrid({ app, params, router }) {
     const locations = [...this.paginate(app.state.tap_locations, params)].map(
       this.prepareLocation.bind(this)
     );
 
     let gridContent = `<div class="grid__item">
-    <div class="grid__cell">No tap locations, please <a href="/taps/add" class="route-link">add one</a></div>
+    <div class="grid__cell">No tap locations, please <a data-route="add-location" class="route-link">add one</a></div>
   </div>`;
 
     if (locations && locations.length > 0) {
       gridContent = locations
         .map(
           (location) => `<div class="grid__item">
-      <div class="grid__cell name">
-        <h2>${location.name}</h2>
-        ${location.tap ? `<p>${location.tap.name}</p>` : ""}
-      </div>
-      <div class="grid__cell tap-count">${location.percentage}%</div>
-      <div class="grid__cell actions">
-        <div>
-        <button class="button" data-id="${location.id}" data-action="edit">
-          <span class="icon"></span>
-          <span class="text">Edit</span>
-        </button>
-        <button class="button is-icon" data-id="${
-          location.id
-        }" data-action="delete">
-          <span class="icon">${ICON_DELETE}</span>
-        </button>
+          <div class="grid__cell name">
+            <h2>${location.name}</h2>
+            ${location.tap ? `<p>${location.tap.name}</p>` : ""}
+          </div>
+          <div class="grid__cell tap-count">${location.percentage}%</div>
+          <div class="grid__cell actions">
+            <div>
+              <button class="button" data-id="${
+                location.id
+              }" data-action="edit">
+                <span class="icon"></span>
+                <span class="text">Edit</span>
+              </button>
+              <button class="button is-icon" data-id="${
+                location.id
+              }" data-action="delete">
+                <span class="icon">${ICON_DELETE}</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>`
+        `
         )
         .join("");
     }
-
-    const $el = this.createElement(`<div class="container">
-      <h2 class="page-title">Tap Locations</h2>
-      <div class="grid">
-      <div class="grid__actions has-groups">
-        <div class="grid__action-group">
-          <div class="grid__action">
-            <a href="/taps/locations" class="button route-link" data-route="taps" title="Taps">
-              <span class="icon">${ICON_CHEVRON_LEFT}</span>
-              <span class="text">Taps</span>
-            </a>
-          </div>
-        </div>
-        <div class="grid__action-group">
+    const $el = this.createElement(TapLocationsController.TABLE_TEMPLATE);
+    $el.querySelector(".grid__actions").appendChild(
+      this.createElement(`
+      <div class="grid__action-group">
         <div class="grid__action">
-            <a href="/taps" class="button is-success route-link" data-route="add-tap" title="Create Tap">
-              <span class="icon">${ICON_PLUS}</span>
-              <span class="text">Create</span>
-            </a>
-          </div>
+          <a class="button route-link" data-route="taps" title="Taps">
+            <span class="icon">${ICON_BEER_OUTLINE}</span>
+            <span class="text">Taps</span>
+          </a>
+        </div>
+        <div class="grid__action">
+          <a class="button is-success route-link" data-route="add-location" title="Create Tap">
+            <span class="icon">${ICON_PLUS}</span>
+            <span class="text">Create</span>
+          </a>
         </div>
       </div>
-      <div class="grid__header">
-        <div class="grid__cell name">Location</div>
-        <div class="grid__cell ibu">Keg %</div>
-        <div class="grid__cell actions"></div>
-      </div>
-      <div class="grid__content">
-        ${gridContent}
-      </div>
-      <div class="grid__footer">
-        ${this.getPaginatorFooterTemplate()}
-      </div>
-    </div>
-    </div>`);
+    `)
+    );
+
+    $el
+      .querySelector(".grid__content")
+      .appendChild(this.createElement(gridContent));
+    $el
+      .querySelector(".grid__footer")
+      .appendChild(this.createElement(this.getPaginatorFooterTemplate()));
 
     $el.addEventListener("click", (e) => {
       const $el = e.target;
@@ -114,22 +114,61 @@ class TapLocationsController extends PaginatedRouteController {
     });
 
     getDomContainer().appendChild($el);
+
     return $el;
   }
 
-  renderCreateForm() {
-    const $el = this.createElement(
-      `<div class="container">Create Location</div>`
-    );
+  async renderCreateForm({ router, app }) {
+    const $el = this.createElement(TapLocationsController.FORM_TEMPLATE);
+    const fields = await this.getFields();
+    $el.querySelector(".settings__title").innerHTML = "Create Tap Location";
+    app.Forms.renderFields(fields, $el.querySelector(".settings__view"));
+
+    $el.querySelector(".button.is-cancel").addEventListener("click", (e) => {
+      e.preventDefault();
+      return router.goTo("locations");
+    });
+
+    $el
+      .querySelector(".settings__form")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const response = await fetch("/api/locations", {
+          method: "POST",
+          body: new FormData($el.querySelector(".settings__form")),
+        });
+        const { data, meta } = await response.json();
+        if (data.status === 422) {
+          // @TODO validation failed
+        } else {
+          if (meta && meta.status) {
+            showNotification("Tap Location saved");
+          }
+          router.goTo("locations");
+        }
+      });
     getDomContainer().appendChild($el);
     return $el;
   }
 
-  renderEditForm() {
-    const $el = this.createElement(
-      `<div class="container">Edit Location</div>`
-    );
-    getDomContainer().appendChild($el);
+  async renderEditForm({ router, app, params }) {
+    const location = this.getLocation(params.id);
+    if (!location) {
+      showNotification("Location not found", "warning");
+      return router.goTo("locations");
+    }
+    const $el = await this.renderCreateForm({ router, app });
+    $el.querySelector(".settings__title").innerHTML = "Edit Tap Location";
+    app.Forms.fillFields(await this.getFields(), location, $el);
+
+    $el
+      .querySelector(".settings__form")
+      .appendChild(
+        this.createElement(
+          `<input type="hidden" name="id" value="${location.id}"/>`
+        )
+      );
+
     return $el;
   }
 }
