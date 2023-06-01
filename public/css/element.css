@@ -388,9 +388,13 @@
   padding: 1em 0.5em 0.5em;
 }
 .grid__footer > div {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
+  align-items: center;
   gap: 0.25em;
 }
 .grid__footer > div:last-child {
   justify-content: flex-end;
+}
+.grid__footer > div:last-child:not(:first-child) {
+  margin-left: auto;
 }
