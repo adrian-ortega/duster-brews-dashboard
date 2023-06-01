@@ -61,7 +61,6 @@
   padding: 1em 0;
   border-top: 1px solid var(--background-light);
 }
-
 .settings__footer .button {
   font-weight: var(--font-weight-bold);
   font-size: 1.2em;

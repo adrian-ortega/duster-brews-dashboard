@@ -33,76 +33,6 @@
   border-left: 0.5em solid var(--tertiary);
   transform: rotate(315deg);
 }
-
-.tap__image {
-  position: relative;
-  background: repeating-linear-gradient(
-    45deg,
-    var(--black-bis),
-    var(--black-bis) 0.35em,
-    transparent 0.35em,
-    transparent 0.65em
-  );
-}
-.tap__image:after {
-  position: absolute;
-  top: 0;
-  right: 100%;
-  content: "";
-  display: block;
-  width: 0.5em;
-  height: 100%;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--tertiary),
-    var(--tertiary) 0.25em,
-    transparent 0.25em,
-    transparent 0.65em
-  );
-}
-.tap__image figure {
-  display: block;
-  overflow: hidden;
-  height: 100%;
-}
-.tap__image figure span {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 0;
-  width: 100%;
-  padding-bottom: 100%;
-}
-.tap__image-controls {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .25s ease-in-out;
-  transform: translateY(10%);
-  opacity: 0;
-  visibility: hidden;
-}
-.tap__image-controls .button {
-  font-size: 2em;
-  background: var(--gray);
-  border-radius: var(--radius-rounded);
-  color: var(--white);
-  width: 1.675em;
-  height: 1.675em;
-}
-.tap__image:hover .tap__image-controls,
-.tap__image.is-tapped .tap__image-controls {
-  transform: translate(0, 0);
-  opacity: 1;
-  visibility: visible;
-
-}
 .tap__content {
   display: flex;
   flex-direction: column;
@@ -230,7 +160,7 @@
 /* Desktop / Landscape Tablet */
 @media screen and (min-width: 1024px) {
   .tap {
-    grid-template-columns: 10vw 1fr;
+    grid-template-columns: 12vw 1fr;
   }
   .taps {
     grid-template-columns: 1fr 1fr;

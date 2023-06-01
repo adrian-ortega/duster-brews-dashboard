@@ -104,14 +104,8 @@ class BreweriesController extends PaginatedRouteController {
           (brewery) => `<div class="grid__item">
         <div class="grid__cell name">
           <div class="item${brewery.image ? " has-image" : ""}">
-            ${
-              brewery.image
-                ? `<img src="${brewery.image.src}" alt="Image"/>`
-                : ""
-            }
-            <div class="item__content">
-              <h2>${brewery.name}</h2>
-            </div>
+            ${app.Templates.imageTemplate(brewery.image)}
+            <div class="item__content"><h2>${brewery.name}</h2></div>
           </div>
         </div>
         <div class="grid__cell tap-count">${brewery.count.active}/${

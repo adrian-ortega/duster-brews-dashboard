@@ -37,7 +37,7 @@ class TapsController extends PaginatedRouteController {
       <div class="grid__item">
         <div class="grid__cell name">
           <div class="item${tap.image ? " has-image" : ""}">
-            ${tap.image ? `<img src="${tap.image.src}" alt="Image"/>` : ""}
+            ${app.Templates.imageTemplate(tap.image)}
             <div class="item__content">
               <h2>${tap.name}</h2>
               <p>${tap.style}</p>
@@ -172,12 +172,9 @@ class TapsController extends PaginatedRouteController {
   }
 
   renderListItem(tap) {
-    const tapImage = tap.image.src
-      ? `<figure><span><img src="${tap.image.src}" alt="${tap.image.alt}"/></span></figure>`
-      : "";
-    const breweryImage = tap.brewery_image.src
-      ? `<figure><span><img src="${tap.brewery_image.src}" alt="${tap.brewery_image.alt}"/></span></figure>`
-      : "";
+    const app = getApp();
+    const tapImage = app.Templates.imageTemplate(tap.image);
+    const breweryImage = app.Templates.imageTemplate(tap.brewery_image);
     return `
         <div class="tap">
           <div class="tap__image">${tapImage}</div>

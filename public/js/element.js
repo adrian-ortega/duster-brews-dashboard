@@ -233,7 +233,43 @@ class Forms {
   }
 }
 
-window[window.APP_NS].Forms = Forms;
-window[window.APP_NS].render = (t, p) => new Templateable().render(t, p);
-window[window.APP_NS].createElement = (t) =>
-  new Templateable().createElement(t);
+class Templates {
+  constructor() {
+    this.engine = null;
+  }
+
+  getEngine() {
+    if (!this.engine) {
+      this.engine = new Templateable();
+    }
+    return this.engine;
+  }
+
+  render(t, p) {
+    return this.getEngine().render(t, p);
+  }
+
+  createElement(t) {
+    return this.getEngine().createElement(t);
+  }
+
+  imageTemplate(src, alt) {
+    if (!src) return "";
+    const _src = objectHasKey(src, "src") ? src.src : src;
+    return `<figure class="image"><span><span><img src="${_src}" alt="${alt}"/></span></span></figure>`;
+  }
+
+  image(src, alt, parent) {
+    return src
+      ? this.getEngine().render(this.imageTemplate(src, alt), parent)
+      : null;
+  }
+}
+
+const app = getApp();
+
+app.Forms = Forms;
+app.Templates = new Templates();
+
+app.render = app.Templates.render.bind(app.Templates);
+app.createElement = app.Templates.createElement.bind(app.Templates);
