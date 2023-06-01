@@ -36,7 +36,15 @@ class TapsController extends PaginatedRouteController {
         .map(
           (tap) => `
       <div class="grid__item">
-        <div class="grid__cell name"><h2>${tap.name}</h2></div>
+        <div class="grid__cell name">
+          <div class="item${tap.image ? " has-image" : ""}">
+            ${tap.image ? `<img src="${tap.image.src}" alt="Image"/>` : ""}
+            <div class="item__content">
+              <h2>${tap.name}</h2>
+              <p>${tap.style}</p>
+            </div>
+          </div>
+        </div>
         <div class="grid__cell abv">${tap.abv}</div>
         <div class="grid__cell ibu">${tap.ibu}</div>
         <div class="grid__cell active">

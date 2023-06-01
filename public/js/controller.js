@@ -17,16 +17,35 @@ class RouteController extends Templateable {
     </div>`;
   }
 
+  getApp() {
+    return window[window.APP_NS];
+  }
+
+  getState() {
+    return this.getApp().state;
+  }
+
   getTap(id) {
-    return window[window.APP_NS].state.taps.find((t) => t.id === id);
+    const { taps } = this.getState();
+    const item = taps.find((t) => t.id === id);
+    if (item) {
+      item.image = item.media.find((m) => m.primary).src;
+    }
+    return item;
   }
 
   getBrewery(id) {
-    return window[window.APP_NS].state.breweries.find((b) => b.id === id);
+    const { breweries } = this.getState();
+    const item = breweries.find((b) => b.id === id);
+    if (item) {
+      item.image = item.media.find((m) => m.primary);
+    }
+    return item;
   }
 
   getLocation(id) {
-    return window[window.APP_NS].state.tap_locations.find((b) => b.id === id);
+    const { tap_locations } = this.getState();
+    return tap_locations.find((t) => t.id === id);
   }
 
   getQueryParm(key, defaultValue = "") {

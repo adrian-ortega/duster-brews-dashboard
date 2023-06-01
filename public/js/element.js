@@ -58,15 +58,23 @@ class Forms {
   static fillFields(fields, model, $form) {
     for (let i = 0; i < fields.length; i++) {
       const { name, type } = fields[i];
+      const value = objectHasKey(model, name) ? model[name] : null;
       const $input = $form.querySelector(`[name="${name}"]`);
       switch (type) {
         case "image":
-          // @TODO needs to change since we're using a file, the file input should be temp
+          if (value) {
+            const $field = $input.closest(".field");
+            const $preview = $field.querySelector(".image-input__preview");
+            const src = objectHasKey(value, "src") ? value.src : value;
+            $preview.querySelector(
+              ".image-input__img"
+            ).innerHTML = `<img src="${src}" alt="Preview"/>`;
+            $preview.classList.remove("is-hidden");
+            console.log({ name, type, value: src });
+          }
           break;
         default:
-          if (objectHasKey(model, name)) {
-            $input.value = model[name];
-          }
+          $input.value = value;
           break;
       }
     }
@@ -149,7 +157,13 @@ class Forms {
     const htmlID = Forms.getHtmlID(id);
     const $content = window[window.APP_NS].createElement(
       `<div class="input image-input">
-        <label for="${htmlID}" class="image-input__preview is-hidden"><span></span></label>
+        <label for="${htmlID}" class="image-input__preview ${
+        value ? "" : "is-hidden"
+      }">
+          <span><span class="image-input__img">
+          ${value ? `<img src="${value.src}" alt="Preview"/>` : ""}
+          </span></span>
+        </label>
         <label class="image-input__file is-hidden">
           <span class="image-input__file-l">New file:</span>
           <span class="image-input__file-v">Something.gif</span>
@@ -158,6 +172,7 @@ class Forms {
           <input type="file" id="${htmlID}" name="${id}"/>
           <span class="image-input__trigger-text">Edit</span>
         </label>
+        <input type="hidden" name="" value=""/>
       </div>`
     );
 

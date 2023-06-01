@@ -139,7 +139,6 @@ class Router {
   }
 
   goTo(name, params = {}, target) {
-    console.group(`Router.goTo("${name}")`);
     const route = this.getRoute(name);
     if (route) {
       this.route = route;
@@ -155,12 +154,6 @@ class Router {
           url
         );
       }
-      console.log({
-        router: this,
-        route,
-        params,
-        target,
-      });
       // Routes clear the page through middleware,
       // since actions do not, we pass the target.
       // Actions are a cheaty way to loop into
