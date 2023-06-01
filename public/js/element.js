@@ -60,16 +60,17 @@ class Forms {
       const { name, type } = fields[i];
       const value = objectHasKey(model, name) ? model[name] : null;
       const $input = $form.querySelector(`[name="${name}"]`);
-      console.log({ name, type, value });
       switch (type) {
         case "image":
           if (value) {
             const $field = $input.closest(".field");
             const $preview = $field.querySelector(".image-input__preview");
+            const src = objectHasKey(value, "src") ? value.src : value;
             $preview.querySelector(
               ".image-input__img"
-            ).innerHTML = `<img src="${value}" alt="Preview"/>`;
+            ).innerHTML = `<img src="${src}" alt="Preview"/>`;
             $preview.classList.remove("is-hidden");
+            console.log({ name, type, value: src });
           }
           break;
         default:
@@ -154,43 +155,67 @@ class Forms {
   static renderImageField(label, value, fieldOptions) {
     const { id } = fieldOptions;
     const htmlID = Forms.getHtmlID(id);
-    const $content = window[window.APP_NS].createElement(
-      `<div class="input image-input">
+    const imageSrc = objectHasKey(value, "src") ? value.src : value;
+    const $el = window[window.APP_NS].createElement(
+      `<div class="input image-input" data-id="${id}">
         <label for="${htmlID}" class="image-input__preview ${
         value ? "" : "is-hidden"
       }">
           <span><span class="image-input__img">
-          ${value ? `<img src="${value.src}" alt="Preview"/>` : ""}
+          ${imageSrc ? `<img src="${imageSrc}" alt="Preview"/>` : ""}
           </span></span>
         </label>
         <label class="image-input__file is-hidden">
           <span class="image-input__file-l">New file:</span>
           <span class="image-input__file-v">Something.gif</span>
         </label>
-        <label for="${htmlID}" class="button image-input__trigger">
-          <input type="file" id="${htmlID}" name="${id}"/>
-          <span class="image-input__trigger-text">Edit</span>
-        </label>
-        <input type="hidden" name="" value=""/>
+        <div class="image-input__buttons">
+          <label for="${htmlID}" class="button image-input__trigger">
+            <input type="file" id="${htmlID}" name="${id}"/>
+            <span class="image-input__trigger-text">Edit</span>
+          </label>
+          <button class="button is-remove${!imageSrc ? " is-hidden" : ""}">
+            <span class="text">Remove</span>
+          </button>
+        </div>
       </div>`
     );
 
-    $content.querySelector("input").addEventListener("change", (e) => {
+    $el.querySelector("input").addEventListener("change", (e) => {
       const $input = e.target;
-      const $text = $content.querySelector(".image-input__trigger-text");
-      const $file = $content.querySelector(".image-input__file");
-
-      // @TODO language?
-      $text.innerHTML = "Change";
-      console.log($input.files);
-
-      // $preview.classList.remove('is-hidden');
+      const $file = $el.querySelector(".image-input__file");
       $file.classList.remove("is-hidden");
       $file.querySelector(".image-input__file-v").innerHTML =
         $input.files[0].name;
     });
 
-    return Forms.renderField({ ...fieldOptions, label, content: $content });
+    $el
+      .querySelector(".button.is-remove")
+      .addEventListener("click", async (e) => {
+        e.preventDefault();
+        const confirmMessage =
+          "Are you sure you want to remove this image? It cannot be undone.";
+
+        if (confirm(confirmMessage)) {
+          const body = new FormData();
+          const $img = $el.querySelector(".image-input__img img");
+          body.append("path", $img.getAttribute("src"));
+          const response = await fetch("/api/media", {
+            method: "DELETE",
+            body,
+          });
+          const { data } = await response.json();
+          if (data.deleted) {
+            $el.querySelector(".button.is-remove").classList.add("is-hidden");
+            $el.querySelector(".image-input__img").innerHTML = "";
+            $el
+              .querySelector(".image-input__preview")
+              .classList.add("is-hidden");
+          }
+        }
+      });
+
+    return Forms.renderField({ ...fieldOptions, label, content: $el });
   }
 
   static renderSwitchField(label, value, fieldOptions) {
@@ -208,7 +233,43 @@ class Forms {
   }
 }
 
-window[window.APP_NS].Forms = Forms;
-window[window.APP_NS].render = (t, p) => new Templateable().render(t, p);
-window[window.APP_NS].createElement = (t) =>
-  new Templateable().createElement(t);
+class Templates {
+  constructor() {
+    this.engine = null;
+  }
+
+  getEngine() {
+    if (!this.engine) {
+      this.engine = new Templateable();
+    }
+    return this.engine;
+  }
+
+  render(t, p) {
+    return this.getEngine().render(t, p);
+  }
+
+  createElement(t) {
+    return this.getEngine().createElement(t);
+  }
+
+  imageTemplate(src, alt) {
+    if (!src) return "";
+    const _src = objectHasKey(src, "src") ? src.src : src;
+    return `<figure class="image"><span><span><img src="${_src}" alt="${alt}"/></span></span></figure>`;
+  }
+
+  image(src, alt, parent) {
+    return src
+      ? this.getEngine().render(this.imageTemplate(src, alt), parent)
+      : null;
+  }
+}
+
+const app = getApp();
+
+app.Forms = Forms;
+app.Templates = new Templates();
+
+app.render = app.Templates.render.bind(app.Templates);
+app.createElement = app.Templates.createElement.bind(app.Templates);

@@ -11,7 +11,13 @@ class TapLocationsController extends PaginatedRouteController {
       .then(({ data }) => data);
   }
 
-  renderGrid({ app, params, router }) {
+  async refresh() {
+    const { data } = await apiGet("/api/locations");
+    getApp().state.tap_locations = data;
+  }
+
+  async renderGrid({ app, params, router }) {
+    await this.refresh();
     const locations = [...this.paginate(app.state.tap_locations, params)].map(
       this.prepareLocation.bind(this)
     );
@@ -25,8 +31,12 @@ class TapLocationsController extends PaginatedRouteController {
         .map(
           (location) => `<div class="grid__item">
           <div class="grid__cell name">
-            <h2>${location.name}</h2>
-            ${location.tap ? `<p>${location.tap.name}</p>` : ""}
+            <div class="item">
+              <div class="item__content">
+                <h2>${location.name}</h2>
+                ${location.tap ? `<p>${location.tap.name}</p>` : ""}
+              </div>
+            </div>
           </div>
           <div class="grid__cell tap-count">${location.percentage}%</div>
           <div class="grid__cell actions">
@@ -74,6 +84,17 @@ class TapLocationsController extends PaginatedRouteController {
         </div>
       </div>
     `)
+    );
+
+    const $header = $el.querySelector(".grid__header");
+    $header.appendChild(
+      this.createElement(`<div class="grid__cell name">Name</div>`)
+    );
+    $header.appendChild(
+      this.createElement(`<div class="grid__cell percentage">Per</div>`)
+    );
+    $header.appendChild(
+      this.createElement(`<div class="grid__cell actions">&nbsp;</div>`)
     );
 
     $el

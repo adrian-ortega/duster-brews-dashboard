@@ -20,7 +20,7 @@ const updateItemPrimaryImage = async (item, file, collection) => {
   const image = {
     primary: true,
     timestamp: new Date().getTime(),
-    src: `${FILE_UPLOADS_FOLDER}/${filename}`,
+    src: `/${FILE_UPLOADS_FOLDER}/${filename}`,
   };
 
   await moveUploadedFile(

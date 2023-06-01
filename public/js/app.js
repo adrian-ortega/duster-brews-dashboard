@@ -86,11 +86,17 @@ const initialize = async () => {
   app.selector = "#app";
   app.ws = false;
 
-  const $container = getDomContainer();
-  if ($container) $container.innerHTML = "";
-
   initializeRouter();
-  Navigation.init();
+
+  apiGet("/api/settings").then(({ data }) => {
+    app.state.settings = data.values;
+    app.state.fields = data.fields;
+    app.state.categories = data.categories;
+    Navigation.init();
+  });
+  apiGet("/api/breweries").then(({ data }) => (app.state.breweries = data));
+  apiGet("/api/locations").then(({ data }) => (app.state.tap_locations = data));
+  apiGet("/api/taps").then(({ data }) => (app.state.taps = data));
 
   await createWebSocket({
     onmessage: (data) => {
@@ -99,22 +105,21 @@ const initialize = async () => {
       }
 
       if (objectHasKey(data, "settings")) {
-        // @TODO create a state handler?
-        app.state.settings = { ...data.settings };
-        app.state.fields = { ...data.fields };
-        app.state.categories = { ...data.categories };
+        app.state.settings = data.settings;
+        app.state.fields = data.fields;
+        app.state.categories = data.categories;
       }
 
       if (objectHasKey(data, "tap_locations")) {
-        app.state.tap_locations = [...data.tap_locations];
+        app.state.tap_locations = data.tap_locations;
       }
 
       if (objectHasKey(data, "breweries")) {
-        app.state.breweries = [...data.breweries];
+        app.state.breweries = data.breweries;
       }
 
       if (objectHasKey(data, "taps")) {
-        app.state.taps = [...data.taps];
+        app.state.taps = data.taps;
       }
     },
   });

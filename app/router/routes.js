@@ -1,5 +1,6 @@
 const { dashboardView } = require("../http/controllers/homeController");
 const { getJoke } = require("../http/controllers/jokeController");
+const { mediaDestroyHandler } = require("../http/controllers/mediaController");
 const {
   settingsGetHandler,
   settingsPostHandler,
@@ -32,7 +33,12 @@ module.exports = [
   {
     path: "/api/joke",
     methods: ["GET"],
-    handler: getJoke
+    handler: getJoke,
+  },
+  {
+    path: "/api/media",
+    methods: ["delete"],
+    handler: mediaDestroyHandler,
   },
   {
     path: "/api/settings",

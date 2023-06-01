@@ -61,6 +61,7 @@ class BreweriesController extends PaginatedRouteController {
   }
 
   prepareBrewery(brewery) {
+    brewery.image = brewery.media.find((m) => m.primary);
     brewery.count = getApp().state.taps.reduce(
       (c, { brewery_id, active }) => {
         if (brewery_id === brewery.id) {
@@ -84,8 +85,7 @@ class BreweriesController extends PaginatedRouteController {
   }
 
   async refresh() {
-    const response = await fetch("/api/breweries");
-    const { data } = await response.json();
+    const { data } = await apiGet("/api/breweries");
     getApp().state.breweries = data;
   }
 
@@ -102,15 +102,24 @@ class BreweriesController extends PaginatedRouteController {
       gridContent = breweries
         .map(
           (brewery) => `<div class="grid__item">
-        <div class="grid__cell name"><h2>${brewery.name}</h2></div>
-        <div class="grid__cell tap-count">${brewery.count.active}/${brewery.count.total}</div>
+        <div class="grid__cell name">
+          <div class="item${brewery.image ? " has-image" : ""}">
+            ${app.Templates.imageTemplate(brewery.image)}
+            <div class="item__content"><h2>${brewery.name}</h2></div>
+          </div>
+        </div>
+        <div class="grid__cell tap-count">${brewery.count.active}/${
+            brewery.count.total
+          }</div>
         <div class="grid__cell actions">
           <div>
           <button class="button" data-id="${brewery.id}" data-action="edit">
             <span class="icon"></span>
             <span class="text">Edit</span>
           </button>
-          <button class="button is-icon" data-id="${brewery.id}" data-action="delete">
+          <button class="button is-icon" data-id="${
+            brewery.id
+          }" data-action="delete">
             <span class="icon">${ICON_DELETE}</span>
           </button>
           </div>

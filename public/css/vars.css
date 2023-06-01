@@ -2,7 +2,7 @@
 :root.default {
   /* Colors */
   --white: #feeece;
-  --gray: #c2bfbc; 
+  --gray: #c2bfbc;
   --gray-bis: #768ea3;
   --black: #000911;
   --black-bis: #000a12;
@@ -18,6 +18,7 @@
   --background-alt: #463a27;
 
   --primary: #fc9700;
+  --primary-bis: #ca7a00;
   --secondary: #ff2e2e;
   --tertiary: #c06a5b;
   --tertiary-bis: #aa5d50;
@@ -33,7 +34,7 @@
   --button-bg: var(--background-border);
   --button-hover-bg: var(--secondary);
   --button-radius: var(--radius-rounded);
-  
+
   --input-background: var(--black);
 
   --radius: 4px;

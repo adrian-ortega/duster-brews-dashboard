@@ -106,6 +106,10 @@ const isArray = (arr) => Array.isArray(arr);
  */
 const isObject = (obj) => typeof obj === "object" && obj !== null;
 
+/**
+ * @param {*} value
+ * @returns {boolean}
+ */
 const isAsyncFunction = (value) =>
   value && {}.toString.call(value) === "[object AsyncFunction]";
 
@@ -124,3 +128,8 @@ const isFunction = (value) =>
  */
 const objectHasKey = (object, key) =>
   isObject(object) && Object.prototype.hasOwnProperty.call(object, key);
+
+const apiGet = async (url, params = {}) => {
+  const response = await fetch(url + new URLSearchParams(params));
+  return await response.json();
+};

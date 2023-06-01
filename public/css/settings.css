@@ -1,4 +1,3 @@
-
 .settings__form {
   position: relative;
 }
@@ -15,15 +14,14 @@
   justify-content: center;
 }
 .settings__tabs,
-.settings__tabs nav,
-.settings__tab-trigger {
+.settings__tabs nav {
   display: flex;
 }
-.settings__tabs nav,
-.settings__tab-trigger {
+.settings__tabs nav {
   justify-content: center;
   align-items: center;
   border-radius: var(--radius-rounded);
+  gap: 0.25em;
 }
 .settings__tabs nav {
   padding: 0.5em;
@@ -31,20 +29,13 @@
   width: 100%;
 }
 .settings__tab-trigger {
-  padding: 0 1.5em;
-  height: var(--button-height);
-  color: var(--gray);
-  font-weight: var(--font-weight-bold);
-  font-size: 0.875em;
+  color: var(--gray-bis);
   opacity: 0.5;
-  border: 1px solid transparent;
 }
 .settings__tab-trigger:hover {
-  border-color: transparent;
   opacity: 1;
 }
 .settings__tab-trigger.is-active {
-  background: var(--background-light);
   color: var(--white);
   opacity: 1;
 }
@@ -52,7 +43,7 @@
   padding: 1em;
 }
 .settings__content {
-  padding-bottom: 5em;
+  padding-bottom: 7em;
 }
 .settings__view {
   padding-top: 1em;
@@ -68,6 +59,11 @@
   bottom: 0;
   left: 0;
   padding: 1em 0;
+  border-top: 1px solid var(--background-light);
+}
+.settings__footer .button {
+  font-weight: var(--font-weight-bold);
+  font-size: 1.2em;
 }
 
 @media screen and (min-width: 768px) {
@@ -80,7 +76,7 @@
 .first-time {
   margin: 1em 0;
 }
-.settings__title.is-first-time{
+.settings__title.is-first-time {
   color: var(--primary);
 }
 .first-time p {

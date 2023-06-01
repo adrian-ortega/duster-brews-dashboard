@@ -14,8 +14,7 @@ class TapsController extends PaginatedRouteController {
   }
 
   async refresh() {
-    const response = await fetch("/api/taps");
-    const { data } = await response.json();
+    const { data } = await apiGet("/api/taps");
     getApp().state.taps = data;
   }
 
@@ -36,7 +35,15 @@ class TapsController extends PaginatedRouteController {
         .map(
           (tap) => `
       <div class="grid__item">
-        <div class="grid__cell name"><h2>${tap.name}</h2></div>
+        <div class="grid__cell name">
+          <div class="item${tap.image ? " has-image" : ""}">
+            ${app.Templates.imageTemplate(tap.image)}
+            <div class="item__content">
+              <h2>${tap.name}</h2>
+              <p>${tap.style}</p>
+            </div>
+          </div>
+        </div>
         <div class="grid__cell abv">${tap.abv}</div>
         <div class="grid__cell ibu">${tap.ibu}</div>
         <div class="grid__cell active">
@@ -165,12 +172,9 @@ class TapsController extends PaginatedRouteController {
   }
 
   renderListItem(tap) {
-    const tapImage = tap.image.src
-      ? `<figure><span><img src="${tap.image.src}" alt="${tap.image.alt}"/></span></figure>`
-      : "";
-    const breweryImage = tap.brewery_image.src
-      ? `<figure><span><img src="${tap.brewery_image.src}" alt="${tap.brewery_image.alt}"/></span></figure>`
-      : "";
+    const app = getApp();
+    const tapImage = app.Templates.imageTemplate(tap.image);
+    const breweryImage = app.Templates.imageTemplate(tap.brewery_image);
     return `
         <div class="tap">
           <div class="tap__image">${tapImage}</div>

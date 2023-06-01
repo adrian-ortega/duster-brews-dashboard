@@ -1,11 +1,12 @@
-const ValidationError = require("./error");
 const Dictionary = require("./dictionary");
+const { RuleNotFoundError, ValidationError } = require("./error");
 const { objectHasKey } = require("../util/helpers");
 
 class Validator {
   constructor() {
     this.rules = [];
     this.errors = [];
+    this.currentRuleName = null;
   }
 
   validate(data, rules = {}) {
@@ -18,17 +19,24 @@ class Validator {
         const value = objectHasKey(data, key) ? data[key] : null;
 
         // @TODO make vars name human readable
-        const name = keys[i];
+        this.currentRuleName = keys[i];
 
         for (let r = 0; r < this.rules[key].length; r++) {
           const rule = this.rules[key][r];
-          rule.setName(name).assert(value);
+          rule.setName(this.currentRuleName).assert(value);
         }
       }
     } catch (e) {
-      if (e instanceof ValidationError) {
+      if (e instanceof RuleNotFoundError || e instanceof ValidationError) {
         this.errors.push({
-          name: e.field,
+          name: this.currentRuleName,
+          type: e instanceof RuleNotFoundError ? "not-found" : "validation",
+          message: e.message,
+        });
+      } else {
+        this.errors.push({
+          name: this.currentRuleName,
+          type: "generic",
           message: e.message,
         });
       }
@@ -50,5 +58,5 @@ class Validator {
 }
 
 module.exports = {
-  Validator
+  Validator,
 };

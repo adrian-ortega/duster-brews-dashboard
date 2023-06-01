@@ -1,4 +1,3 @@
-const { isArray, isString } = require("../util/helpers");
 const TestValidationRule = require("./rules/test");
 const NotEmptyValidationRule = require("./rules/not-empty");
 const IsOptionalValidationRule = require("./rules/optional");
@@ -6,6 +5,11 @@ const IsNotDuplicateBreweryValidationRule = require("./rules/brewery-is-not-dupl
 const BreweryExistsValidationRule = require("./rules/brewery-exists");
 const TapExistsValidationRule = require("./rules/tap-exists");
 const IsValidImageFileValidationRule = require("./rules/file-valid-image");
+const IsNumericValidationRule = require("./rules/is-numeric");
+const IsBooleanValidationRule = require("./rules/is-boolean");
+const PublicFileExistsValidationRule = require("./rules/public-file-exists");
+const { RuleNotFoundError } = require("./error");
+const { isArray, isString } = require("../util/helpers");
 
 class Dictionary {
   constructor() {
@@ -37,15 +41,12 @@ class Dictionary {
         for (let r = 0; r < rules.length; r++) {
           let rule = rules[r];
           let args = [];
-
           if (rule.indexOf(":") !== -1) {
             const [ruleName, ...ruleArgs] = rule.split(":");
             rule = ruleName;
             args = ruleArgs.map((ra) => ra.trim());
           }
-
           const ruleInstance = this.getRule(rule, args);
-
           if (ruleInstance) {
             parsed[key].push(ruleInstance);
           }
@@ -66,7 +67,7 @@ class Dictionary {
       }
     }
 
-    return false;
+    throw new RuleNotFoundError(`Rule '${alias}' not found`);
   }
 }
 
@@ -75,6 +76,8 @@ module.exports = (() => {
 
   dic.addRule(TestValidationRule, ["empty", "test"]);
   dic.addRule(NotEmptyValidationRule, ["required", "notEmpty"]);
+  dic.addRule(IsNumericValidationRule, ["isNumeric", "numeric"]);
+  dic.addRule(IsBooleanValidationRule, ["boolean", "isBoolean"]);
   dic.addRule(IsOptionalValidationRule, ["optional", "isOptional"]);
   dic.addRule(IsNotDuplicateBreweryValidationRule, [
     "isNotDuplicateBrewery",
@@ -83,6 +86,10 @@ module.exports = (() => {
   dic.addRule(BreweryExistsValidationRule, ["breweryExists"]);
   dic.addRule(TapExistsValidationRule, ["tapExists"]);
   dic.addRule(IsValidImageFileValidationRule, ["image", "isValidImage"]);
+  dic.addRule(PublicFileExistsValidationRule, [
+    "publicFileExists",
+    "publicFile",
+  ]);
 
   return dic;
 })();

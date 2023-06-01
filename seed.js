@@ -56,10 +56,8 @@ const generateTaps = async (breweries, locations) => {
       style: faker.commerce.productAdjective(),
       media: [generateImage()],
       active,
-      gravity: {
-        start: faker.number.float({ min: 1, max: 2, precision: 0.001 }),
-        end: faker.number.float({ min: 1, max: 2, precision: 0.001 }),
-      },
+      gravity_start: faker.number.float({ min: 1, max: 2, precision: 0.001 }),
+      gravity_end: faker.number.float({ min: 1, max: 2, precision: 0.001 }),
       abv: faker.number.float({ min: 3, max: 15, precision: 0.01 }),
       ibu: faker.number.int({ min: 20, max: 75 }),
     };
