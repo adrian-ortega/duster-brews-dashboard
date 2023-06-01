@@ -205,16 +205,28 @@
 
 /* Image Field */
 .image-input__preview {
-  background: var(--input-background);
+  position: relative;
+  background: repeating-conic-gradient(var(--gray) 0% 25%, var(--white) 0% 50%)
+    50% / 20px 20px;
   padding: 0.5em;
   margin-bottom: 0.5em;
 }
-.image-input__preview > span {
-  height: 0;
-  width: 100%;
-  padding-bottom: 100%;
-  background: repeating-conic-gradient(var(--gray) 0% 25%, var(--white) 0% 50%)
-    50% / 20px 20px;
+.image-input__preview:before,
+.image-input__preview > span:after,
+.image-input__img:after {
+  content: "";
+  display: block;
+}
+
+.image-input__preview:before {
+  padding-top: 100%;
+}
+.image-input__preview > span:after {
+  border: 1px solid var(--input-background);
+  box-shadow: inset 0 0.2em 0 0 var(--input-background),
+    inset 0.2em 0 0 0 var(--input-background),
+    inset 0 -0.2em 0 0 var(--input-background),
+    inset -0.2em 0 0 0 var(--input-background);
 }
 .image-input__preview,
 .image-input__trigger {
@@ -226,6 +238,33 @@
   position: relative;
   display: flex;
   border-radius: var(--radius);
+}
+.image-input__preview > span,
+.image-input__preview > span:after,
+.image-input__img:after {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.image-input__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translate(50%, 50%);
+}
+.image-input__img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-height: 100%;
+  max-width: inherit;
+  transform: translate(-50%, -50%);
+  transition: transform 150ms ease-in-out;
 }
 .image-input__trigger {
   display: flex;

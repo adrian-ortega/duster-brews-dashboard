@@ -5,7 +5,7 @@ const { saveFile } = require("./app/util/files");
 const generateImage = () => ({
   primary: true,
   timestamp: new Date().getTime(),
-  src: faker.image.url,
+  src: faker.image.url(),
 });
 
 const generateBreweries = async () => {
@@ -26,8 +26,8 @@ const generateTapLocations = async () => {
       id: faker.string.nanoid(),
       name: `Tap ${i + 1}`,
       token: faker.string.nanoid(),
-      percentage: faker.number.float({min: 0, max: 100, precision: 0.01 }),
-      active: true
+      percentage: faker.number.float({ min: 0, max: 100, precision: 0.01 }),
+      active: true,
     };
   });
 
