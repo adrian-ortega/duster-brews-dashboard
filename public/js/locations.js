@@ -50,6 +50,7 @@ class TapLocationsController extends PaginatedRouteController {
         .join("");
     }
     const $el = this.createElement(TapLocationsController.TABLE_TEMPLATE);
+    $el.querySelector(".page-title").innerHTML = "Locations";
     $el.querySelector(".grid__actions").appendChild(
       this.createElement(`
       <div class="grid__action-group">

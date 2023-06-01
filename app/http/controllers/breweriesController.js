@@ -4,6 +4,7 @@ const axios = require("axios");
 const { validate } = require("../../validation");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
+const { objectHasKey } = require("../../util/helpers");
 
 const breweriesGetHandler = (req, res) => respondWithJSON(res, Breweries.all());
 
@@ -38,17 +39,25 @@ const breweriesPostHandler = (req, res, next) => {
         422
       );
     }
-    let brewery, status;
+    let brewery = {};
+    let status;
     if (formData.id) {
       status = "updated";
       brewery = Breweries.get(formData.id);
-      brewery.name = formData.name;
+      Breweries.fillables().forEach((key) => {
+        if (objectHasKey(formData, key)) {
+          brewery[key] = formData[key];
+        }
+      });
       Breweries.put(brewery);
     } else {
       status = "created";
-      brewery = Breweries.create({
-        name: formData.name,
+      Breweries.fillables().forEach((key) => {
+        if (objectHasKey(formData, key)) {
+          brewery[key] = formData[key];
+        }
       });
+      brewery = Breweries.create(brewery);
     }
 
     if (files.image) {

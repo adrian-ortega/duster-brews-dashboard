@@ -27,16 +27,20 @@ class Navigation extends Templateable {
           </a>
           <div class="nav-sub">
             <h3>Manage</h3>
-            <a href="/taps" data-route="taps" class="button nav-button route-link" title="Settings">
+            <a data-route="taps" class="button nav-button route-link" title="Taps">
               <span class="icon">${ICON_BEER_OUTLINE}</span>
               <span class="text">Taps</span>
             </a>
-            <a href="/breweries" data-route="breweries" class="button nav-button route-link" title="Settings">
+            <a data-route="locations" class="button nav-button route-link" title="Tap Locations">
+              <span class="icon">${ICON_FAUCET}</span>
+              <span class="text">Tap Locations</span>
+            </a>
+            <a data-route="breweries" class="button nav-button route-link" title="Breweries">
               <span class="icon">${ICON_BARLEY}</span>
               <span class="text">Breweries</span>
             </a>
             <hr/>
-            <a href="/settings" data-route="settings" class="button nav-button route-link" title="Settings">
+            <a data-route="settings" class="button nav-button route-link" title="Settings">
               <span class="icon">${ICON_COG_OUTLINE}</span>
               <span class="text">Settings</span>
             </a>

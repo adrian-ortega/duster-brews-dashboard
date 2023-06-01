@@ -28,7 +28,7 @@ class ModelCollection extends JSONFileStorage {
     return this.data.items.find((item) => item.id === id);
   }
 
-  sanitize (item) {
+  sanitize(item) {
     return sanitizedCopy(item);
   }
 
@@ -73,6 +73,10 @@ class ModelCollection extends JSONFileStorage {
 
   refresh() {
     return super.refresh(sanitizedCopy(MODEL_DEFAULTS));
+  }
+
+  fillables() {
+    return ["id"];
   }
 }
 

@@ -13,8 +13,12 @@ class TapLocationCollection extends ModelCollection {
     super(path.resolve("storage/tap-locations.db.json"));
   }
 
+  fillables() {
+    return ["name", "token", "percentage", "active"];
+  }
+
   sanitize(data) {
-    return super.sanitize({ ...TAP_LOCATION_DEFAULTS, ...data })
+    return super.sanitize({ ...TAP_LOCATION_DEFAULTS, ...data });
   }
 }
 

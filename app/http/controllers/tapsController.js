@@ -1,8 +1,9 @@
 const formidable = require("formidable");
 const Taps = require("../../models/Taps");
 const Breweries = require("../../models/Breweries");
+const Locations = require("../../models/TapLocations");
 const { validate } = require("../../validation");
-const { isString } = require("../../util/helpers");
+const { isString, objectHasKey } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 
@@ -10,6 +11,12 @@ const tapsGetHandler = (req, res) => respondWithJSON(res, Taps.all());
 
 const tapsGetFieldsHandler = (req, res) => {
   let { fields } = require("../../settings/tap.fields.json");
+  const locationOptions = Locations.all().map((location) => {
+    return {
+      value: location.id,
+      text: location.name,
+    };
+  });
   const breweryOptions = Breweries.all().map((brewery) => {
     return {
       value: brewery.id,
@@ -24,6 +31,9 @@ const tapsGetFieldsHandler = (req, res) => {
         const genLink = `<a class="route-link" data-route="generate-breweries">auto generate<a></a>`;
         field.help = `⚠️ ${createLink} or ${genLink} ⚠️`;
       }
+    }
+    if (field.name === "location_id") {
+      field.options = [{ value: "-1", text: "N/A" }, ...locationOptions];
     }
     return field;
   });
@@ -53,21 +63,27 @@ const tapsPostHandler = (req, res, next) => {
         422
       );
     }
-    let tap, status;
+    let tap = {};
+    let status;
+
     if (formData.id) {
       status = "updated";
       tap = Taps.get(formData.id);
-      tap.brewery_id = formData.brewery_id;
-      tap.name = formData.name;
-      tap.style = formData.style;
+      Taps.fillables().forEach((key) => {
+        if (objectHasKey(formData, key)) {
+          tap[key] = formData[key];
+        }
+      });
       Taps.put(tap);
     } else {
       status = "created";
-      tap = Taps.create({
-        brewery_id: formData.brewery_id,
-        name: formData.name,
-        style: formData.style,
+
+      Taps.fillables().forEach((key) => {
+        if (objectHasKey(formData, key)) {
+          tap[key] = formData[key];
+        }
       });
+      tap = Taps.create(tap);
     }
 
     if (files.image) {

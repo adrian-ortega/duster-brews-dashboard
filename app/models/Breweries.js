@@ -2,18 +2,22 @@ const path = require("path");
 const ModelCollection = require("./Collection");
 
 const BREWERY_DEFAULTS = {
-    name: null,
-    media: []
-}
+  name: null,
+  media: [],
+};
 
 class BreweriesCollection extends ModelCollection {
-    constructor() {
-        super(path.resolve("storage/breweries.db.json"))
-    }
+  constructor() {
+    super(path.resolve("storage/breweries.db.json"));
+  }
 
-    sanitize(data) {
-        return super.sanitize({ ...BREWERY_DEFAULTS, ...data });
-    }
+  fillables() {
+    return ["name"];
+  }
+
+  sanitize(data) {
+    return super.sanitize({ ...BREWERY_DEFAULTS, ...data });
+  }
 }
 
 module.exports = new BreweriesCollection();

@@ -1,6 +1,7 @@
 const formidable = require("formidable");
 const Locations = require("../../models/TapLocations");
 const { validate } = require("../../validation");
+const { objectHasKey } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 
 const locationsGetHandler = (req, res) => respondWithJSON(res, Locations.all());
@@ -26,16 +27,29 @@ const locationsPostHandler = (req, res, next) => {
       );
     }
 
-    let location;
+    let location = {};
+    let status;
+
     if (formData.id) {
+      status = "updated";
       location = Locations.get(formData.id);
-      location.name = formData.name;
+      Locations.fillables().forEach((key) => {
+        if (objectHasKey(formData, key)) {
+          location[key] = formData[key];
+        }
+      });
       Locations.put(location);
     } else {
-      location = Locations.create({ name: formData.name });
+      status = "created";
+      Locations.fillables().forEach((key) => {
+        if (objectHasKey(formData, key)) {
+          location[key] = formData[key];
+        }
+      });
+      location = Locations.create(location);
     }
 
-    return respondWithJSON(res, Locations.get(location.id));
+    return respondWithJSON(res, { status });
   });
 };
 
