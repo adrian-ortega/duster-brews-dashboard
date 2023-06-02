@@ -2,12 +2,20 @@ const formidable = require("formidable");
 const Taps = require("../../models/Taps");
 const Breweries = require("../../models/Breweries");
 const Locations = require("../../models/TapLocations");
+const tapTransformer = require("../transformers/tap-transformer");
 const { validate } = require("../../validation");
 const { isString, objectHasKey } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 
-const tapsGetHandler = (req, res) => respondWithJSON(res, Taps.all());
+const tapsGetHandler = async (req, res) => {
+  try {
+    const taps = await Promise.all(Taps.all().map(tapTransformer));
+    return respondWithJSON(res, taps);
+  } catch (e) {
+    return respondWithJSON(res, e, 500);
+  }
+};
 
 const tapsGetFieldsHandler = (req, res) => {
   let { fields } = require("../../settings/tap.fields.json");

@@ -1,12 +1,22 @@
 const formidable = require("formidable");
 const Breweries = require("../../models/Breweries");
 const axios = require("axios");
+const breweryTransformer = require("../transformers/brewery-transformer");
 const { validate } = require("../../validation");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 const { objectHasKey } = require("../../util/helpers");
 
-const breweriesGetHandler = (req, res) => respondWithJSON(res, Breweries.all());
+const breweriesGetHandler = async (req, res) => {
+  try {
+    const breweries = await Promise.all(
+      Breweries.all().map(breweryTransformer)
+    );
+    return respondWithJSON(res, breweries);
+  } catch (e) {
+    return respondWithJSON(res, e, 500);
+  }
+};
 
 const breweriesFieldsHandler = (req, res) => {
   const { fields } = require("../../settings/brewery.fields.json");
