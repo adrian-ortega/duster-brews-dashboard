@@ -1,4 +1,5 @@
 const formidable = require("formidable");
+const Settings = require("../../settings");
 const Locations = require("../../models/TapLocations");
 const { validate } = require("../../validation");
 const { objectHasKey } = require("../../util/helpers");
@@ -6,7 +7,10 @@ const { respondWithJSON } = require("../../util/http");
 
 const locationsGetHandler = (req, res) => respondWithJSON(res, Locations.all());
 const locationsFieldsHandler = (req, res) => {
-  const { fields } = require("../../settings/location.fields.json");
+  let { fields } = require("../../settings/location.fields.json");
+  if (!Settings.get("enable_plaato", false)) {
+    fields = fields.filter((f) => f.name !== "token");
+  }
   return respondWithJSON(res, fields);
 };
 

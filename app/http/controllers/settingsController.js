@@ -46,7 +46,7 @@ const settingsPostHandler = (req, res, next) => {
     for (let i = 0; i < fields.length; i++) {
       const field = fields[i];
       const entry = entries.find(([id]) => id === field.name);
-      let value = entry ? entry[1] : settings[field.name];
+      let value = entry ? entry[1] : null;
       if (field.type === "boolean") {
         value =
           isNaN(value) && isString(value)
@@ -77,6 +77,8 @@ const settingsPostHandler = (req, res, next) => {
           }
         }
       }
+
+      console.log({ name: field.name, old: settings[field.name], new: value });
 
       if (value !== undefined && settings[field.name] !== value) {
         updated = true;
