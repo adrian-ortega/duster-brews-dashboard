@@ -23,7 +23,7 @@ module.exports = async (tap) => {
     image: tap.media.find((m) => m.primary)
       ? tap.media.find((m) => m.primary).src
       : null,
-    brewery_name: brewery.name,
+    brewery_name: brewery && brewery.name,
     brewery_image:
       brewery && brewery.media.find((c) => c.primary)
         ? brewery.media.find((c) => c.primary).src

@@ -78,8 +78,6 @@ const settingsPostHandler = (req, res, next) => {
         }
       }
 
-      console.log({ name: field.name, old: settings[field.name], new: value });
-
       if (value !== undefined && settings[field.name] !== value) {
         updated = true;
         settings[field.name] = value;

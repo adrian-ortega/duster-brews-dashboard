@@ -13,6 +13,7 @@ const tapsListHandler = async (req, res) => {
     const taps = await Promise.all(Taps.all().map(tapTransformer));
     return respondWithJSON(res, taps);
   } catch (e) {
+    console.log(e);
     return respondWithJSON(res, e, 500);
   }
 };
