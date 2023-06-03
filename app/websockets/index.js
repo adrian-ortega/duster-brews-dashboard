@@ -66,16 +66,6 @@ const onConnectionMessage = async (data, ws) => {
 
 const onConnection = async function (ws) {
   ws.on("message", (msg) => onConnectionMessage(parseJson(msg), ws));
-  ws.send(
-    JSON.stringify({
-      breweries: await Breweries.all(),
-      tap_locations: await Locations.all(),
-      taps: await Taps.all(),
-      settings: Settings.all(),
-      fields: require("../settings/fields.json"),
-      categories: require("../settings/categories.json"),
-    })
-  );
 };
 
 const broadcast = (data) =>

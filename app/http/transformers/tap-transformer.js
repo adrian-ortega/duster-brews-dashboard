@@ -1,5 +1,6 @@
 const Plaato = require("../../api/plaato");
 const Locations = require("../../models/TapLocations");
+const Breweries = require("../../models/Breweries");
 const { isEmpty, objectHasKey } = require("../../util/helpers");
 const locationTransformer = require("./location-transformer");
 
@@ -17,7 +18,16 @@ module.exports = async (tap) => {
     location = await locationTransformer(location);
   }
 
+  const brewery = Breweries.get(tap.brwery_id);
   const overrides = {
+    image: tap.media.find((m) => m.primary)
+      ? tap.media.find((m) => m.primary).src
+      : null,
+    brewery_name: brewery.name,
+    brewery_image:
+      brewery && brewery.media.find((c) => c.primary)
+        ? brewery.media.find((c) => c.primary).src
+        : null,
     media: tap.media.filter((m) => objectHasKey(m, "src") && !isEmpty(m.src)),
     ibu: parseFloat(tap.ibu),
   };

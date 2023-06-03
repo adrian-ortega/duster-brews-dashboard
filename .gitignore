@@ -112,4 +112,5 @@ dist
 /storage/token.json
 /storage/settings.json
 /storage/*.db.json
+/storage/*.cache.json
 /public/images/uploads

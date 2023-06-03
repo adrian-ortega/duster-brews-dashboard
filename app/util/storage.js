@@ -11,7 +11,13 @@ class JSONFileStorage {
   constructor(path, data = {}, autoload = false) {
     this.path = path;
     this.data = data;
+    this.parser = JSON.stringify;
     if (autoload) this.autoload(autoload);
+  }
+
+  keys() {
+    this.refresh();
+    return Object.keys(this.data);
   }
 
   get(id, defaultValue = null) {
@@ -86,7 +92,7 @@ class JSONFileStorage {
 
   save(data) {
     if (!data) data = this.data;
-    return saveFile(this.path, data);
+    return saveFile(this.path, data, this.parser);
   }
 }
 

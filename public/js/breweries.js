@@ -60,40 +60,21 @@ class BreweriesController extends PaginatedRouteController {
     console.log(data);
   }
 
-  prepareBrewery(brewery) {
-    brewery.image = brewery.media.find((m) => m.primary);
-    brewery.count = getApp().state.taps.reduce(
-      (c, { brewery_id, active }) => {
-        if (brewery_id === brewery.id) {
-          ++c.total;
-          if (active) ++c.active;
-        }
-        return c;
-      },
-      {
-        active: 0,
-        total: 0,
-      }
-    );
-    return brewery;
-  }
-
-  getFields() {
-    return fetch("/api/breweries/fields")
-      .then((r) => r.json())
-      .then(({ data }) => data);
+  async getFields() {
+    const { data } = await apiGet("/api/breweries/fields");
+    return data;
   }
 
   async refresh() {
+    this.showSpinner();
     const { data } = await apiGet("/api/breweries");
     getApp().state.breweries = data;
+    this.removeSpinner();
   }
 
   async renderGrid({ app, router, params }) {
     await this.refresh();
-    const breweries = [...this.paginate(app.state.breweries, params)].map(
-      this.prepareBrewery.bind(this)
-    );
+    const breweries = [...this.paginate(app.state.breweries, params)];
     let gridContent = `<div class="grid__item">
       <div class="grid__cell">No Breweries, <a class="route-link" data-route="add-brewery">create one</a>.</div>
     </div>`;
@@ -252,7 +233,7 @@ class BreweriesController extends PaginatedRouteController {
   }
 
   async renderEditForm({ router, app, params }) {
-    const brewery = this.getBrewery(params.id);
+    const brewery = await this.getBrewery(params.id);
     if (!brewery) {
       showNotification("Brewery not found", "warning");
       return router.goTo("breweries");

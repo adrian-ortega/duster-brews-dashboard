@@ -1,9 +1,10 @@
 const axios = require("axios");
 const log = require("../../util/log");
-const { isArray, isFunction } = require("../../util/helpers");
-
+const PlaatoCache = require("./PlaatoCache");
+const { isArray, isFunction, objectHasKey } = require("../../util/helpers");
 class Plaato {
   constructor() {
+    this.cache = new PlaatoCache();
     this.client = axios.create({
       baseURL: "https://plaato.blynk.cc",
     });
@@ -58,11 +59,26 @@ class Plaato {
         parser = (a) => a;
       }
 
-      const { data } = await this.client.get(`/${this.token}/get/${pin}`);
-      if (isArray(data)) {
-        return parser(data.length === 1 ? data[0] : data);
+      let value = undefined;
+
+      if (this.cache.has(this.token, pin)) {
+        const item = this.cache.get(this.token);
+        if (objectHasKey(item, pin)) {
+          value = item[pin];
+        }
       }
-      return parser(data);
+
+      if (value === undefined) {
+        const { data } = await this.client.get(`/${this.token}/get/${pin}`);
+        value = data;
+        if (isArray(data)) {
+          value = data.length === 1 ? data[0] : data;
+        }
+        this.cache.set(this.token, { [pin]: value });
+      }
+
+      this.cache.invalidate();
+      return parser(value);
     } catch (e) {
       log.error("Plaato Error:", e);
       return null;

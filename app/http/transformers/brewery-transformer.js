@@ -12,7 +12,6 @@ module.exports = async (brewery) => {
     count.total = taps.length;
     count.total = taps.filter(({ active }) => active).length;
   }
-
   return {
     ...brewery,
     image,

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-${theme}">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -22,32 +22,26 @@
     <link rel="stylesheet" data-autoreload href="/css/app.css" />
   </head>
   <body>
-    <div id="app" class="main-content">
-      <!-- This will be filled in with JS -->
-    </div>
+    <div id="app" class="main-content"></div>
     <script type="text/javascript">
       ((n, ns) => {
-        const timestamp = performance.now();
         window.APP_NAME = n;
         window.APP_NS = ns;
-        window[window.APP_NS] = {
-          route: "home",
-          state: {},
-          heartbeat: { timestamp, interval: 3000 },
-          widgets: { order: [], timestamp, interval: 300000 },
-        };
+        window[window.APP_NS] = { route: "home", state: {}, util: {} };
       })("${APP_NAME}", "${APP_NAMESPACE}");
     </script>
     <script type="text/javascript" src="/js/util.js"></script>
     <script type="text/javascript" src="/js/element.js"></script>
     <script type="text/javascript" src="/js/ws.js"></script>
     <script type="text/javascript" src="/js/router.js"></script>
+    <script type="text/javascript" src="/js/route-middleware.js"></script>
     <script type="text/javascript" src="/js/controller.js"></script>
     <script type="text/javascript" src="/js/nav.js"></script>
     <script type="text/javascript" src="/js/locations.js"></script>
     <script type="text/javascript" src="/js/taps.js"></script>
     <script type="text/javascript" src="/js/breweries.js"></script>
     <script type="text/javascript" src="/js/settings.js"></script>
+    <script type="text/javascript" src="/js/routes.js"></script>
     <script type="text/javascript" src="/js/app.js"></script>
   </body>
 </html>

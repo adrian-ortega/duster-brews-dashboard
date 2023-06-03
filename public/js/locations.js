@@ -1,10 +1,4 @@
 class TapLocationsController extends PaginatedRouteController {
-  prepareLocation(location) {
-    const { taps } = getApp().state;
-    location.tap = taps.find((t) => t.location_id === location.id);
-    return location;
-  }
-
   async getFields() {
     return fetch("/api/locations/fields")
       .then((res) => res.json())
@@ -12,15 +6,15 @@ class TapLocationsController extends PaginatedRouteController {
   }
 
   async refresh() {
+    this.showSpinner();
     const { data } = await apiGet("/api/locations");
-    getApp().state.tap_locations = data;
+    window[window.APP_NS].state.tap_locations = data;
+    this.removeSpinner();
   }
 
   async renderGrid({ app, params, router }) {
     await this.refresh();
-    const locations = [...this.paginate(app.state.tap_locations, params)].map(
-      this.prepareLocation.bind(this)
-    );
+    const locations = [...this.paginate(app.state.tap_locations, params)];
 
     let gridContent = `<div class="grid__item">
     <div class="grid__cell">No tap locations, please <a data-route="add-location" class="route-link">add one</a></div>
@@ -180,7 +174,8 @@ class TapLocationsController extends PaginatedRouteController {
   }
 
   async renderEditForm({ router, app, params }) {
-    const location = this.getLocation(params.id);
+    const location = await this.getLocation(params.id);
+    console.log(location);
     if (!location) {
       showNotification("Location not found", "warning");
       return router.goTo("locations");

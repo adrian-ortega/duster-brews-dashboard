@@ -1,11 +1,34 @@
 const formidable = require("formidable");
 const Settings = require("../../settings");
 const Locations = require("../../models/TapLocations");
+const locationTransformer = require("../transformers/location-transformer");
 const { validate } = require("../../validation");
 const { objectHasKey } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 
-const locationsGetHandler = (req, res) => respondWithJSON(res, Locations.all());
+const locationsListHandler = async (req, res) => {
+  try {
+    const locations = await Promise.all(
+      Locations.all().map(locationTransformer)
+    );
+    return respondWithJSON(res, locations);
+  } catch (e) {
+    return respondWithJSON(res, e, 500);
+  }
+};
+
+const locationsGetHandler = async (req, res) => {
+  const { id } = req.params;
+  if (!Locations.has(id)) {
+    return respondWithJSON(
+      res,
+      { status: "error", message: "Location not found" },
+      404
+    );
+  }
+  return respondWithJSON(res, await locationTransformer(Locations.get(id)));
+};
+
 const locationsFieldsHandler = (req, res) => {
   let { fields } = require("../../settings/location.fields.json");
   if (!Settings.get("enable_plaato", false)) {
@@ -72,6 +95,7 @@ const locationsDestroyHandler = (req, res) => {
 };
 
 module.exports = {
+  locationsListHandler,
   locationsGetHandler,
   locationsFieldsHandler,
   locationsPostHandler,

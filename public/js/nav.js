@@ -1,7 +1,7 @@
 class Navigation extends Templateable {
   static init() {
-    const nav = new Navigation();
-    nav.render(null, getDomContainer());
+    getDomContainer().prepend(new Navigation().render(null));
+    return !!document.querySelector(".nav");
   }
   template() {
     // @TODO change these two variables to pull from saved data within

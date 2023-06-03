@@ -8,7 +8,7 @@ const { isString, objectHasKey } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 
-const tapsGetHandler = async (req, res) => {
+const tapsListHandler = async (req, res) => {
   try {
     const taps = await Promise.all(Taps.all().map(tapTransformer));
     return respondWithJSON(res, taps);
@@ -17,20 +17,23 @@ const tapsGetHandler = async (req, res) => {
   }
 };
 
+const tapsGetHandler = async (req, res) => {
+  const { id } = req.params;
+  if (!Taps.has(id)) {
+    return respondWithJSON(
+      res,
+      { status: "error", message: "Tap not found" },
+      404
+    );
+  }
+  return respondWithJSON(res, await tapTransformer(Taps.get(id)));
+};
+
 const tapsGetFieldsHandler = (req, res) => {
   let { fields } = require("../../settings/tap.fields.json");
-  const locationOptions = Locations.all().map((location) => {
-    return {
-      value: location.id,
-      text: location.name,
-    };
-  });
-  const breweryOptions = Breweries.all().map((brewery) => {
-    return {
-      value: brewery.id,
-      text: brewery.name,
-    };
-  });
+  const toOption = (m) => ({ value: m.id, text: m.name });
+  const locationOptions = Locations.all().map(toOption);
+  const breweryOptions = Breweries.all().map(toOption);
   fields = fields.map((field) => {
     if (field.name === "brewery_id") {
       field.options = breweryOptions;
@@ -179,6 +182,7 @@ const tapsDestroyHandler = (req, res) => {
 };
 
 module.exports = {
+  tapsListHandler,
   tapsGetHandler,
   tapsGetFieldsHandler,
   tapsPostHandler,

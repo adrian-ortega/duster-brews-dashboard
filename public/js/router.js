@@ -11,25 +11,19 @@ class Route {
     return this;
   }
 
-  // @TODO do we make middleware async? is there a need?
-  runMiddleware(params) {
+  async runMiddleware(routeParams) {
     if (isArray(this.middleware)) {
       try {
         for (let i = 0; i < this.middleware.length; i++) {
           const middleware = this.middleware[i];
           if (isFunction(middleware)) {
-            middleware.apply(this, [
-              {
-                params,
-                route: this.route,
-                router: this,
-                app: getApp(),
-              },
-            ]);
+            await middleware.call(this, routeParams);
           }
         }
       } catch (e) {
-        // wut
+        console.log(e);
+        // @TODO we'll likely have to remove this since errors from
+        //       middleware should bubble up
       }
     }
   }
@@ -40,15 +34,15 @@ class Route {
 
   async triggerAction(params, router, target) {
     if (isFunction(this.action)) {
-      // @TODO async?
-      this.runMiddleware(params);
-      const response = await this.action.call(this.action, {
+      const routeParams = {
         route: this,
         router,
         params,
         app: getApp(),
         target,
-      });
+      };
+      await this.runMiddleware(routeParams);
+      const response = await this.action.call(this.action, routeParams);
       if (response && response instanceof Element) {
         response.classList.add("route-view");
       }
@@ -61,13 +55,22 @@ class Router {
     this.middleware = middleware;
     this.route = null;
     this.routes = [];
+    this.viewReady = false;
     window.addEventListener("load", this.onLoad.bind(this));
     window.addEventListener("popstate", this.onPopstate.bind(this));
     document.addEventListener("click", this.onRouteLinkClick.bind(this));
   }
 
+  addMiddleware(middlware) {
+    if (isFunction(middlware)) {
+      this.middleware.push(middlware);
+    }
+    return this;
+  }
+
   addAction(name = "", action = NOOP) {
     const route = new Route(null, name, action);
+    route.action = true;
     route.setMiddleware(null);
     this.routes.push(route);
     return this;
@@ -154,15 +157,22 @@ class Router {
           url
         );
       }
-      // Routes clear the page through middleware,
-      // since actions do not, we pass the target.
-      // Actions are a cheaty way to loop into
-      // existing 'click' event functionality.
-      //
-      route.triggerAction(params, this, target);
+
+      let tId;
+      const triggerAction = () => {
+        if (route.action || this.viewReady) {
+          clearTimeout(tId);
+          return route.triggerAction(params, this, target);
+        }
+
+        tId = setTimeout(triggerAction, 1);
+      };
+      triggerAction();
     } else {
       // go to 404?
     }
     console.groupEnd();
   }
 }
+
+window[window.APP_NS].router = new Router();

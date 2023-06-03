@@ -6,6 +6,7 @@ const {
   settingsPostHandler,
 } = require("../http/controllers/settingsController");
 const {
+  tapsListHandler,
   tapsGetHandler,
   tapsGetFieldsHandler,
   tapsPostHandler,
@@ -14,6 +15,7 @@ const {
   tapsDestroyHandler,
 } = require("../http/controllers/tapsController");
 const {
+  locationsListHandler,
   locationsGetHandler,
   locationsPostHandler,
   locationsDestroyHandler,
@@ -25,6 +27,7 @@ const {
   breweriesPostHandler,
   breweriesDestroyHandler,
   breweriesGenerateHandler,
+  breweriesListHandler,
 } = require("../http/controllers/breweriesController");
 
 module.exports = [
@@ -37,7 +40,7 @@ module.exports = [
   },
   {
     path: "/api/media",
-    methods: ["delete"],
+    methods: ["DELETE"],
     handler: mediaDestroyHandler,
   },
   {
@@ -53,6 +56,16 @@ module.exports = [
 
   // API - BREWERIES
   {
+    path: "/api/breweries",
+    methods: ["GET"],
+    handler: breweriesListHandler,
+  },
+  {
+    path: "/api/breweries",
+    methods: ["POST", "PUT"],
+    handler: breweriesPostHandler,
+  },
+  {
     path: "/api/breweries/auto-generate",
     methods: ["GET", "POST", "PUT", "PATCH"],
     handler: breweriesGenerateHandler,
@@ -64,35 +77,25 @@ module.exports = [
   },
   {
     path: "/api/breweries/:id",
-    methods: ["DELETE"],
-    handler: breweriesDestroyHandler,
-  },
-  {
-    path: "/api/breweries",
     methods: ["GET"],
     handler: breweriesGetHandler,
   },
   {
-    path: "/api/breweries",
-    methods: ["POST", "PUT"],
-    handler: breweriesPostHandler,
+    path: "/api/breweries/:id",
+    methods: ["DELETE"],
+    handler: breweriesDestroyHandler,
   },
 
   // API - TAPS
   {
     path: "/api/taps",
     methods: ["GET"],
-    handler: tapsGetHandler,
+    handler: tapsListHandler,
   },
   {
     path: "/api/taps",
     methods: ["POST", "PUT"],
     handler: tapsPostHandler,
-  },
-  {
-    path: "/api/taps/:id",
-    methods: ["DELETE"],
-    handler: tapsDestroyHandler,
   },
   {
     path: "/api/taps/toggle",
@@ -109,12 +112,22 @@ module.exports = [
     methods: ["GET"],
     handler: tapsGetFieldsHandler,
   },
+  {
+    path: "/api/taps/:id",
+    methods: ["GET"],
+    handler: tapsGetHandler,
+  },
+  {
+    path: "/api/taps/:id",
+    methods: ["DELETE"],
+    handler: tapsDestroyHandler,
+  },
 
   // API - Locations
   {
     path: "/api/locations",
     methods: ["GET"],
-    handler: locationsGetHandler,
+    handler: locationsListHandler,
   },
   {
     path: "/api/locations",
@@ -122,14 +135,19 @@ module.exports = [
     handler: locationsPostHandler,
   },
   {
-    path: "/api/locations/:id",
-    methods: ["DELETE"],
-    handler: locationsDestroyHandler,
-  },
-  {
     path: "/api/locations/fields",
     methods: ["GET"],
     handler: locationsFieldsHandler,
+  },
+  {
+    path: "/api/locations/:id",
+    methods: ["GET"],
+    handler: locationsGetHandler,
+  },
+  {
+    path: "/api/locations/:id",
+    methods: ["DELETE"],
+    handler: locationsDestroyHandler,
   },
   // {
   //   path: "/api(/*)?",

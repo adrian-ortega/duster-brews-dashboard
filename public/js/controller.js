@@ -25,31 +25,22 @@ class RouteController extends Templateable {
     return window[window.APP_NS].state;
   }
 
-  getTap(id) {
-    const { taps } = this.getState();
-    const item = taps ? taps.find((t) => t.id === id) : null;
-    if (item) {
-      const img = item.media.find((m) => m.primary);
-      item.image = img ? img.src : null;
-    }
-    return item;
+  async getTap(id) {
+    const { data } = await apiGet(`/api/taps/${id}`);
+    return data;
   }
 
-  getBrewery(id) {
-    const { breweries } = this.getState();
-    const item = breweries.find((b) => b.id === id);
-    if (item) {
-      item.image = item.media.find((m) => m.primary);
-    }
-    return item;
+  async getBrewery(id) {
+    const { data } = await apiGet(`/api/breweries/${id}`);
+    return data;
   }
 
-  getLocation(id) {
-    const { tap_locations } = this.getState();
-    return tap_locations.find((t) => t.id === id);
+  async getLocation(id) {
+    const { data } = await apiGet(`/api/locations/${id}`);
+    return data;
   }
 
-  getQueryParm(key, defaultValue = "") {
+  getQueryParam(key, defaultValue = "") {
     if (!this.queryParams) {
       this.queryParams = new URLSearchParams(window.location.search);
     }
@@ -59,6 +50,24 @@ class RouteController extends Templateable {
 
   getCurrentUrl() {
     return new URL(window.location.href);
+  }
+
+  showSpinner() {
+    this.removeSpinner();
+    getDomContainer().appendChild(
+      this.createElement(
+        `<div class="loading-spinner">
+        <div class="lds-ripple"><div></div><div></div></div>
+      </div>`
+      )
+    );
+  }
+
+  removeSpinner() {
+    const $el = getDomContainer();
+    if ($el.querySelector(".loading-spinner")) {
+      $el.removeChild($el.querySelector(".loading-spinner"));
+    }
   }
 }
 
@@ -85,7 +94,7 @@ class PaginatedRouteController extends RouteController {
     </div>`;
   }
 
-  getFields() {
+  async getFields() {
     return [];
   }
 
@@ -143,13 +152,15 @@ class PaginatedRouteController extends RouteController {
   }
 
   paginate(items, { page, per }) {
-    this.total = items.length;
-    this.page = page ?? parseInt(this.getQueryParm("page", "1"), 10);
-    this.per = per ?? parseInt(this.getQueryParm("per", "10"), 10);
-    this.pages = Math.ceil(items.length / this.per);
+    this.total = isArray(items) ? items.length : 0;
+    this.page = page ?? parseInt(this.getQueryParam("page", "1"), 10);
+    this.per = per ?? parseInt(this.getQueryParam("per", "10"), 10);
+    this.pages = this.total === 0 ? 1 : Math.ceil(this.total / this.per);
     this.pageStart = (this.page - 1) * this.per;
     this.pageEnd = this.page < this.pages ? this.page * this.per : this.total;
-    const paginatedItems = [...items.slice(this.pageStart, this.pageEnd)];
+    const paginatedItems = isArray(items)
+      ? [...items.slice(this.pageStart, this.pageEnd)]
+      : [];
     return paginatedItems;
   }
 }

@@ -1,21 +1,11 @@
 class TapsController extends PaginatedRouteController {
-  prepareTap(tap) {
-    const image = tap.media.find((m) => m.primary);
-    const brewery = this.getBrewery(tap.brewery_id);
-    const bImage = brewery.media.find((m) => m.primary);
-    return {
-      ...tap,
-      brewery,
-      ibu: parseInt(tap.ibu),
-      abv: parseFloat(tap.abv).toFixed(1),
-      image: { src: image ? image.src : null, alt: tap.name },
-      brewery_image: { src: bImage ? bImage.src : null, alt: brewery.name },
-    };
-  }
-
   async refresh() {
-    const { data } = await apiGet("/api/taps");
-    getApp().state.taps = data;
+    this.showSpinner();
+    const { data: tData } = await apiGet("/api/taps");
+    window[window.APP_NS].state.taps = tData;
+    const { data: bData } = await apiGet("/api/breweries");
+    window[window.APP_NS].state.breweries = bData;
+    this.removeSpinner();
   }
 
   async getFields() {
@@ -26,9 +16,7 @@ class TapsController extends PaginatedRouteController {
 
   async renderGrid({ app, router, params }) {
     await this.refresh();
-    const taps = [...this.paginate(app.state.taps, params)].map(
-      this.prepareTap.bind(this)
-    );
+    const taps = [...this.paginate(app.state.taps, params)];
     let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no taps, <a data-route="add-tap" class="route-link">create one</a></div></div>`;
     if (taps && taps.length > 0) {
       gridContent = taps
@@ -184,7 +172,7 @@ class TapsController extends PaginatedRouteController {
               <div class="keg__header">
                 <p class="keg__location">KEG LOCATION</p>
                 <h2 class="keg__name">${tap.name}</h2>
-                <p class="keg__brewery">${tap.brewery.name}</p>
+                <p class="keg__brewery">${tap.brewery_name}</p>
               </div>
             </div>
             <div class="tap__content-footer">
@@ -205,9 +193,7 @@ class TapsController extends PaginatedRouteController {
   async renderList({ app }) {
     await this.refresh();
     const { taps, breweries } = app.state;
-    const filteredTaps = isArray(taps)
-      ? taps.filter((tap) => tap.active).map(this.prepareTap.bind(this))
-      : [];
+    const filteredTaps = isArray(taps) ? taps.filter((t) => t.active) : [];
 
     const $el = this.createElement(`<div class="taps"></div>`);
 
@@ -275,7 +261,7 @@ class TapsController extends PaginatedRouteController {
   }
 
   async renderEditForm({ params, router, app }) {
-    const tap = this.getTap(params.id);
+    const tap = await this.getTap(params.id);
     if (!tap) {
       showNotification("Tap not found", "warning");
       return router.goTo("taps");

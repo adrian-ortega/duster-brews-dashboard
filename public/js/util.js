@@ -130,6 +130,7 @@ const objectHasKey = (object, key) =>
   isObject(object) && Object.prototype.hasOwnProperty.call(object, key);
 
 const apiGet = async (url, params = {}) => {
-  const response = await fetch(url + new URLSearchParams(params));
+  const urlParams = new URLSearchParams(params);
+  const response = await fetch(url + (urlParams ? "?" + urlParams : ""));
   return await response.json();
 };

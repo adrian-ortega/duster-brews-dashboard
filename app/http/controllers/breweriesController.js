@@ -7,7 +7,7 @@ const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 const { objectHasKey } = require("../../util/helpers");
 
-const breweriesGetHandler = async (req, res) => {
+const breweriesListHandler = async (req, res) => {
   try {
     const breweries = await Promise.all(
       Breweries.all().map(breweryTransformer)
@@ -16,6 +16,18 @@ const breweriesGetHandler = async (req, res) => {
   } catch (e) {
     return respondWithJSON(res, e, 500);
   }
+};
+
+const breweriesGetHandler = async (req, res) => {
+  const { id } = req.params;
+  if (!Breweries.has(id)) {
+    return respondWithJSON(
+      res,
+      { status: "error", message: "Brewery not found" },
+      404
+    );
+  }
+  return respondWithJSON(res, await breweryTransformer(Breweries.get(id)));
 };
 
 const breweriesFieldsHandler = (req, res) => {
@@ -122,6 +134,7 @@ const breweriesGenerateHandler = async (req, res) => {
 };
 
 module.exports = {
+  breweriesListHandler,
   breweriesGetHandler,
   breweriesFieldsHandler,
   breweriesPostHandler,
