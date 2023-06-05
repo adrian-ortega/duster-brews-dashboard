@@ -8,7 +8,7 @@ class Navigation extends Templateable {
     //       the settings json file
     //
     const src = getApp().state.settings.logo;
-    const alt = "Duster Brews";
+    const alt = APP_NAME;
     return `<div class="nav">
       <div class="nav-left">
         <div class="nav-item logo">

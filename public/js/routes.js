@@ -1,10 +1,12 @@
 (({ router }) => {
+  const main = new MainController();
   const taps = new TapsController();
   const locations = new TapLocationsController();
   const settings = new SettingsController();
   const brews = new BreweriesController();
 
-  router.addRoute("/", "home", taps.renderList.bind(taps));
+  router.addRoute("/", "home", main.renderHome.bind(main));
+
   router.addRoute(
     "/settings",
     "settings",
