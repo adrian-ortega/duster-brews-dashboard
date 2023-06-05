@@ -16,16 +16,16 @@ class Navigation extends Templateable {
         </div>
       </div>
       <div class="nav-right">
-        <div class="nav-item">
-          <a href="/" data-route="home" class="button nav-button route-link" title="Taps">
-            <span class="icon">${ICON_FORMATTED_LIST}</span>
-          </a>
-        </div>
         <div class="nav-item has-sub">
           <a href="/settings" data-route="settings" class="button nav-button route-link" title="Settings">
             <span class="icon">${ICON_COG_OUTLINE}</span>
           </a>
           <div class="nav-sub">
+            <h3>${APP_NS}</h3>
+            <a href="/" data-route="home" class="button nav-button route-link" title="Taps">
+              <span class="icon">${ICON_FORMATTED_LIST}</span>
+              <span class="text">Menu</span>
+            </a>
             <h3>Manage</h3>
             <a data-route="taps" class="button nav-button route-link" title="Taps">
               <span class="icon">${ICON_BEER_OUTLINE}</span>
