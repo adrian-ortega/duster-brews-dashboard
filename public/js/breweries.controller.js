@@ -205,18 +205,22 @@ class BreweriesController extends PaginatedRouteController {
       .querySelector(".settings__form")
       .addEventListener("submit", async (e) => {
         e.preventDefault();
-        const response = await fetch("/api/breweries", {
-          method: "POST",
-          body: new FormData($el.querySelector(".settings__form")),
-        });
-        const { data, meta } = await response.json();
-        if (data.status === 422) {
-          // @TODO validation failed
-        } else {
-          if (meta && meta.status) {
-            showNotification("Brewery saved");
+        try {
+          const response = await fetch("/api/breweries", {
+            method: "POST",
+            body: new FormData($el.querySelector(".settings__form")),
+          });
+          const { data, meta } = await response.json();
+          if (data.status === 422) {
+            // @TODO validation failed
+          } else {
+            if (meta && meta.status) {
+              showNotification("Brewery saved");
+            }
+            router.goTo("breweries");
           }
-          router.goTo("breweries");
+        } catch (e) {
+          showNotification("Something went wrong, try again", "error");
         }
       });
 

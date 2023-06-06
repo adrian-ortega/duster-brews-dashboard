@@ -53,7 +53,11 @@ const createStore = (
 
   async function dispatch(action, data) {
     const prevState = getState();
-    return objectHasKey(actions, action) && isFunction(actions[action])
+    if (!objectHasKey(actions, action)) {
+      throw new Error(`Store action '${action}' does not exist`);
+    }
+
+    return isFunction(actions[action])
       ? await actions[action].apply(null, [
           {
             state: prevState,

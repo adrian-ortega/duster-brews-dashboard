@@ -5,7 +5,7 @@ class TapsController extends PaginatedRouteController {
       this.showSpinner();
       const { store } = window[window.APP_NS];
       await store.dispatch("getTaps");
-      await store.dispatch("getBrewereries");
+      await store.dispatch("getBreweries");
       this.removeSpinner();
       this.loading = false;
     }
