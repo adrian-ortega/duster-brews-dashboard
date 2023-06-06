@@ -1,5 +1,4 @@
-:root,
-:root.default {
+:root {
   /* Colors */
   --white: #feeece;
   --gray: #c2bfbc;
@@ -55,4 +54,27 @@
   --mobile-width: 480px;
   --tablet-width: 768px;
   --desktop-width: 1024px;
+}
+
+:root.theme-dark {
+  --white: #feeece;
+  --gray: #bdbdbd;
+  --gray-bis: #9a9a9a;
+
+  --black: #000000;
+  --black-bis: #151515;
+
+  --background-light: #1b1b1b;
+  --background: #111;
+  --background-border: #222222;
+  --background-alt: #444444;
+
+  --success: #0e6d02;
+  --success-bis: var(--background-border);
+
+  --primary: var(--gray);
+  --primary-bis: var(--gray-bis);
+  --secondary: #2e4aff;
+  --tertiary: #c06a5b;
+  --tertiary-bis: #aa5d50;
 }

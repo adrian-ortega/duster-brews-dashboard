@@ -79,9 +79,9 @@ const fireCustomEvent = (eventName, detail = {}, target = document) => {
  * @param {string} type
  */
 const showNotification = (message, type = "success") => {
-  const { selector } = window[window.APP_NS];
-  const $el = window[window.APP_NS]
-    .createElement(`<div class="notification notification--${type}">
+  const { selector, Templates } = getApp();
+  const $el =
+    Templates.createElement(`<div class="notification notification--${type}">
     <p>${message}</p>
   </div>`);
 

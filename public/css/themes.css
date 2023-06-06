@@ -1,0 +1,13 @@
+:root.theme-dark .keg__name {
+  text-shadow: none;
+}
+
+:root.theme-dark .keg__location,
+:root.theme-dark .keg__detail p {
+  color: var(--gray-bis);
+}
+
+:root.theme-dark .tap:before,
+:root.theme-dark .tap:after {
+  display: none;
+}

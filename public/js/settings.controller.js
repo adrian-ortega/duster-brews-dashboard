@@ -81,6 +81,16 @@ class SettingsController extends RouteController {
                 ".image-input__img"
               ).innerHTML = `<img src="${value}" alt="Preview"/>`;
             }
+
+            if (name === "theme") {
+              const $root = document.getElementsByTagName("html");
+              [...$root[0].classList].forEach((cssClass) => {
+                if (cssClass.match(/theme?-(.+)$/gm)) {
+                  $root[0].classList.remove(cssClass);
+                }
+              });
+              $root[0].classList.add(`theme-${value}`);
+            }
           });
         }
 

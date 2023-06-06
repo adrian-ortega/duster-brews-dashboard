@@ -197,12 +197,6 @@ class BreweriesController extends PaginatedRouteController {
     return $el;
   }
 
-  renderList() {
-    const $el = this.createElement(`<div class="container">List</div>`);
-    getDomContainer().appendChild($el);
-    return $el;
-  }
-
   async renderCreateForm({ router, app }) {
     const $el = this.createElement(BreweriesController.FORM_TEMPLATE);
     const fields = await this.getFields();

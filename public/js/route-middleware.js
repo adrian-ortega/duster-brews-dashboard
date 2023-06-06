@@ -18,9 +18,16 @@
   // Theme and Views
   app.router.addMiddleware(({ route }) => {
     const { settings } = app.store.getState();
-    document.body.classList.add(`route-${route.name}`);
+    const $root = document.getElementsByTagName("html");
+    [...$root[0].classList].forEach((cssClass) => {
+      if (cssClass.match(/route?-(.+)$/gm)) {
+        $root[0].classList.remove(cssClass);
+      }
+    });
+
+    $root[0].classList.add(`route-${route.name}`);
     if (settings && settings.theme) {
-      document.body.classList.add(`theme-${settings.theme}`);
+      $root[0].classList.add(`theme-${settings.theme}`);
     }
   });
 })(window[window.APP_NS]);
