@@ -156,7 +156,8 @@ class Forms {
     const { id } = fieldOptions;
     const htmlID = Forms.getHtmlID(id);
     const imageSrc = objectHasKey(value, "src") ? value.src : value;
-    const $el = window[window.APP_NS].createElement(
+    const template = new Templateable();
+    const $el = template.createElement(
       `<div class="input image-input" data-id="${id}">
         <label for="${htmlID}" class="image-input__preview ${
         value ? "" : "is-hidden"
@@ -265,11 +266,3 @@ class Templates {
       : null;
   }
 }
-
-const app = getApp();
-
-app.Forms = Forms;
-app.Templates = new Templates();
-
-app.render = app.Templates.render.bind(app.Templates);
-app.createElement = app.Templates.createElement.bind(app.Templates);

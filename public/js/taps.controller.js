@@ -1,4 +1,16 @@
-class TapsController extends MainController {
+class TapsController extends PaginatedRouteController {
+  async refresh() {
+    if (!this.loading) {
+      this.loading = true;
+      this.showSpinner();
+      const { store } = window[window.APP_NS];
+      await store.dispatch("getTaps");
+      await store.dispatch("getBrewereries");
+      this.removeSpinner();
+      this.loading = false;
+    }
+  }
+
   async getFields() {
     return fetch("/api/taps/fields")
       .then((res) => res.json())
@@ -7,7 +19,8 @@ class TapsController extends MainController {
 
   async renderGrid({ app, router, params }) {
     await this.refresh();
-    const taps = [...this.paginate(app.state.taps, params)];
+    let { taps } = app.store.getState();
+    taps = [...this.paginate(taps, params)];
     let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no taps, <a data-route="add-tap" class="route-link">create one</a></div></div>`;
     if (taps && taps.length > 0) {
       gridContent = taps

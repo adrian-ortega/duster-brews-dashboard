@@ -66,15 +66,20 @@ class BreweriesController extends PaginatedRouteController {
   }
 
   async refresh() {
-    this.showSpinner();
-    const { data } = await apiGet("/api/breweries");
-    getApp().state.breweries = data;
-    this.removeSpinner();
+    if (!this.loading) {
+      this.loading = true;
+      this.showSpinner();
+      const { store } = getApp();
+      await store.dispatch("getBreweries");
+      this.removeSpinner();
+      this.loading = false;
+    }
   }
 
   async renderGrid({ app, router, params }) {
     await this.refresh();
-    const breweries = [...this.paginate(app.state.breweries, params)];
+    let { breweries } = app.store.getState();
+    breweries = [...this.paginate(breweries, params)];
     let gridContent = `<div class="grid__item">
       <div class="grid__cell">No Breweries, <a class="route-link" data-route="add-brewery">create one</a>.</div>
     </div>`;

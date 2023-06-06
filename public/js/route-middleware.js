@@ -1,6 +1,6 @@
-(({ router }) => {
+((app) => {
   // clear containers
-  router.addMiddleware(() => {
+  app.router.addMiddleware(() => {
     const $container = getDomContainer();
     // if (!$container.classList.contains("init")) {
     //   $container.classList.add("init");
@@ -16,8 +16,8 @@
   });
 
   // Theme and Views
-  router.addMiddleware(({ route, app }) => {
-    const { settings } = app.state;
+  app.router.addMiddleware(({ route }) => {
+    const { settings } = app.store.getState();
     document.body.classList.add(`route-${route.name}`);
     if (settings && settings.theme) {
       document.body.classList.add(`theme-${settings.theme}`);

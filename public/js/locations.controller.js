@@ -6,15 +6,20 @@ class TapLocationsController extends PaginatedRouteController {
   }
 
   async refresh() {
-    this.showSpinner();
-    const { data } = await apiGet("/api/locations");
-    window[window.APP_NS].state.tap_locations = data;
-    this.removeSpinner();
+    if (!this.loading) {
+      this.loading = true;
+      this.showSpinner();
+      const { store } = getApp();
+      await store.dispatch("getLocations");
+      this.removeSpinner();
+      this.loading = false;
+    }
   }
 
   async renderGrid({ app, params, router }) {
     await this.refresh();
-    const locations = [...this.paginate(app.state.tap_locations, params)];
+    const { tap_locations } = app.store.getState();
+    const locations = [...this.paginate(tap_locations, params)];
 
     let gridContent = `<div class="grid__item">
     <div class="grid__cell">No tap locations, please <a data-route="add-location" class="route-link">add one</a></div>

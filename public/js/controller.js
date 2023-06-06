@@ -17,27 +17,16 @@ class RouteController extends Templateable {
     </div>`;
   }
 
-  getApp() {
-    return window[window.APP_NS];
-  }
-
-  getState() {
-    return window[window.APP_NS].state;
-  }
-
   async getTap(id) {
-    const { data } = await apiGet(`/api/taps/${id}`);
-    return data;
+    return this.store.dispatch("getTap", id);
   }
 
   async getBrewery(id) {
-    const { data } = await apiGet(`/api/breweries/${id}`);
-    return data;
+    return this.store.dispatch("getBrewery", id);
   }
 
   async getLocation(id) {
-    const { data } = await apiGet(`/api/locations/${id}`);
-    return data;
+    return this.store.dispatch("getLocation", id);
   }
 
   getQueryParam(key, defaultValue = "") {
@@ -64,9 +53,9 @@ class RouteController extends Templateable {
   }
 
   removeSpinner() {
-    const $el = getDomContainer();
-    if ($el.querySelector(".loading-spinner")) {
-      $el.removeChild($el.querySelector(".loading-spinner"));
+    const $el = document.querySelector(".loading-spinner");
+    if ($el) {
+      $el.parentNode.removeChild($el);
     }
   }
 }

@@ -23,26 +23,23 @@
   </head>
   <body>
     <div id="app" class="main-content"></div>
-    <script type="text/javascript">
-      ((n, ns) => {
-        window.APP_NAME = n;
-        window.APP_NS = ns;
-        window[window.APP_NS] = { route: "home", state: {}, util: {} };
-      })("${APP_NAME}", "${APP_NAMESPACE}");
-    </script>
     <script type="text/javascript" src="/js/util.js"></script>
     <script type="text/javascript" src="/js/element.js"></script>
     <script type="text/javascript" src="/js/ws.js"></script>
-    <script type="text/javascript" src="/js/router.js"></script>
-    <script type="text/javascript" src="/js/route-middleware.js"></script>
+    <script type="text/javascript" src="/js/store.js"></script>
     <script type="text/javascript" src="/js/nav.js"></script>
+    <script type="text/javascript" src="/js/router.js"></script>
     <script type="text/javascript" src="/js/controller.js"></script>
     <script type="text/javascript" src="/js/main.controller.js"></script>
     <script type="text/javascript" src="/js/locations.controller.js"></script>
     <script type="text/javascript" src="/js/taps.controller.js"></script>
     <script type="text/javascript" src="/js/breweries.controller.js"></script>
     <script type="text/javascript" src="/js/settings.controller.js"></script>
-    <script type="text/javascript" src="/js/routes.js"></script>
     <script type="text/javascript" src="/js/app.js"></script>
+    <script type="text/javascript">
+      new App().init("${APP_NAME}", "${APP_NAMESPACE}");
+    </script>
+    <script type="text/javascript" src="/js/route-middleware.js"></script>
+    <script type="text/javascript" src="/js/routes.js"></script>
   </body>
 </html>

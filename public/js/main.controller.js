@@ -1,16 +1,14 @@
 class MainController extends RouteController {
   async refresh() {
-    this.showSpinner();
-    try {
-      const { data: tData } = await apiGet("/api/taps");
-      window[window.APP_NS].state.taps = tData;
-      const { data: bData } = await apiGet("/api/breweries");
-      window[window.APP_NS].state.breweries = bData;
-    } catch (e) {
-      window[window.APP_NS].state.taps = [];
-      window[window.APP_NS].state.breweries = [];
+    if (!this.loading) {
+      this.loading = true;
+      this.showSpinner();
+      const { store } = window[window.APP_NS];
+      await store.dispatch("getTaps");
+      await store.dispatch("getBrewereries");
+      this.removeSpinner();
+      this.loading = false;
     }
-    this.removeSpinner();
   }
 
   renderListItem(tap, app) {
@@ -44,15 +42,14 @@ class MainController extends RouteController {
   }
 
   async renderHome({ app }) {
-    this.refresh();
-    const { taps, breweries } = app.state;
+    await this.refresh();
+    const { taps, breweries } = app.store.getState();
     const filteredTaps = isArray(taps) ? taps.filter((t) => t.active) : [];
     const $el = this.createElement(`<div class="taps"></div>`);
+
     if (filteredTaps.length > 0) {
-      $el.appendChild(
-        this.createElement(
-          filteredTaps.map((t) => this.renderListItem(t, app)).join("")
-        )
+      filteredTaps.map((t) =>
+        $el.appendChild(this.createElement(this.renderListItem(t, app)))
       );
     } else if (breweries && breweries.length === 0) {
       $el.appendChild(

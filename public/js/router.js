@@ -94,7 +94,7 @@ class Router {
   }
 
   getCurrentRoute() {
-    return this.getRoute(this.route);
+    return this.getRoute(this.routeName);
   }
 
   isRoute(name) {
@@ -102,7 +102,7 @@ class Router {
     return current ? current.name === name : false;
   }
 
-  onLoad() {
+  async onLoad() {
     const { pathname } = window.location;
     const route = this.getRouteByPath(pathname);
     const urlParams = new URLSearchParams(window.location.search);
@@ -117,6 +117,8 @@ class Router {
       const route = this.getRoute($a.getAttribute("data-route"));
       if (route) $a.setAttribute("href", route.path);
     });
+
+    this.viewReady = await Navigation.init();
   }
 
   onPopstate(event) {
@@ -145,6 +147,9 @@ class Router {
     const route = this.getRoute(name);
     if (route) {
       this.route = route;
+      this.routeName = name;
+      this.params = params;
+      this.target = target;
       getApp().route = route.name;
       if (route.path) {
         const url = new URL(`${window.location.origin}${route.path}`);
@@ -174,5 +179,3 @@ class Router {
     console.groupEnd();
   }
 }
-
-window[window.APP_NS].router = new Router();

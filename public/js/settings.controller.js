@@ -1,9 +1,8 @@
 class SettingsController extends RouteController {
   async renderSettings({ app }) {
-    const response = await fetch("/api/settings");
-    const { data } = await response.json();
-
-    let { values, fields, categories } = data;
+    let { values, fields, categories } = await app.store.dispatch(
+      "getSettings"
+    );
     let cat = Object.keys(categories || []).shift();
 
     const $el = this.createElement(SettingsController.FORM_TEMPLATE);

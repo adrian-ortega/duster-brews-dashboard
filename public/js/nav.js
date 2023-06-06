@@ -1,5 +1,7 @@
 class Navigation extends Templateable {
-  static init() {
+  static async init() {
+    const { store } = getApp();
+    await store.dispatch("getSettings");
     getDomContainer().prepend(new Navigation().render(null));
     return !!document.querySelector(".nav");
   }
@@ -7,8 +9,10 @@ class Navigation extends Templateable {
     // @TODO change these two variables to pull from saved data within
     //       the settings json file
     //
-    const src = getApp().state.settings.logo;
-    const alt = APP_NAME;
+    const { app_name, store } = getApp();
+    const { settings } = store.getState();
+    const src = settings.logo;
+    const alt = app_name;
     return `<div class="nav">
       <div class="nav-left">
         <div class="nav-item logo">
