@@ -60,11 +60,6 @@ class BreweriesController extends PaginatedRouteController {
     console.log(data);
   }
 
-  async getFields() {
-    const { data } = await apiGet("/api/breweries/fields");
-    return data;
-  }
-
   async refresh() {
     if (!this.loading) {
       this.loading = true;
@@ -178,9 +173,7 @@ class BreweriesController extends PaginatedRouteController {
                   .then(({ data }) => {
                     if (data.status.toLowerCase() === "success") {
                       showNotification("Brewery was uccessfully deleted.");
-                      app.fireAction("refresh");
-                      const $row = $btn.closest(".grid__item");
-                      $row.parentNode.removeChild($row);
+                      router.goTo("breweries");
                     }
                   });
               }
@@ -199,7 +192,7 @@ class BreweriesController extends PaginatedRouteController {
 
   async renderCreateForm({ router, app }) {
     const $el = this.createElement(BreweriesController.FORM_TEMPLATE);
-    const fields = await this.getFields();
+    const fields = await app.store.dispatch("getBreweryFields");
     $el.querySelector(".settings__title").innerHTML = "Create Brewery";
     app.Forms.renderFields(fields, $el.querySelector(".settings__view"));
 
@@ -232,7 +225,7 @@ class BreweriesController extends PaginatedRouteController {
   }
 
   async renderEditForm({ router, app, params }) {
-    const brewery = await this.getBrewery(params.id);
+    const brewery = await app.store.dispatch("getBrewery", params.id);
     if (!brewery) {
       showNotification("Brewery not found", "warning");
       return router.goTo("breweries");
@@ -240,7 +233,11 @@ class BreweriesController extends PaginatedRouteController {
 
     const $el = await this.renderCreateForm({ router, app });
     $el.querySelector(".settings__title").innerHTML = "Edit Brewery";
-    app.Forms.fillFields(await this.getFields(), brewery, $el);
+    app.Forms.fillFields(
+      await app.store.dispatch("getBreweryFields"),
+      brewery,
+      $el
+    );
 
     $el
       .querySelector(".settings__form")

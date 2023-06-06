@@ -70,7 +70,6 @@ class Forms {
               ".image-input__img"
             ).innerHTML = `<img src="${src}" alt="Preview"/>`;
             $preview.classList.remove("is-hidden");
-            console.log({ name, type, value: src });
           }
           break;
         default:

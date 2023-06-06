@@ -22,8 +22,5 @@ const createWebSocket = ({
     ws.onmessage = ({ data }) => onmessage(parseJson(data));
 
     window[namespace].WebSocket = ws;
-    window[namespace].fireAction = (action, data = null) =>
-      ws.send(JSON.stringify({ action, data }));
-    resolve(ws);
   });
 };

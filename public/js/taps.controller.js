@@ -11,12 +11,6 @@ class TapsController extends PaginatedRouteController {
     }
   }
 
-  async getFields() {
-    return fetch("/api/taps/fields")
-      .then((res) => res.json())
-      .then(({ data }) => data);
-  }
-
   async renderGrid({ app, router, params }) {
     await this.refresh();
     let { taps } = app.store.getState();
@@ -128,9 +122,7 @@ class TapsController extends PaginatedRouteController {
                   .then(({ data }) => {
                     if (data.status.toLowerCase() === "success") {
                       showNotification("Tap was uccessfully deleted.");
-                      app.fireAction("refresh");
-                      const $row = $btn.closest(".grid__item");
-                      $row.parentNode.removeChild($row);
+                      router.goTo("taps");
                     }
                   });
               }
@@ -163,9 +155,9 @@ class TapsController extends PaginatedRouteController {
     return $el;
   }
 
-  async renderCreateForm({ router }) {
+  async renderCreateForm({ app, router }) {
     const $el = this.createElement(TapsController.FORM_TEMPLATE);
-    const fields = await this.getFields();
+    const fields = await app.store.dispatch("getTapFields");
 
     $el.querySelector(".settings__title").innerHTML = "Create Tap";
     Forms.renderFields(fields, $el.querySelector(".settings__view"));
@@ -199,7 +191,7 @@ class TapsController extends PaginatedRouteController {
   }
 
   async renderEditForm({ params, router, app }) {
-    const tap = await this.getTap(params.id);
+    const tap = await app.store.dispatch("getTap", params.id);
     if (!tap) {
       showNotification("Tap not found", "warning");
       return router.goTo("taps");
@@ -207,7 +199,7 @@ class TapsController extends PaginatedRouteController {
 
     const $el = await this.renderCreateForm({ router, app });
     $el.querySelector(".settings__title").innerHTML = "Edit Tap";
-    app.Forms.fillFields(await this.getFields(), tap, $el);
+    app.Forms.fillFields(await app.store.dispatch("getTapFields"), tap, $el);
 
     $el
       .querySelector(".settings__form")

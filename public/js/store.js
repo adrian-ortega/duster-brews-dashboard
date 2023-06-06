@@ -51,7 +51,7 @@ const createStore = (
     }
   }
 
-  async function dispatch(action) {
+  async function dispatch(action, data) {
     const prevState = getState();
     return objectHasKey(actions, action) && isFunction(actions[action])
       ? await actions[action].apply(null, [
@@ -60,6 +60,7 @@ const createStore = (
             commit,
             dispatch,
           },
+          data,
         ])
       : null;
   }
@@ -101,13 +102,21 @@ const createAppStore = (app) => {
       await commit("SET_SETTING_CATEGORIES", data.categories);
       return data;
     },
+    getTapFields: async () => {
+      const { data } = await apiGet("/api/taps/fields");
+      return data;
+    },
     getTaps: async ({ commit }) => {
       const { data } = await apiGet("/api/taps");
       await commit("SET_TAPS", data);
       return data;
     },
-    getTap: async (id) => {
+    getTap: async (ctx, id) => {
       const { data } = await apiGet(`/api/taps/${id}`);
+      return data;
+    },
+    getBreweryFields: async () => {
+      const { data } = await apiGet("/api/breweries/fields");
       return data;
     },
     getBreweries: async ({ commit }) => {
@@ -117,6 +126,10 @@ const createAppStore = (app) => {
     },
     getBrewery: async (ctx, id) => {
       const { data } = await apiGet(`/api/breweries/${id}`);
+      return data;
+    },
+    getLocationFields: async () => {
+      const { data } = await apiGet("/api/locations/fields");
       return data;
     },
     getLocations: async ({ commit }) => {

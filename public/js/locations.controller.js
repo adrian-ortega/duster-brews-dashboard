@@ -1,10 +1,4 @@
 class TapLocationsController extends PaginatedRouteController {
-  async getFields() {
-    return fetch("/api/locations/fields")
-      .then((res) => res.json())
-      .then(({ data }) => data);
-  }
-
   async refresh() {
     if (!this.loading) {
       this.loading = true;
@@ -125,9 +119,7 @@ class TapLocationsController extends PaginatedRouteController {
                   .then(({ data }) => {
                     if (data.status.toLowerCase() === "success") {
                       showNotification("Tap Location was uccessfully deleted.");
-                      app.fireAction("refresh");
-                      const $row = $btn.closest(".grid__item");
-                      $row.parentNode.removeChild($row);
+                      router.goTo("locations");
                     }
                   });
               }
@@ -147,7 +139,7 @@ class TapLocationsController extends PaginatedRouteController {
 
   async renderCreateForm({ router, app }) {
     const $el = this.createElement(TapLocationsController.FORM_TEMPLATE);
-    const fields = await this.getFields();
+    const fields = await app.store.dispatch("getLocationFields");
     $el.querySelector(".settings__title").innerHTML = "Create Tap Location";
     app.Forms.renderFields(fields, $el.querySelector(".settings__view"));
 
@@ -179,15 +171,18 @@ class TapLocationsController extends PaginatedRouteController {
   }
 
   async renderEditForm({ router, app, params }) {
-    const location = await this.getLocation(params.id);
-    console.log(location);
+    const location = await app.store.dispatch("getLocation", params.id);
     if (!location) {
       showNotification("Location not found", "warning");
       return router.goTo("locations");
     }
     const $el = await this.renderCreateForm({ router, app });
     $el.querySelector(".settings__title").innerHTML = "Edit Tap Location";
-    app.Forms.fillFields(await this.getFields(), location, $el);
+    app.Forms.fillFields(
+      await app.store.dispatch("getLocationFields"),
+      location,
+      $el
+    );
 
     $el
       .querySelector(".settings__form")

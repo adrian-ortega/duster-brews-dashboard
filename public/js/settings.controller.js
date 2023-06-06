@@ -1,5 +1,5 @@
 class SettingsController extends RouteController {
-  async renderSettings({ app }) {
+  async renderSettings({ app, router }) {
     let { values, fields, categories } = await app.store.dispatch(
       "getSettings"
     );
@@ -52,6 +52,11 @@ class SettingsController extends RouteController {
       ($el, { category }) => category !== cat && $el.classList.add("is-hidden")
     );
 
+    $el.querySelector(".button.is-cancel").addEventListener("click", (e) => {
+      e.preventDefault();
+      router.goTo("home");
+    });
+
     $el
       .querySelector(".settings__form")
       .addEventListener("submit", async (e) => {
@@ -92,9 +97,13 @@ class SettingsController extends RouteController {
               $root[0].classList.add(`theme-${value}`);
             }
           });
-        }
 
-        showNotification("Settings Saved");
+          await app.store.commit("SET_SETTINGS", data.values);
+          await app.store.commit("SET_SETTING_FIELDS", data.fields);
+          await app.store.commit("SET_SETTING_CATEGORIES", data.categories);
+          showNotification("Settings Saved");
+        }
+        router.goTo("home");
       });
 
     getDomContainer().appendChild($el);

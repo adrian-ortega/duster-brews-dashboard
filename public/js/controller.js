@@ -17,18 +17,6 @@ class RouteController extends Templateable {
     </div>`;
   }
 
-  async getTap(id) {
-    return this.store.dispatch("getTap", id);
-  }
-
-  async getBrewery(id) {
-    return this.store.dispatch("getBrewery", id);
-  }
-
-  async getLocation(id) {
-    return this.store.dispatch("getLocation", id);
-  }
-
   getQueryParam(key, defaultValue = "") {
     if (!this.queryParams) {
       this.queryParams = new URLSearchParams(window.location.search);
@@ -81,10 +69,6 @@ class PaginatedRouteController extends RouteController {
       <div class="grid__footer"></div>
     </div>
     </div>`;
-  }
-
-  async getFields() {
-    return [];
   }
 
   getPaginatorFooterTemplate() {
