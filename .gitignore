@@ -75,9 +75,6 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
-/storage/credentials.json
-/storage/token.json
-
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -109,3 +106,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+# App Specific
+/storage/credentials.json
+/storage/token.json
+/storage/settings.json
+/storage/*.db.json
+/storage/*.cache.json
+/public/images/uploads

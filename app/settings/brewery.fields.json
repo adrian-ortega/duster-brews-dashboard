@@ -1,0 +1,15 @@
+{
+  "fields": [
+    {
+      "label": "Name",
+      "name": "name",
+      "type": "text",
+      "required": true
+    },
+    {
+      "label": "Logo",
+      "name": "image",
+      "type": "image"
+    }
+  ]
+}

@@ -1,0 +1,517 @@
+figure.image,
+figure.image > span {
+  position: relative;
+}
+figure.image:before {
+  padding-top: 100%;
+}
+figure.image:before,
+figure.image > span:after {
+  content: "";
+  display: block;
+}
+figure.image > span {
+  border-radius: var(--radius);
+}
+figure.image > span,
+figure.image > span:after,
+figure.image > span > span,
+figure.image > span > span:after,
+figure.image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+figure.image > span,
+figure.image > span:after,
+figure.image > span > span:after {
+  overflow: hidden;
+  right: 0;
+  bottom: 0;
+}
+figure.image > span > span {
+  width: 100%;
+  height: 100%;
+  transform: translate(50%, 50%);
+}
+figure.image img {
+  max-height: 100%;
+  max-width: inherit;
+  transform: translate(-50%, -50%);
+}
+.required {
+  color: var(--error);
+}
+.is-hidden {
+  display: none !important;
+}
+.loading-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(0.025em);
+  color: var(--primary);
+}
+.loading-spinner .progress {
+  font-size: 0.9em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-top: -2em;
+}
+.loading-spinner .title {
+  font-size: 1.2em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  text-align: center;
+  background: var(--black);
+  border-radius: var(--radius);
+  color: var(--white);
+  padding: 0.5em;
+}
+.loading-spinner .icon {
+  font-size: 3em;
+}
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 5em;
+  height: 5em;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 0.25em solid var(--primary);
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+.icon {
+  display: inline-flex;
+}
+.icon svg {
+  fill: currentColor;
+  width: 1em;
+  height: 1em;
+}
+.icon.is-spinner {
+  animation: spinner 2.5s linear infinite;
+}
+.button {
+  display: inline-flex;
+  appearance: none;
+  border: 1px solid transparent;
+  background: var(--button-bg);
+  border-radius: var(--button-radius);
+  align-items: center;
+  justify-content: center;
+  min-height: var(--button-height);
+  color: var(--white);
+  font-size: 1em;
+  font-family: var(--button-font-family);
+  padding: 0 1em;
+  transition: all 0.25s ease-out;
+}
+.button:hover {
+  cursor: pointer;
+  background: var(--button-hover-bg);
+}
+.button .icon {
+  font-size: 1.5em;
+}
+.button .text:not(.is-hidden) + .icon,
+.button .icon:not(.is-hidden) + .text {
+  margin-left: 0.25em;
+}
+.button[disabled] {
+  opacity: 0.5;
+}
+.button .text small {
+  font-size: 50%;
+  display: block;
+}
+.button.is-icon {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+.button.is-primary {
+  background-color: var(--primary-bis);
+  color: var(--white);
+}
+.button.is-primary:hover {
+  background-color: var(--primary);
+}
+.button.is-success {
+  background-color: var(--success-bis);
+}
+.button.is-success:hover {
+  background-color: var(--success);
+}
+.placeholder,
+.placeholder::before,
+.placeholder::after {
+  display: inline-block;
+}
+.placeholder {
+  height: 0.85em;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0.05em;
+  margin-bottom: 0.25em;
+  border-radius: var(--radius);
+  opacity: 0.25;
+}
+.placeholder:before,
+.placeholder:after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.placeholder:before {
+  background: currentColor;
+}
+.placeholder::after {
+  animation-duration: 2.25s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeholder_shine;
+  animation-timing-function: linear;
+  background: linear-gradient(
+    to right,
+    transparent 10%,
+    rgba(0, 0, 0, 0.1) 18%,
+    transparent 33%
+  );
+  background-size: 20em 10em;
+}
+.placeholder.is-image,
+.placeholder.is-image::after {
+  height: 100%;
+}
+.placeholder.is-icon {
+  width: 1em;
+  height: 1em;
+}
+.placeholder.is-large {
+  width: 10em;
+}
+.placeholder.is-med {
+  width: 8em;
+}
+.placeholder.is-small {
+  width: 5em;
+}
+.placeholder.is-tiny {
+  width: 2.5em;
+}
+.field {
+  display: grid;
+  grid-template-columns: 60% 40%;
+}
+.field:not(.is-hidden) + .field {
+  margin-top: 2em;
+}
+.field .label {
+  padding-right: 1em;
+}
+.field .label label {
+  font-weight: var(--font-weight-bold);
+}
+.field .label p {
+  margin-top: 0.25em;
+  font-size: 0.8em;
+  margin: 1em 0 0;
+  color: var(--gray-bis);
+}
+
+.field select,
+.field textarea,
+.field input[type="text"] {
+  width: 100%;
+  height: var(--button-height);
+  appearance: none;
+  outline: none;
+  background: var(--input-background);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.5em;
+  color: var(--white);
+}
+.field select:focus,
+.field textarea:focus,
+.field input[type="text"]:focus {
+  border: 1px solid var(--background);
+  box-shadow: 0 0 0 0.1em var(--background), 0 0 0 0.2em var(--primary);
+  padding-right: 1em;
+}
+.field .select {
+  position: relative;
+  display: block;
+}
+.field .select .icon {
+  position: absolute;
+  font-size: 1.5em;
+  top: 50%;
+  right: 0.25em;
+  transform: translateY(-50%);
+}
+
+/* Image Field */
+.image-input__preview {
+  position: relative;
+  background: repeating-conic-gradient(var(--gray) 0% 25%, var(--white) 0% 50%)
+    50% / 20px 20px;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+}
+.image-input__preview:before,
+.image-input__preview > span:after,
+.image-input__img:after {
+  content: "";
+  display: block;
+}
+
+.image-input__preview:before {
+  padding-top: 100%;
+}
+.image-input__preview > span:after {
+  border: 1px solid var(--input-background);
+  box-shadow: inset 0 0.2em 0 0 var(--input-background),
+    inset 0.2em 0 0 0 var(--input-background),
+    inset 0 -0.2em 0 0 var(--input-background),
+    inset -0.2em 0 0 0 var(--input-background);
+}
+.image-input__preview,
+.image-input__trigger {
+  cursor: pointer;
+}
+.image-input__file,
+.image-input__preview,
+.image-input__preview > span {
+  position: relative;
+  display: flex;
+  border-radius: var(--radius);
+}
+.image-input__preview > span,
+.image-input__preview > span:after,
+.image-input__img:after {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.image-input__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translate(50%, 50%);
+}
+.image-input__img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-height: 100%;
+  max-width: inherit;
+  transform: translate(-50%, -50%);
+  transition: transform 150ms ease-in-out;
+}
+.image-input__buttons {
+  display: flex;
+  gap: 0.5em;
+}
+.image-input__trigger,
+.image-input__buttons .button {
+  flex: 1 1 auto;
+}
+.image-input__trigger input {
+  display: none;
+}
+
+.image-input__file {
+  font-size: 0.8em;
+  margin: 0 0 1em 0;
+  flex-direction: column;
+}
+.image-input__file-l {
+  color: var(--gray-bis);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 0.25em;
+  padding: 0 0.5em;
+}
+.image-input__file-v {
+  padding: 0.5em;
+  background: var(--input-background);
+  font-family: var(--font-family-mono);
+}
+.image-input__file-l,
+.image-input__file-v {
+  display: block;
+}
+
+/* Checkboxes and Radio */
+.switch {
+  width: 2em;
+  height: 1.1em;
+  border-radius: var(--radius-rounded);
+  display: inline-flex;
+  align-items: center;
+  background: var(--button-bg);
+  border: 1px solid var(--gray-bis);
+  padding: 0 0.1em;
+  cursor: pointer;
+}
+.switch input {
+  display: none;
+}
+.switch span {
+  display: block;
+  border-radius: var(--radius-rounded);
+  background: var(--gray-bis);
+  width: 0.9em;
+  height: 0.9em;
+  transition: all 0.2s ease-in-out;
+}
+.switch input:checked + span {
+  margin-left: auto;
+  background: var(--primary);
+}
+.notification {
+  position: fixed;
+  top: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+  width: 100%;
+  max-width: 25em;
+  background: var(--background-light);
+  border-radius: var(--radius);
+  padding: 1em;
+  animation: fade-from-top-centered 0.25s ease-in forwards;
+}
+.notification--success {
+  background: var(--success);
+}
+.notification--warning {
+  color: var(--black);
+  background: var(--warning);
+}
+.page-title + .grid .grid__actions {
+  margin-top: -1em;
+  margin-bottom: 1em;
+}
+.grid__actions,
+.grid__header,
+.grid__item,
+.grid__footer,
+.grid__footer > div,
+.grid__cell.actions,
+.grid__cell.actions > div {
+  display: flex;
+}
+.grid__actions {
+  padding: 0.5em;
+  justify-content: flex-end;
+}
+.grid__actions,
+.grid__action-group {
+  gap: 0.2em;
+}
+.grid__action-group {
+  display: flex;
+  flex-basis: 50%;
+}
+.grid__action-group:last-child {
+  justify-content: flex-end;
+}
+.grid__header {
+  border-bottom: 2px solid var(--background-border);
+  margin-bottom: 1em;
+}
+.grid__header .grid__cell {
+  padding-bottom: 0.5em;
+  color: var(--gray-bis);
+}
+.grid__item {
+  padding: 0.5em 0;
+}
+.grid__item {
+  border-bottom: 1px solid var(--background-border);
+}
+.grid__cell {
+  padding: 0 0.5em;
+  flex: 0 1 auto;
+}
+.grid__cell.name {
+  width: 50%;
+}
+.item {
+  display: grid;
+}
+.item.has-image {
+  grid-template-columns: 4em 1fr;
+  gap: 1em;
+}
+.item__content h2 {
+  margin-bottom: 0.25em;
+}
+.item__content p {
+  color: var(--primary);
+}
+.grid__cell.actions {
+  flex-grow: 1;
+  align-items: flex-start;
+}
+.grid__cell.actions > div {
+  display: flex;
+  gap: 0.2em;
+  min-width: 5em;
+}
+.grid__cell.abv,
+.grid__cell.ibu {
+  min-width: 3.5em;
+}
+.grid__cell.actions,
+.grid__cell.abv,
+.grid__cell.ibu,
+.grid__cell.tap-count {
+  text-align: right;
+  justify-content: flex-end;
+}
+.grid__cell.tap-count {
+  width: 3em;
+}
+.grid__item h2 {
+  font-size: 1.25em;
+}
+.grid .button {
+  font-size: 0.75em;
+}
+.grid__footer {
+  padding: 1em 0.5em 0.5em;
+}
+.grid__footer > div {
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 0.25em;
+}
+.grid__footer > div:last-child {
+  justify-content: flex-end;
+}
+.grid__footer > div:last-child:not(:first-child) {
+  margin-left: auto;
+}
