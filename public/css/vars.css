@@ -78,3 +78,8 @@
   --tertiary: #c06a5b;
   --tertiary-bis: #aa5d50;
 }
+
+:root.theme-chalk {
+  --font-family-block: "Walter Turncoat", sans-serif;
+  --font-family-sans-serif: "Pangolin", sans-serif;
+}
