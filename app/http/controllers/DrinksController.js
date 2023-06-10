@@ -1,37 +1,37 @@
 const formidable = require("formidable");
-const Taps = require("../../models/Taps");
+const Drinks = require("../../models/Drinks");
 const Breweries = require("../../models/Breweries");
 const Locations = require("../../models/TapLocations");
-const tapTransformer = require("../transformers/tap-transformer");
+const transformer = require("../transformers/drink-transformer");
 const { validate } = require("../../validation");
 const { isString, objectHasKey } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 
-const tapsListHandler = async (req, res) => {
+const listHandler = async (req, res) => {
   try {
-    const taps = await Promise.all(Taps.all().map(tapTransformer));
-    return respondWithJSON(res, taps);
+    const items = await Promise.all(Drinks.all().map(transformer));
+    return respondWithJSON(res, items);
   } catch (e) {
     console.log(e);
     return respondWithJSON(res, e, 500);
   }
 };
 
-const tapsGetHandler = async (req, res) => {
+const getHandler = async (req, res) => {
   const { id } = req.params;
-  if (!Taps.has(id)) {
+  if (!Drinks.has(id)) {
     return respondWithJSON(
       res,
-      { status: "error", message: "Tap not found" },
+      { status: "error", message: "Drink not found" },
       404
     );
   }
-  return respondWithJSON(res, await tapTransformer(Taps.get(id)));
+  return respondWithJSON(res, await transformer(Drinks.get(id)));
 };
 
-const tapsGetFieldsHandler = (req, res) => {
-  let { fields } = require("../../settings/tap.fields.json");
+const getFieldsHandler = (req, res) => {
+  let { fields } = require("../../settings/drink.fields.json");
   const toOption = (m) => ({ value: m.id, text: m.name });
   const locationOptions = Locations.all().map(toOption);
   const breweryOptions = Breweries.all().map(toOption);
@@ -52,14 +52,14 @@ const tapsGetFieldsHandler = (req, res) => {
   return respondWithJSON(res, fields);
 };
 
-const tapsPostHandler = (req, res, next) => {
+const postHandler = (req, res, next) => {
   const form = formidable();
   form.parse(req, async (err, formData, files) => {
     if (err) {
       return next(err);
     }
     const validationRules = {
-      id: ["optional:tapExists"],
+      id: ["optional:drinkExists"],
       brewery_id: ["required", "breweryExists"],
       name: ["required"],
       image: ["optional:isValidImage"],
@@ -75,38 +75,38 @@ const tapsPostHandler = (req, res, next) => {
         422
       );
     }
-    let tap = {};
+    let drink = {};
     let status;
 
     if (formData.id) {
       status = "updated";
-      tap = Taps.get(formData.id);
-      Taps.fillables().forEach((key) => {
+      drink = Drinks.get(formData.id);
+      Drinks.fillables().forEach((key) => {
         if (objectHasKey(formData, key)) {
-          tap[key] = formData[key];
+          drink[key] = formData[key];
         }
       });
-      Taps.put(tap);
+      Drinks.put(drink);
     } else {
       status = "created";
 
-      Taps.fillables().forEach((key) => {
+      Drinks.fillables().forEach((key) => {
         if (objectHasKey(formData, key)) {
-          tap[key] = formData[key];
+          drink[key] = formData[key];
         }
       });
-      tap = Taps.create(tap);
+      drink = Drinks.create(drink);
     }
 
     if (files.image) {
-      await updateItemPrimaryImage(tap, files.image, Taps);
+      await updateItemPrimaryImage(drink, files.image, Drinks);
     }
 
-    return respondWithJSON(res, tap, { status });
+    return respondWithJSON(res, drink, { status });
   });
 };
 
-const tapsMediaHandler = (req, res, next) => {
+const mediaHandler = (req, res, next) => {
   const form = formidable();
   form.parse(req, async (err, formData, files) => {
     if (err) {
@@ -116,7 +116,7 @@ const tapsMediaHandler = (req, res, next) => {
       { ...formData, ...files },
       {
         media: ["required", "isValidImage"],
-        tap_id: ["required", "tapExists"],
+        drink_id: ["required", "drinkExists"],
       }
     );
     if (validator.failed()) {
@@ -127,23 +127,27 @@ const tapsMediaHandler = (req, res, next) => {
       );
     }
 
-    await updateItemPrimaryImage(Taps.get(formData.tap_id), files.media, Taps);
+    await updateItemPrimaryImage(
+      Drinks.get(formData.drink_id),
+      files.media,
+      Drinks
+    );
 
     return respondWithJSON(res, {
       status: "success",
-      image: Taps.get(formData.tap_id).media[0],
+      image: Drinks.get(formData.drink_id).media[0],
     });
   });
 };
 
-const tapToggleHandler = (req, res, next) => {
+const toggleHandler = (req, res, next) => {
   const form = formidable();
   form.parse(req, (err, formData, files) => {
     if (err) {
       return next(err);
     }
     const validationRules = {
-      id: ["optional:tapExists"],
+      id: ["optional:drinkExists"],
       active: ["required"],
     };
 
@@ -157,37 +161,37 @@ const tapToggleHandler = (req, res, next) => {
       );
     }
 
-    const tap = Taps.get(formData.id);
-    tap.active = isString(formData.active)
+    const drink = Drinks.get(formData.id);
+    drink.active = isString(formData.active)
       ? formData.active.toString() !== "false"
       : !!formData.active;
-    Taps.put(tap);
+    Drinks.put(drink);
 
     return respondWithJSON(res, { status: "updated" });
   });
 };
 
-const tapsDestroyHandler = (req, res) => {
+const destroyHandler = (req, res) => {
   const { id } = req.params;
-  if (!Taps.has(id)) {
+  if (!Drinks.has(id)) {
     return respondWithJSON(
       res,
-      { status: "error", message: "Tap not found" },
+      { status: "error", message: "Drink not found" },
       404
     );
   }
 
-  Taps.remove(id);
+  Drinks.remove(id);
 
   return respondWithJSON(res, { status: "Success", id });
 };
 
 module.exports = {
-  tapsListHandler,
-  tapsGetHandler,
-  tapsGetFieldsHandler,
-  tapsPostHandler,
-  tapsMediaHandler,
-  tapToggleHandler,
-  tapsDestroyHandler,
+  listHandler,
+  getHandler,
+  getFieldsHandler,
+  postHandler,
+  mediaHandler,
+  toggleHandler,
+  destroyHandler,
 };

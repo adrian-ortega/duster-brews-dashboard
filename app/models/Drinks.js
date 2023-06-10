@@ -1,7 +1,7 @@
 const path = require("path");
 const ModelCollection = require("./Collection");
 
-const TAP_DEFAULTS = {
+const DRINK_DEFAULTS = {
   brewery_id: null,
   location_id: null,
   style: null,
@@ -15,9 +15,9 @@ const TAP_DEFAULTS = {
   ibu: 0,
 };
 
-class TapsCollection extends ModelCollection {
+class Drinks extends ModelCollection {
   constructor() {
-    super(path.resolve("storage/taps.db.json"));
+    super(path.resolve("storage/drinks.db.json"));
   }
 
   fillables() {
@@ -35,8 +35,8 @@ class TapsCollection extends ModelCollection {
   }
 
   sanitize(data) {
-    return super.sanitize({ ...TAP_DEFAULTS, ...data });
+    return super.sanitize({ ...DRINK_DEFAULTS, ...data });
   }
 }
 
-module.exports = new TapsCollection();
+module.exports = new Drinks();

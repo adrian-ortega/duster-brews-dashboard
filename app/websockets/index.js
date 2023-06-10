@@ -2,7 +2,7 @@ const Websocket = require("ws");
 const Settings = require("../settings");
 const Breweries = require("../models/Breweries");
 const Locations = require("../models/TapLocations");
-const Taps = require("../models/Taps");
+const Drinks = require("../models/Drinks");
 const { performance } = require("perf_hooks");
 const { ONE_SECOND } = require("../util/time");
 const { wait, parseJson } = require("../util/helpers");
@@ -16,7 +16,7 @@ const widgetHeartbeat = async (timestamp) => {
   try {
     const timeOffset =
       parseInt(Settings.get("refresh_rate", "60"), 10) * ONE_SECOND;
-    const data = await Taps.all();
+    const data = await Drinks.all();
     broadcast(data.items);
     widgetHeartbeatTries = 0;
     setTimeout(() => widgetHeartbeat(timestamp + timeOffset), timeOffset);
@@ -52,7 +52,7 @@ const onConnectionMessage = async (data, ws) => {
       case "refresh":
         response.breweries = await Breweries.all();
         response.tap_locations = await Locations.all();
-        response.taps = await Taps.all();
+        response.taps = await Drinks.all();
         break;
       case "refreshSettings":
         response.settings = Settings.all();

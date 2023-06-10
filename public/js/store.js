@@ -78,14 +78,15 @@ const createStore = (
 
 const createAppStore = (app) => {
   const state = {
-    taps: [],
+    drinks: [],
     breweries: [],
     tap_locations: [],
     fields: {},
     settings: {},
   };
   const mutations = {
-    SET_TAPS: (state, value) => (state.taps = isArray(value) ? [...value] : []),
+    SET_DRINKS: (state, value) =>
+      (state.drinks = isArray(value) ? [...value] : []),
     SET_SETTINGS: (state, value) =>
       (state.settings = isObject(value) ? { ...value } : {}),
     SET_SETTING_FIELDS: (state, value) =>
@@ -106,17 +107,17 @@ const createAppStore = (app) => {
       await commit("SET_SETTING_CATEGORIES", data.categories);
       return data;
     },
-    getTapFields: async () => {
-      const { data } = await apiGet("/api/taps/fields");
+    getDrinkFields: async () => {
+      const { data } = await apiGet("/api/drinks/fields");
       return data;
     },
-    getTaps: async ({ commit }) => {
-      const { data } = await apiGet("/api/taps");
-      await commit("SET_TAPS", data);
+    getDrinks: async ({ commit }) => {
+      const { data } = await apiGet("/api/drinks");
+      await commit("SET_DINKS", data);
       return data;
     },
-    getTap: async (ctx, id) => {
-      const { data } = await apiGet(`/api/taps/${id}`);
+    getDrink: async (ctx, id) => {
+      const { data } = await apiGet(`/api/drinks/${id}`);
       return data;
     },
     getBreweryFields: async () => {

@@ -1,6 +1,6 @@
 ((app) => {
   const main = new MainController();
-  const taps = new TapsController();
+  const drinks = new DrinksController();
   const locations = new TapLocationsController();
   const settings = new SettingsController();
   const brews = new BreweriesController();
@@ -12,9 +12,17 @@
     "settings",
     settings.renderSettings.bind(settings)
   );
-  app.router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
-  app.router.addRoute("/taps/add", "add-tap", taps.renderCreateForm.bind(taps));
-  app.router.addRoute("/taps/edit", "edit-tap", taps.renderEditForm.bind(taps));
+  app.router.addRoute("/drinks", "drinks", drinks.renderGrid.bind(drinks));
+  app.router.addRoute(
+    "/drinks/add",
+    "add-drink",
+    drinks.renderCreateForm.bind(drinks)
+  );
+  app.router.addRoute(
+    "/drinks/edit",
+    "edit-drink",
+    drinks.renderEditForm.bind(drinks)
+  );
   app.router.addRoute(
     "/taps/locations",
     "locations",

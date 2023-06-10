@@ -3,7 +3,7 @@ const NotEmptyValidationRule = require("./rules/not-empty");
 const IsOptionalValidationRule = require("./rules/optional");
 const IsNotDuplicateBreweryValidationRule = require("./rules/brewery-is-not-duplicate");
 const BreweryExistsValidationRule = require("./rules/brewery-exists");
-const TapExistsValidationRule = require("./rules/tap-exists");
+const DrinkExistsValidationRule = require("./rules/drink-exists");
 const IsValidImageFileValidationRule = require("./rules/file-valid-image");
 const IsNumericValidationRule = require("./rules/is-numeric");
 const IsBooleanValidationRule = require("./rules/is-boolean");
@@ -84,7 +84,7 @@ module.exports = (() => {
     "uniqueBrewery",
   ]);
   dic.addRule(BreweryExistsValidationRule, ["breweryExists"]);
-  dic.addRule(TapExistsValidationRule, ["tapExists"]);
+  dic.addRule(DrinkExistsValidationRule, ["drinkExists"]);
   dic.addRule(IsValidImageFileValidationRule, ["image", "isValidImage"]);
   dic.addRule(PublicFileExistsValidationRule, [
     "publicFileExists",

@@ -15,24 +15,24 @@ const {
   percent_beer_left: percentPin,
 } = Plaato.pins;
 
-module.exports = async (tap) => {
-  let location = Locations.get(tap.location_id);
+module.exports = async (drink) => {
+  let location = Locations.get(drink.location_id);
   if (location) {
     location = await locationTransformer(location);
   }
 
-  const brewery = Breweries.get(tap.brewery_id);
+  const brewery = Breweries.get(drink.brewery_id);
   const overrides = {
-    image: tap.media.find((m) => m.primary)
-      ? tap.media.find((m) => m.primary).src
+    image: drink.media.find((m) => m.primary)
+      ? drink.media.find((m) => m.primary).src
       : null,
     brewery_name: brewery && brewery.name,
     brewery_image:
       brewery && brewery.media.find((c) => c.primary)
         ? brewery.media.find((c) => c.primary).src
         : null,
-    media: tap.media.filter((m) => objectHasKey(m, "src") && !isEmpty(m.src)),
-    ibu: transformFloat(tap.ibu),
+    media: drink.media.filter((m) => objectHasKey(m, "src") && !isEmpty(m.src)),
+    ibu: transformFloat(drink.ibu),
   };
 
   if (!isEmpty(location) && !isEmpty(location.token)) {
@@ -46,7 +46,7 @@ module.exports = async (tap) => {
   }
 
   return {
-    ...tap,
+    ...drink,
     ...overrides,
   };
 };

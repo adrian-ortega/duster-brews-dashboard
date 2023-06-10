@@ -1,10 +1,10 @@
-class TapsController extends PaginatedRouteController {
+class DrinksController extends PaginatedRouteController {
   async refresh() {
     if (!this.loading) {
       this.loading = true;
       this.showSpinner();
       const { store } = window[window.APP_NS];
-      await store.dispatch("getTaps");
+      await store.dispatch("getDrinks");
       await store.dispatch("getBreweries");
       this.removeSpinner();
       this.loading = false;
@@ -13,41 +13,41 @@ class TapsController extends PaginatedRouteController {
 
   async renderGrid({ app, router, params }) {
     await this.refresh();
-    let { taps } = app.store.getState();
-    taps = [...this.paginate(taps, params)];
-    let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no taps, <a data-route="add-tap" class="route-link">create one</a></div></div>`;
-    if (taps && taps.length > 0) {
-      gridContent = taps
+    let { drinks } = app.store.getState();
+    drinks = [...this.paginate(drinks, params)];
+    let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no Drinks set up, <a data-route="add-drink" class="route-link">create one</a></div></div>`;
+    if (drinks && drinks.length > 0) {
+      gridContent = drinks
         .map(
-          (tap) => `
+          (drink) => `
       <div class="grid__item">
         <div class="grid__cell name">
-          <div class="item${tap.image ? " has-image" : ""}">
-            ${app.Templates.imageTemplate(tap.image)}
+          <div class="item${drink.image ? " has-image" : ""}">
+            ${app.Templates.imageTemplate(drink.image)}
             <div class="item__content">
-              <h2>${tap.name}</h2>
-              <p>${tap.style}</p>
+              <h2>${drink.name}</h2>
+              <p>${drink.style}</p>
             </div>
           </div>
         </div>
-        <div class="grid__cell abv">${tap.abv}</div>
-        <div class="grid__cell ibu">${tap.ibu}</div>
+        <div class="grid__cell abv">${drink.abv}</div>
+        <div class="grid__cell ibu">${drink.ibu}</div>
         <div class="grid__cell active">
           <label class="switch">
             <input type="checkbox" value="1" ${
-              tap.active ? 'checked="checked"' : ""
-            } data-id="${tap.id}"/>
+              drink.active ? 'checked="checked"' : ""
+            } data-id="${drink.id}"/>
             <span></span>
           </label>
         </div>
         <div class="grid__cell actions">
           <div>
-            <button class="button" data-id="${tap.id}" data-action="edit">
+            <button class="button" data-id="${drink.id}" data-action="edit">
               <span class="icon"></span>
               <span class="text">Edit</span>
             </button>
             <button class="button is-icon" data-id="${
-              tap.id
+              drink.id
             }" data-action="delete">
               <span class="icon">${ICON_DELETE}</span>
             </button>
@@ -60,7 +60,7 @@ class TapsController extends PaginatedRouteController {
 
     const $el = this.createElement(`<div class="container">
     <div class="settings__container">
-      <h2 class="page-title">Taps</h2>
+      <h2 class="page-title">Drinks</h2>
       <div class="grid">
         <div class="grid__actions">
           <div class="grid__action-group">
@@ -77,7 +77,7 @@ class TapsController extends PaginatedRouteController {
               </a>
             </div>
             <div class="grid__action">
-              <a href="/create-tap" class="button is-success route-link" data-route="add-tap" title="Add Tap">
+              <a href="/create-drink" class="button is-success route-link" data-route="add-drink" title="Add Drink">
                 <span class="icon">${ICON_PLUS}</span>
                 <span class="text">Create</span>
               </a>
@@ -118,19 +118,19 @@ class TapsController extends PaginatedRouteController {
           const action = $btn.getAttribute("data-action");
           switch (action) {
             case "delete":
-              if (confirm("Are you sure you want to delete this tap?")) {
-                fetch(`/api/taps/${id}`, { method: "DELETE" })
+              if (confirm("Are you sure you want to delete this Drink?")) {
+                fetch(`/api/drinks/${id}`, { method: "DELETE" })
                   .then((response) => response.json())
                   .then(({ data }) => {
                     if (data.status.toLowerCase() === "success") {
-                      showNotification("Tap was uccessfully deleted.");
-                      router.goTo("taps");
+                      showNotification("Drink was uccessfully deleted.");
+                      router.goTo("drinks");
                     }
                   });
               }
               break;
             case "edit":
-              router.goTo("edit-tap", { id });
+              router.goTo("edit-drink", { id });
               break;
           }
         }
@@ -142,13 +142,13 @@ class TapsController extends PaginatedRouteController {
         const body = new FormData();
         body.append("id", e.target.getAttribute("data-id"));
         body.append("active", e.target.checked);
-        const response = await fetch("/api/taps/toggle", {
+        const response = await fetch("/api/drinks/toggle", {
           method: "POST",
           body,
         });
         const { data } = await response.json();
         if (data.status && data.status.toLowerCase() === "updated") {
-          showNotification("Tap Updated");
+          showNotification("Drink Updated");
         }
       });
     });
@@ -158,22 +158,22 @@ class TapsController extends PaginatedRouteController {
   }
 
   async renderCreateForm({ app, router }) {
-    const $el = this.createElement(TapsController.FORM_TEMPLATE);
-    const fields = await app.store.dispatch("getTapFields");
+    const $el = this.createElement(DrinksController.FORM_TEMPLATE);
+    const fields = await app.store.dispatch("getDrinkFields");
 
-    $el.querySelector(".settings__title").innerHTML = "Create Tap";
+    $el.querySelector(".settings__title").innerHTML = "Create Drink";
     Forms.renderFields(fields, $el.querySelector(".settings__view"));
 
     $el.querySelector(".button.is-cancel").addEventListener("click", (e) => {
       e.preventDefault();
-      return router.goTo("taps");
+      return router.goTo("drinks");
     });
 
     $el
       .querySelector(".settings__form")
       .addEventListener("submit", async (e) => {
         e.preventDefault();
-        const response = await fetch("/api/taps", {
+        const response = await fetch("/api/drinks", {
           method: "POST",
           body: new FormData($el.querySelector(".settings__form")),
         });
@@ -182,9 +182,9 @@ class TapsController extends PaginatedRouteController {
           // @TODO validation failed
         } else {
           if (meta && meta.status) {
-            showNotification("Tap saved");
+            showNotification("Drink saved");
           }
-          router.goTo("taps");
+          router.goTo("drinks");
         }
       });
 
@@ -193,20 +193,26 @@ class TapsController extends PaginatedRouteController {
   }
 
   async renderEditForm({ params, router, app }) {
-    const tap = await app.store.dispatch("getTap", params.id);
-    if (!tap) {
-      showNotification("Tap not found", "warning");
-      return router.goTo("taps");
+    const drink = await app.store.dispatch("getDrink", params.id);
+    if (!drink) {
+      showNotification("Drink not found", "warning");
+      return router.goTo("drinks");
     }
 
     const $el = await this.renderCreateForm({ router, app });
-    $el.querySelector(".settings__title").innerHTML = "Edit Tap";
-    app.Forms.fillFields(await app.store.dispatch("getTapFields"), tap, $el);
+    $el.querySelector(".settings__title").innerHTML = "Edit Drink";
+    app.Forms.fillFields(
+      await app.store.dispatch("getDrinkFields"),
+      drink,
+      $el
+    );
 
     $el
       .querySelector(".settings__form")
       .appendChild(
-        this.createElement(`<input type="hidden" name="id" value="${tap.id}"/>`)
+        this.createElement(
+          `<input type="hidden" name="id" value="${drink.id}"/>`
+        )
       );
 
     return $el;

@@ -26,7 +26,7 @@
   },
   "enable_plaato": {
     "label": "Enable PLAATO",
-    "help": "Will add PLAATO key inputs to Tap Positions and check the API for values.",
+    "help": "Will add PLAATO key inputs to Taps and check the API for values.",
     "category": "general",
     "type": "boolean"
   }

@@ -5,15 +5,7 @@ const {
   settingsGetHandler,
   settingsPostHandler,
 } = require("../http/controllers/settingsController");
-const {
-  tapsListHandler,
-  tapsGetHandler,
-  tapsGetFieldsHandler,
-  tapsPostHandler,
-  tapsMediaHandler,
-  tapToggleHandler,
-  tapsDestroyHandler,
-} = require("../http/controllers/tapsController");
+const DrinksController = require("../http/controllers/DrinksController");
 const {
   locationsListHandler,
   locationsGetHandler,
@@ -86,41 +78,41 @@ module.exports = [
     handler: breweriesDestroyHandler,
   },
 
-  // API - TAPS
+  // API - DRINKS
   {
-    path: "/api/taps",
+    path: "/api/drinks",
     methods: ["GET"],
-    handler: tapsListHandler,
+    handler: DrinksController.listHandler,
   },
   {
-    path: "/api/taps",
+    path: "/api/drinks",
     methods: ["POST", "PUT"],
-    handler: tapsPostHandler,
+    handler: DrinksController.postHandler,
   },
   {
-    path: "/api/taps/toggle",
+    path: "/api/drinks/toggle",
     methods: ["POST", "PUT"],
-    handler: tapToggleHandler,
+    handler: DrinksController.toggleHandler,
   },
   {
-    path: "/api/taps/media",
+    path: "/api/drinks/media",
     methods: ["POST", "PUT"],
-    handler: tapsMediaHandler,
+    handler: DrinksController.mediaHandler,
   },
   {
-    path: "/api/taps/fields",
+    path: "/api/drinks/fields",
     methods: ["GET"],
-    handler: tapsGetFieldsHandler,
+    handler: DrinksController.getFieldsHandler,
   },
   {
-    path: "/api/taps/:id",
+    path: "/api/drinks/:id",
     methods: ["GET"],
-    handler: tapsGetHandler,
+    handler: DrinksController.getFieldsHandler,
   },
   {
-    path: "/api/taps/:id",
+    path: "/api/drinks/:id",
     methods: ["DELETE"],
-    handler: tapsDestroyHandler,
+    handler: DrinksController.destroyHandler,
   },
 
   // API - Locations

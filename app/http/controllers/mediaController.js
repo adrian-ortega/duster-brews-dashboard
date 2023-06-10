@@ -57,7 +57,7 @@ const mediaDestroyHandler = (req, res, next) => {
         .filter((a) => a);
 
       const bIds = removeFromLibrary(require("../../models/Breweries"));
-      const tIds = removeFromLibrary(require("../../models/Taps"));
+      const tIds = removeFromLibrary(require("../../models/Drinks"));
       let idsUpdatedMsg = "no entities were updated";
       if (bIds.length || tIds.length) {
         idsUpdatedMsg = "";
@@ -66,7 +66,7 @@ const mediaDestroyHandler = (req, res, next) => {
           if (tIds.length) idsUpdatedMsg += " and ";
         }
         if (tIds.length) {
-          idsUpdatedMsg += plural(tIds.length, "tap", "taps");
+          idsUpdatedMsg += plural(tIds.length, "drink", "drinks");
         }
 
         idsUpdatedMsg +=
