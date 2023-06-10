@@ -59,45 +59,47 @@ class TapsController extends PaginatedRouteController {
     }
 
     const $el = this.createElement(`<div class="container">
-    <h2 class="page-title">Taps</h2>
-    <div class="grid">
-      <div class="grid__actions">
-        <div class="grid__action-group">
-          <div class="grid__action">
-            <a href="/taps/locations" class="button route-link" data-route="locations" title="Tap locations">
-              <span class="icon">${ICON_FAUCET}</span>
-              <span class="text">Locations</span>
-            </a>
-          </div>
-          <div class="grid__action">
-            <a href="/breweries" class="button route-link" data-route="breweries" title="Breweries">
-              <span class="icon">${ICON_BARLEY}</span>
-              <span class="text">Breweries</span>
-            </a>
-          </div>
-          <div class="grid__action">
-            <a href="/create-tap" class="button is-success route-link" data-route="add-tap" title="Add Tap">
-              <span class="icon">${ICON_PLUS}</span>
-              <span class="text">Create</span>
-            </a>
+    <div class="settings__container">
+      <h2 class="page-title">Taps</h2>
+      <div class="grid">
+        <div class="grid__actions">
+          <div class="grid__action-group">
+            <div class="grid__action">
+              <a href="/taps/locations" class="button route-link" data-route="locations" title="Tap locations">
+                <span class="icon">${ICON_FAUCET}</span>
+                <span class="text">Locations</span>
+              </a>
+            </div>
+            <div class="grid__action">
+              <a href="/breweries" class="button route-link" data-route="breweries" title="Breweries">
+                <span class="icon">${ICON_BARLEY}</span>
+                <span class="text">Breweries</span>
+              </a>
+            </div>
+            <div class="grid__action">
+              <a href="/create-tap" class="button is-success route-link" data-route="add-tap" title="Add Tap">
+                <span class="icon">${ICON_PLUS}</span>
+                <span class="text">Create</span>
+              </a>
+            </div>
           </div>
         </div>
+        <div class="grid__header">
+          <div class="grid__cell name">Beer</div>
+          <div class="grid__cell abv">ABV</div>
+          <div class="grid__cell ibu">IBU</div>
+          <div class="grid__cell active">Active</div>
+          <div class="grid__cell actions"></div>
+        </div>
+        <div class="grid__content">
+          ${gridContent}
+        </div>
+        <div class="grid__footer">
+          ${this.getPaginatorFooterTemplate()}
+        </div>
+        </div>
       </div>
-      <div class="grid__header">
-        <div class="grid__cell name">Beer</div>
-        <div class="grid__cell abv">ABV</div>
-        <div class="grid__cell ibu">IBU</div>
-        <div class="grid__cell active">Active</div>
-        <div class="grid__cell actions"></div>
       </div>
-      <div class="grid__content">
-        ${gridContent}
-      </div>
-      <div class="grid__footer">
-        ${this.getPaginatorFooterTemplate()}
-      </div>
-      </div>
-    </div>
     </div>`);
 
     $el.addEventListener("click", (e) => {

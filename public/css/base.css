@@ -29,6 +29,9 @@ body {
   height: calc(100% - var(--header-height));
   position: relative;
 }
+.route-view {
+  padding-bottom: 3em;
+}
 @media screen and (max-width: 768px) {
   .container {
     padding-left: 1em;

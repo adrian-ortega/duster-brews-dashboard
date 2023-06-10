@@ -107,7 +107,7 @@ figure.image img {
 .button {
   display: inline-flex;
   appearance: none;
-  border: 1px solid transparent;
+  border: 1px solid var(--button-border-color);
   background: var(--button-bg);
   border-radius: var(--button-radius);
   align-items: center;
@@ -410,10 +410,6 @@ figure.image img {
   color: var(--black);
   background: var(--warning);
 }
-.page-title + .grid .grid__actions {
-  margin-top: -1em;
-  margin-bottom: 1em;
-}
 .grid__actions,
 .grid__header,
 .grid__item,
@@ -425,6 +421,7 @@ figure.image img {
 }
 .grid__actions {
   padding: 0.5em;
+  margin-bottom: 1em;
   justify-content: flex-end;
 }
 .grid__actions,

@@ -2,7 +2,6 @@
   position: relative;
 }
 .page-title,
-.first-time h2,
 .settings__title {
   font-family: var(--font-family-block);
   font-size: 2.1em;
@@ -40,13 +39,17 @@
   opacity: 1;
 }
 .settings__container {
-  padding: 1em;
+  padding: 2em;
 }
 .settings__content {
+  overflow: hidden;
   padding-bottom: 7em;
+  position: relative;
 }
 .settings__view {
   padding-top: 1em;
+  max-height: 60vh;
+  overflow: auto;
 }
 .settings__footer {
   display: flex;
@@ -70,18 +73,4 @@
   .settings__title {
     margin-bottom: 1em;
   }
-}
-
-/* First time */
-.first-time {
-  margin: 1em 0;
-}
-.settings__title.is-first-time {
-  color: var(--primary);
-}
-.first-time p {
-  margin: 1em 0;
-}
-.first-time strong {
-  color: var(--tertiary);
 }

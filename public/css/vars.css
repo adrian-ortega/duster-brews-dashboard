@@ -33,6 +33,7 @@
   --button-bg: var(--background-border);
   --button-hover-bg: var(--secondary);
   --button-radius: var(--radius-rounded);
+  --button-border-color: transparent;
 
   --input-background: var(--black);
 
@@ -77,4 +78,30 @@
   --secondary: #2e4aff;
   --tertiary: #c06a5b;
   --tertiary-bis: #aa5d50;
+}
+
+:root.theme-chalk {
+  --white: #c4d0d0;
+  --gray: #9ca6a6;
+  --gray-bis: #6e7575;
+  --black: #080808;
+
+  --background-light: #252929;
+  --background: #151717;
+  --background-border: #1a2525;
+
+  --primary: #fc9700;
+  --primary-bis: #ca7a00;
+  --secondary: var(--white);
+  --tertiary: #c06a5b;
+  --tertiary-bis: #aa5d50;
+
+  --header-nav-sub-hover-bg: var(--background);
+
+  --font-family-block: "Walter Turncoat", sans-serif;
+  --font-family-sans-serif: "Pangolin", sans-serif;
+
+  --button-bg: transparent;
+  --button-hover-bg: var(--black);
+  --button-border-color: var(--gray-bis);
 }
