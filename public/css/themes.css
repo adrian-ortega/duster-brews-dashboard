@@ -1,0 +1,54 @@
+/* Dark Theme */
+
+:root.theme-dark .keg__name {
+  text-shadow: none;
+}
+
+:root.theme-dark .keg__location,
+:root.theme-dark .keg__detail p {
+  color: var(--gray-bis);
+}
+
+:root.theme-dark .tap:before,
+:root.theme-dark .tap:after {
+  display: none;
+}
+
+/* Chalk Theme */
+
+:root.theme-chalk body {
+  background-size: cover;
+  background-image: url("/images/chalk-bg.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+:root.theme-chalk .button {
+}
+:root.theme-chalk .button:hover {
+  border-color: var(--button-hover-bg);
+}
+:root.theme-chalk .button.is-success {
+  border-color: var(--success-bis);
+  background: none;
+}
+:root.theme-chalk .button.is-success:hover {
+  background: var(--success-bis);
+}
+:root.theme-chalk .button.is-primary {
+  background: none;
+}
+:root.theme-chalk .button.is-primary:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--black);
+}
+
+:root.theme-chalk .settings__container {
+  background: var(--background);
+  border-radius: var(--radius);
+  box-shadow: 0 0.5em 1em var(--black);
+}
+:root.theme-chalk .settings__tabs nav {
+  background: rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,33 @@
+{
+  "logo": {
+    "label": "App Logo",
+    "help": "This is the logo that appears on the app",
+    "type": "image",
+    "category": "appearance"
+  },
+  "theme": {
+    "label": "App Theme",
+    "help": "",
+    "type": "select",
+    "category": "appearance",
+    "options": ["default", "dark", "chalk"]
+  },
+  "refresh_rate": {
+    "label": "Refresh Rate",
+    "help": "Minutes between refresh calls, defaults to 60 mins.",
+    "category": "general",
+    "type": "number"
+  },
+  "burn_in_guard_refresh_rate": {
+    "label": "Burn-in Guard Refresh Rate",
+    "help": "Minutes between refresh calls, defaults to 15 mins.",
+    "category": "general",
+    "type": "number"
+  },
+  "enable_plaato": {
+    "label": "Enable PLAATO",
+    "help": "Will add PLAATO key inputs to Tap Positions and check the API for values.",
+    "category": "general",
+    "type": "boolean"
+  }
+}
