@@ -21,6 +21,7 @@
   background-image: url("/images/chalk-bg.jpg");
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 :root.theme-chalk .button {
 }
