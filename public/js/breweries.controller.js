@@ -111,41 +111,43 @@ class BreweriesController extends PaginatedRouteController {
     }
 
     const $el = this.createElement(`<div class="container">
-      <h2 class="page-title">Breweries</h2>
-      <div class="grid">
-        <div class="grid__actions">
-          <div class="grid__action-group"></div>
-          <div class="grid__action-group">
-            <div class="grid__action">
-              <a href="/taps" class="button route-link" data-route="locations">
-                <span class="icon">${ICON_FAUCET}</span>
-                <span class="text">Locations</span>
-              </a>
-            </div>
-            <div class="grid__action">
-              <a href="/taps" class="button route-link" data-route="taps">
-                <span class="icon">${ICON_BEER_OUTLINE}</span>
-                <span class="text">Taps</span>
-              </a>
-            </div>
-            <div class="grid__action">
-              <a href="/create-brewery" class="button is-success route-link" data-route="add-brewery">
-                <span class="icon">${ICON_PLUS}</span>
-                <span class="text">Create</span>
-              </a>
+      <div class="settings__container">
+        <h2 class="page-title">Breweries</h2>
+        <div class="grid">
+          <div class="grid__actions">
+            <div class="grid__action-group"></div>
+            <div class="grid__action-group">
+              <div class="grid__action">
+                <a href="/taps" class="button route-link" data-route="locations">
+                  <span class="icon">${ICON_FAUCET}</span>
+                  <span class="text">Locations</span>
+                </a>
+              </div>
+              <div class="grid__action">
+                <a href="/taps" class="button route-link" data-route="taps">
+                  <span class="icon">${ICON_BEER_OUTLINE}</span>
+                  <span class="text">Taps</span>
+                </a>
+              </div>
+              <div class="grid__action">
+                <a href="/create-brewery" class="button is-success route-link" data-route="add-brewery">
+                  <span class="icon">${ICON_PLUS}</span>
+                  <span class="text">Create</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="grid__header">
-          <div class="grid__cell name">Brewery</div>
-          <div class="grid__cell tap-count">Taps</div>
-          <div class="grid__cell actions">&nbsp;</div>
-        </div>
-        <div class="grid__content">
-          ${gridContent}
-        </div>
-        <div class="grid__footer">
-          ${this.getPaginatorFooterTemplate()}
+          <div class="grid__header">
+            <div class="grid__cell name">Brewery</div>
+            <div class="grid__cell tap-count">Taps</div>
+            <div class="grid__cell actions">&nbsp;</div>
+          </div>
+          <div class="grid__content">
+            ${gridContent}
+          </div>
+          <div class="grid__footer">
+            ${this.getPaginatorFooterTemplate()}
+          </div>
         </div>
       </div>
     </div>`);

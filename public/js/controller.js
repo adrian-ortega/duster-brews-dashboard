@@ -60,15 +60,15 @@ class PaginatedRouteController extends RouteController {
   }
 
   static get TABLE_TEMPLATE() {
-    return `<div class="container">
-    <h2 class="page-title">Table</h2>
-    <div class="grid">
-      <div class="grid__actions"></div>
-      <div class="grid__header"></div>
-      <div class="grid__content"></div>
-      <div class="grid__footer"></div>
-    </div>
-    </div>`;
+    return `<div class="container"><div class="settings__container">
+      <h2 class="page-title">Table</h2>
+      <div class="grid">
+        <div class="grid__actions"></div>
+        <div class="grid__header"></div>
+        <div class="grid__content"></div>
+        <div class="grid__footer"></div>
+      </div>
+    </div></div>`;
   }
 
   getPaginatorFooterTemplate() {
