@@ -6,13 +6,7 @@ const {
   settingsPostHandler,
 } = require("../http/controllers/settingsController");
 const DrinksController = require("../http/controllers/DrinksController");
-const {
-  locationsListHandler,
-  locationsGetHandler,
-  locationsPostHandler,
-  locationsDestroyHandler,
-  locationsFieldsHandler,
-} = require("../http/controllers/locationsController");
+const TapsController = require("../http/controllers/TapsController");
 const {
   breweriesGetHandler,
   breweriesFieldsHandler,
@@ -117,29 +111,29 @@ module.exports = [
 
   // API - Locations
   {
-    path: "/api/locations",
+    path: "/api/taps",
     methods: ["GET"],
-    handler: locationsListHandler,
+    handler: TapsController.listHandler,
   },
   {
-    path: "/api/locations",
+    path: "/api/taps",
     methods: ["POST", "PUT"],
-    handler: locationsPostHandler,
+    handler: TapsController.postHandler,
   },
   {
-    path: "/api/locations/fields",
+    path: "/api/taps/fields",
     methods: ["GET"],
-    handler: locationsFieldsHandler,
+    handler: TapsController.getFieldsHandler,
   },
   {
-    path: "/api/locations/:id",
+    path: "/api/taps/:id",
     methods: ["GET"],
-    handler: locationsGetHandler,
+    handler: TapsController.getHandler,
   },
   {
-    path: "/api/locations/:id",
+    path: "/api/taps/:id",
     methods: ["DELETE"],
-    handler: locationsDestroyHandler,
+    handler: TapsController.destroyHandler,
   },
   // {
   //   path: "/api(/*)?",

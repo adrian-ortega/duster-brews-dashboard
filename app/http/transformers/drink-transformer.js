@@ -1,8 +1,8 @@
 const Plaato = require("../../api/plaato");
-const Locations = require("../../models/TapLocations");
+const Locations = require("../../models/Taps");
 const Breweries = require("../../models/Breweries");
 const { isEmpty, objectHasKey } = require("../../util/helpers");
-const locationTransformer = require("./location-transformer");
+const locationTransformer = require("./tap-transformer");
 
 const transformDate = (d) => (d ? new Date(d) : null);
 const transformFloat = (a) => (!a || isNaN(a) ? 0 : parseFloat(a));

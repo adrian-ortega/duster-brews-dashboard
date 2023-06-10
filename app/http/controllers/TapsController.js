@@ -1,43 +1,41 @@
 const formidable = require("formidable");
 const Settings = require("../../settings");
-const Locations = require("../../models/TapLocations");
-const locationTransformer = require("../transformers/location-transformer");
+const Taps = require("../../models/Taps");
+const transformer = require("../transformers/tap-transformer");
 const { validate } = require("../../validation");
 const { objectHasKey } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 
-const locationsListHandler = async (req, res) => {
+const listHandler = async (req, res) => {
   try {
-    const locations = await Promise.all(
-      Locations.all().map(locationTransformer)
-    );
-    return respondWithJSON(res, locations);
+    const items = await Promise.all(Taps.all().map(transformer));
+    return respondWithJSON(res, items);
   } catch (e) {
     return respondWithJSON(res, e, 500);
   }
 };
 
-const locationsGetHandler = async (req, res) => {
+const getHandler = async (req, res) => {
   const { id } = req.params;
-  if (!Locations.has(id)) {
+  if (!Taps.has(id)) {
     return respondWithJSON(
       res,
-      { status: "error", message: "Location not found" },
+      { status: "error", message: "Tap not found" },
       404
     );
   }
-  return respondWithJSON(res, await locationTransformer(Locations.get(id)));
+  return respondWithJSON(res, await transformer(Taps.get(id)));
 };
 
-const locationsFieldsHandler = (req, res) => {
-  let { fields } = require("../../settings/location.fields.json");
+const getFieldsHandler = (req, res) => {
+  let { fields } = require("../../settings/tap.fields.json");
   if (!Settings.get("enable_plaato", false)) {
     fields = fields.filter((f) => f.name !== "token");
   }
   return respondWithJSON(res, fields);
 };
 
-const locationsPostHandler = (req, res, next) => {
+const postHandler = (req, res, next) => {
   const form = formidable();
   form.parse(req, async (err, formData) => {
     if (err) {
@@ -54,50 +52,50 @@ const locationsPostHandler = (req, res, next) => {
       );
     }
 
-    let location = {};
+    let tap = {};
     let status;
 
     if (formData.id) {
       status = "updated";
-      location = Locations.get(formData.id);
-      Locations.fillables().forEach((key) => {
+      tap = Taps.get(formData.id);
+      Taps.fillables().forEach((key) => {
         if (objectHasKey(formData, key)) {
-          location[key] = formData[key];
+          tap[key] = formData[key];
         }
       });
-      Locations.put(location);
+      Taps.put(tap);
     } else {
       status = "created";
-      Locations.fillables().forEach((key) => {
+      Taps.fillables().forEach((key) => {
         if (objectHasKey(formData, key)) {
-          location[key] = formData[key];
+          tap[key] = formData[key];
         }
       });
-      location = Locations.create(location);
+      tap = Taps.create(tap);
     }
 
     return respondWithJSON(res, { status });
   });
 };
 
-const locationsDestroyHandler = (req, res) => {
+const destroyHandler = (req, res) => {
   const { id } = req.params;
-  if (!Locations.has(id)) {
+  if (!Taps.has(id)) {
     return respondWithJSON(
       res,
-      { status: "error", message: "Tap Location not found" },
+      { status: "error", message: "Tap not found" },
       404
     );
   }
 
-  Locations.remove(id);
+  Taps.remove(id);
   return respondWithJSON(res, { status: "Success", id });
 };
 
 module.exports = {
-  locationsListHandler,
-  locationsGetHandler,
-  locationsFieldsHandler,
-  locationsPostHandler,
-  locationsDestroyHandler,
+  listHandler,
+  getHandler,
+  getFieldsHandler,
+  postHandler,
+  destroyHandler,
 };

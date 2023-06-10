@@ -1,7 +1,7 @@
 const Websocket = require("ws");
 const Settings = require("../settings");
 const Breweries = require("../models/Breweries");
-const Locations = require("../models/TapLocations");
+const Taps = require("../models/Taps");
 const Drinks = require("../models/Drinks");
 const { performance } = require("perf_hooks");
 const { ONE_SECOND } = require("../util/time");
@@ -51,7 +51,7 @@ const onConnectionMessage = async (data, ws) => {
     switch (data.action) {
       case "refresh":
         response.breweries = await Breweries.all();
-        response.tap_locations = await Locations.all();
+        response.tap_locations = await Taps.all();
         response.taps = await Drinks.all();
         break;
       case "refreshSettings":

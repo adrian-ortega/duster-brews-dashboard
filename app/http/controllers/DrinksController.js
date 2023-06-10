@@ -1,7 +1,7 @@
 const formidable = require("formidable");
 const Drinks = require("../../models/Drinks");
 const Breweries = require("../../models/Breweries");
-const Locations = require("../../models/TapLocations");
+const Locations = require("../../models/Taps");
 const transformer = require("../transformers/drink-transformer");
 const { validate } = require("../../validation");
 const { isString, objectHasKey } = require("../../util/helpers");

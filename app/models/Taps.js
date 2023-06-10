@@ -1,16 +1,16 @@
 const path = require("path");
 const ModelCollection = require("./Collection");
 
-const TAP_LOCATION_DEFAULTS = {
+const TAP_DEFAULTS = {
   name: null,
   token: null,
   percentage: 0,
   active: false,
 };
 
-class TapLocationCollection extends ModelCollection {
+class Taps extends ModelCollection {
   constructor() {
-    super(path.resolve("storage/tap-locations.db.json"));
+    super(path.resolve("storage/taps.db.json"));
   }
 
   fillables() {
@@ -18,8 +18,8 @@ class TapLocationCollection extends ModelCollection {
   }
 
   sanitize(data) {
-    return super.sanitize({ ...TAP_LOCATION_DEFAULTS, ...data });
+    return super.sanitize({ ...TAP_DEFAULTS, ...data });
   }
 }
 
-module.exports = new TapLocationCollection();
+module.exports = new Taps();
