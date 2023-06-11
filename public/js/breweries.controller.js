@@ -89,7 +89,7 @@ class BreweriesController extends PaginatedRouteController {
             <div class="item__content"><h2>${brewery.name}</h2></div>
           </div>
         </div>
-        <div class="grid__cell tap-count">${brewery.count.active}/${
+        <div class="grid__cell drink-count">${brewery.count.active}/${
             brewery.count.total
           }</div>
         <div class="grid__cell actions">
@@ -118,15 +118,15 @@ class BreweriesController extends PaginatedRouteController {
             <div class="grid__action-group"></div>
             <div class="grid__action-group">
               <div class="grid__action">
-                <a href="/taps" class="button route-link" data-route="locations">
+                <a href="/drinks" class="button route-link" data-route="taps">
                   <span class="icon">${ICON_FAUCET}</span>
-                  <span class="text">Locations</span>
+                  <span class="text">Taps</span>
                 </a>
               </div>
               <div class="grid__action">
-                <a href="/taps" class="button route-link" data-route="taps">
+                <a href="/drinks" class="button route-link" data-route="drinks">
                   <span class="icon">${ICON_BEER_OUTLINE}</span>
-                  <span class="text">Taps</span>
+                  <span class="text">Drinks</span>
                 </a>
               </div>
               <div class="grid__action">
@@ -139,7 +139,7 @@ class BreweriesController extends PaginatedRouteController {
           </div>
           <div class="grid__header">
             <div class="grid__cell name">Brewery</div>
-            <div class="grid__cell tap-count">Taps</div>
+            <div class="grid__cell drink-count">Drinks</div>
             <div class="grid__cell actions">&nbsp;</div>
           </div>
           <div class="grid__content">

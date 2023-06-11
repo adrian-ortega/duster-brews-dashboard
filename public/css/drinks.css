@@ -1,17 +1,17 @@
-.taps {
+.drinks {
   display: grid;
   grid-gap: 2em;
   padding: 2em;
 }
-.tap {
+.drink {
   display: grid;
   position: relative;
   grid-template-columns: 6em 1fr;
   padding: 1em 2em;
   column-gap: 3em;
 }
-.tap:before,
-.tap:after {
+.drink:before,
+.drink:after {
   display: block;
   content: "";
   position: absolute;
@@ -21,30 +21,30 @@
   border-top: 0.5em solid transparent;
   border-bottom: 0.5em solid transparent;
 }
-.tap:before {
+.drink:before {
   bottom: 0;
   right: 0;
   border-left: 0.5em solid var(--primary);
   transform: rotate(45deg);
 }
-.tap:after {
+.drink:after {
   top: 0;
   right: 0;
   border-left: 0.5em solid var(--tertiary);
   transform: rotate(315deg);
 }
-.tap__content {
+.drink__content {
   display: flex;
   flex-direction: column;
 }
-.tap__content-header {
+.drink__content-header {
   display: grid;
   grid-template-columns: 1fr 2.5em;
   grid-template-areas: "keg-header keg-image";
   align-items: center;
   column-gap: 1em;
 }
-.tap__content-footer {
+.drink__content-footer {
   margin-top: auto;
   padding-top: 0.1em;
   display: flex;
@@ -109,22 +109,22 @@
 .keg__detail h3 {
   font-size: 1.25em;
 }
-.tap.is-placeholder .keg__image {
+.drink.is-placeholder .keg__image {
   height: 45%;
 }
 
 /* Mobile / Small Tablet only */
 @media screen and (max-width: 768px) {
-  .taps {
+  .drinks {
     padding: 1em;
     font-size: calc(var(--font-base) - 2px);
   }
 
-  .tap {
+  .drink {
     /* grid-template-rows: 8em; */
     gap: 1.5em;
   }
-  .tap:nth-child(odd) {
+  .drink:nth-child(odd) {
     background: rgba(255, 255, 255, 0.025);
   }
 
@@ -132,7 +132,7 @@
     padding-top: 0;
     margin-bottom: 1em;
   }
-  .tap__content-footer {
+  .drink__content-footer {
     flex-wrap: wrap;
 
     justify-content: inherit;
@@ -152,17 +152,17 @@
 
 /* Tablet Portrait */
 @media screen and (min-width: 768px) {
-  .tap {
+  .drink {
     grid-template-rows: 12em;
   }
 }
 
 /* Desktop / Landscape Tablet */
 @media screen and (min-width: 1024px) {
-  .tap {
+  .drink {
     grid-template-columns: 12vw 1fr;
   }
-  .taps {
+  .drinks {
     grid-template-columns: 1fr 1fr;
   }
 }

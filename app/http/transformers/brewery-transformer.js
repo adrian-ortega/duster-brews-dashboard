@@ -1,4 +1,4 @@
-const Taps = require("../../models/Taps");
+const Taps = require("../../models/Drinks");
 const { objectHasKey, isEmpty } = require("../../util/helpers");
 module.exports = async (brewery) => {
   let count = { total: 0, active: 0 };

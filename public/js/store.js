@@ -78,14 +78,15 @@ const createStore = (
 
 const createAppStore = (app) => {
   const state = {
-    taps: [],
+    drinks: [],
     breweries: [],
-    tap_locations: [],
+    taps: [],
     fields: {},
     settings: {},
   };
   const mutations = {
-    SET_TAPS: (state, value) => (state.taps = isArray(value) ? [...value] : []),
+    SET_DRINKS: (state, value) =>
+      (state.drinks = isArray(value) ? [...value] : []),
     SET_SETTINGS: (state, value) =>
       (state.settings = isObject(value) ? { ...value } : {}),
     SET_SETTING_FIELDS: (state, value) =>
@@ -94,8 +95,7 @@ const createAppStore = (app) => {
       (state.categories = { ...value }),
     SET_BREWERIES: (state, value) =>
       (state.breweries = isArray(value) ? [...value] : []),
-    SET_LOCATIONS: (state, value) =>
-      (state.tap_locations = isArray(value) ? [...value] : []),
+    SET_TAPS: (state, value) => (state.taps = isArray(value) ? [...value] : []),
   };
   const actions = {
     getSettings: async ({ commit }) => {
@@ -106,17 +106,17 @@ const createAppStore = (app) => {
       await commit("SET_SETTING_CATEGORIES", data.categories);
       return data;
     },
-    getTapFields: async () => {
-      const { data } = await apiGet("/api/taps/fields");
+    getDrinkFields: async () => {
+      const { data } = await apiGet("/api/drinks/fields");
       return data;
     },
-    getTaps: async ({ commit }) => {
-      const { data } = await apiGet("/api/taps");
-      await commit("SET_TAPS", data);
+    getDrinks: async ({ commit }) => {
+      const { data } = await apiGet("/api/drinks");
+      await commit("SET_DRINKS", data);
       return data;
     },
-    getTap: async (ctx, id) => {
-      const { data } = await apiGet(`/api/taps/${id}`);
+    getDrink: async (ctx, id) => {
+      const { data } = await apiGet(`/api/drinks/${id}`);
       return data;
     },
     getBreweryFields: async () => {
@@ -132,17 +132,17 @@ const createAppStore = (app) => {
       const { data } = await apiGet(`/api/breweries/${id}`);
       return data;
     },
-    getLocationFields: async () => {
-      const { data } = await apiGet("/api/locations/fields");
+    getTapFields: async () => {
+      const { data } = await apiGet("/api/taps/fields");
       return data;
     },
-    getLocations: async ({ commit }) => {
-      const { data } = await apiGet("/api/locations");
-      await commit("SET_LOCATIONS", data);
+    getTaps: async ({ commit }) => {
+      const { data } = await apiGet("/api/taps");
+      await commit("SET_TAPS", data);
       return data;
     },
-    getLocation: async (ctx, id) => {
-      const { data } = await apiGet(`/api/locations/${id}`);
+    getTap: async (ctx, id) => {
+      const { data } = await apiGet(`/api/taps/${id}`);
       return data;
     },
   };

@@ -2,36 +2,19 @@ const path = require("path");
 const ModelCollection = require("./Collection");
 
 const TAP_DEFAULTS = {
-  brewery_id: null,
-  location_id: null,
-  style: null,
   name: null,
-  media: [],
+  token: null,
+  percentage: 0,
   active: false,
-
-  gravity_start: 0,
-  gravity_end: 0,
-  abv: 0,
-  ibu: 0,
 };
 
-class TapsCollection extends ModelCollection {
+class Taps extends ModelCollection {
   constructor() {
     super(path.resolve("storage/taps.db.json"));
   }
 
   fillables() {
-    return [
-      "abv",
-      "active",
-      "brewery_id",
-      "location_id",
-      "gravity_start",
-      "gravity_end",
-      "ibu",
-      "name",
-      "style",
-    ];
+    return ["name", "token", "percentage", "active"];
   }
 
   sanitize(data) {
@@ -39,4 +22,4 @@ class TapsCollection extends ModelCollection {
   }
 }
 
-module.exports = new TapsCollection();
+module.exports = new Taps();

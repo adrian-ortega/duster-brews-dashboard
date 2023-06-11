@@ -82,7 +82,7 @@ class PaginatedRouteController extends RouteController {
         template += "<div>";
         if (this.page > 1) {
           template += `<div>
-            <a href="${this.getPreviousPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
+            <a href="${this.getPreviousPageUrl()}" data-route="drinks" data-route-params='${JSON.stringify(
             { page: this.getPreviousPage() }
           )}' class="button route-link">
               <span class="icon">${ICON_CHEVRON_LEFT}</span>
@@ -91,7 +91,7 @@ class PaginatedRouteController extends RouteController {
         }
         if (this.page < this.pages) {
           template += `<div>
-            <a href="${this.getNextPageUrl()}" data-route="taps" data-route-params='${JSON.stringify(
+            <a href="${this.getNextPageUrl()}" data-route="drinks" data-route-params='${JSON.stringify(
             { page: this.getNextPage() }
           )}' class="button route-link">
               <span class="text">Next</span>

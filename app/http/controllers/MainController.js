@@ -1,6 +1,6 @@
 const Settings = require("../../settings");
 const { APP_NAMESPACE, APP_NAME } = require("../../../config");
-const dashboardView = (req, res) => {
+const defaultHandler = (req, res) => {
   res.render("index", {
     locals: {
       theme: Settings.get("theme", "default"),
@@ -12,5 +12,5 @@ const dashboardView = (req, res) => {
 };
 
 module.exports = {
-  dashboardView,
+  defaultHandler,
 };
