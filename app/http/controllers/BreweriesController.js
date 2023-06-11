@@ -1,24 +1,23 @@
 const formidable = require("formidable");
 const Breweries = require("../../models/Breweries");
 const axios = require("axios");
-const breweryTransformer = require("../transformers/brewery-transformer");
+const transformer = require("../transformers/brewery-transformer");
 const { validate } = require("../../validation");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 const { objectHasKey } = require("../../util/helpers");
 
-const breweriesListHandler = async (req, res) => {
+const listHandler = async (req, res) => {
   try {
-    const breweries = await Promise.all(
-      Breweries.all().map(breweryTransformer)
-    );
-    return respondWithJSON(res, breweries);
+    const items = await Promise.all(Breweries.all().map(transformer));
+    return respondWithJSON(res, items);
   } catch (e) {
+    console.log(e);
     return respondWithJSON(res, e, 500);
   }
 };
 
-const breweriesGetHandler = async (req, res) => {
+const getHandler = async (req, res) => {
   const { id } = req.params;
   if (!Breweries.has(id)) {
     return respondWithJSON(
@@ -27,15 +26,15 @@ const breweriesGetHandler = async (req, res) => {
       404
     );
   }
-  return respondWithJSON(res, await breweryTransformer(Breweries.get(id)));
+  return respondWithJSON(res, await transformer(Breweries.get(id)));
 };
 
-const breweriesFieldsHandler = (req, res) => {
+const getFieldsHandler = (req, res) => {
   const { fields } = require("../../settings/brewery.fields.json");
   return respondWithJSON(res, fields);
 };
 
-const breweriesPostHandler = (req, res, next) => {
+const postHandler = (req, res, next) => {
   const form = formidable();
   form.parse(req, async (err, formData, files) => {
     if (err) {
@@ -90,7 +89,7 @@ const breweriesPostHandler = (req, res, next) => {
   });
 };
 
-const breweriesDestroyHandler = (req, res) => {
+const destroyHandler = (req, res) => {
   const { id } = req.params;
   if (!Breweries.has(id)) {
     return respondWithJSON(
@@ -105,7 +104,7 @@ const breweriesDestroyHandler = (req, res) => {
   return respondWithJSON(res, { status: "Success", id });
 };
 
-const breweriesGenerateHandler = async (req, res) => {
+const generateHandler = async (req, res) => {
   const getPage = (page = 1, per_page = 10) => {
     return axios
       .get("https://api.openbrewerydb.org/v1/breweries", {
@@ -134,10 +133,10 @@ const breweriesGenerateHandler = async (req, res) => {
 };
 
 module.exports = {
-  breweriesListHandler,
-  breweriesGetHandler,
-  breweriesFieldsHandler,
-  breweriesPostHandler,
-  breweriesDestroyHandler,
-  breweriesGenerateHandler,
+  listHandler,
+  getHandler,
+  getFieldsHandler,
+  postHandler,
+  destroyHandler,
+  generateHandler,
 };

@@ -1,7 +1,7 @@
 ((app) => {
   const main = new MainController();
   const drinks = new DrinksController();
-  const locations = new TapLocationsController();
+  const taps = new TapsController();
   const settings = new SettingsController();
   const brews = new BreweriesController();
 
@@ -23,21 +23,9 @@
     "edit-drink",
     drinks.renderEditForm.bind(drinks)
   );
-  app.router.addRoute(
-    "/taps/locations",
-    "locations",
-    locations.renderGrid.bind(locations)
-  );
-  app.router.addRoute(
-    "/taps/locations/add",
-    "add-location",
-    locations.renderCreateForm.bind(locations)
-  );
-  app.router.addRoute(
-    "/taps/locations/edit",
-    "edit-location",
-    locations.renderEditForm.bind(locations)
-  );
+  app.router.addRoute("/taps", "taps", taps.renderGrid.bind(taps));
+  app.router.addRoute("/taps/add", "add-tap", taps.renderCreateForm.bind(taps));
+  app.router.addRoute("/taps/edit", "edit-tap", taps.renderEditForm.bind(taps));
   app.router.addRoute("/breweries", "breweries", brews.renderGrid.bind(brews));
   app.router.addRoute(
     "/breweries/add",

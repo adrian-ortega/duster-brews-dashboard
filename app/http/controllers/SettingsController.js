@@ -6,7 +6,7 @@ const { FILE_UPLOADS_FOLDER_PATH, FILE_UPLOADS_FOLDER } = require("../../util");
 const { moveUploadedFile } = require("../../util/files");
 const { objectHasKey, isString } = require("../../util/helpers");
 
-const settingsGetHandler = (req, res) => {
+const getHandler = (req, res) => {
   return respondWithJSON(res, {
     values: Settings.all(),
     fields: require("../../settings/fields.json"),
@@ -14,7 +14,7 @@ const settingsGetHandler = (req, res) => {
   });
 };
 
-const settingsPostHandler = (req, res, next) => {
+const postHandler = (req, res, next) => {
   const form = formidable();
   form.parse(req, async (err, formData, files) => {
     if (err) {
@@ -96,6 +96,6 @@ const settingsPostHandler = (req, res, next) => {
 };
 
 module.exports = {
-  settingsGetHandler,
-  settingsPostHandler,
+  getHandler,
+  postHandler,
 };

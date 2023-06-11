@@ -1,20 +1,10 @@
-const { dashboardView } = require("../http/controllers/homeController");
+const MainController = require("../http/controllers/MainController");
 const { getJoke } = require("../http/controllers/jokeController");
 const { mediaDestroyHandler } = require("../http/controllers/mediaController");
-const {
-  settingsGetHandler,
-  settingsPostHandler,
-} = require("../http/controllers/settingsController");
+const SettingsController = require("../http/controllers/SettingsController");
 const DrinksController = require("../http/controllers/DrinksController");
 const TapsController = require("../http/controllers/TapsController");
-const {
-  breweriesGetHandler,
-  breweriesFieldsHandler,
-  breweriesPostHandler,
-  breweriesDestroyHandler,
-  breweriesGenerateHandler,
-  breweriesListHandler,
-} = require("../http/controllers/breweriesController");
+const BreweriesController = require("../http/controllers/BreweriesController");
 
 module.exports = [
   // API ROUTES
@@ -32,44 +22,44 @@ module.exports = [
   {
     path: "/api/settings",
     methods: ["GET"],
-    handler: settingsGetHandler,
+    handler: SettingsController.getHandler,
   },
   {
     path: "/api/settings",
     methods: ["POST"],
-    handler: settingsPostHandler,
+    handler: SettingsController.postHandler,
   },
 
   // API - BREWERIES
   {
     path: "/api/breweries",
     methods: ["GET"],
-    handler: breweriesListHandler,
+    handler: BreweriesController.listHandler,
   },
   {
     path: "/api/breweries",
     methods: ["POST", "PUT"],
-    handler: breweriesPostHandler,
+    handler: BreweriesController.postHandler,
   },
   {
     path: "/api/breweries/auto-generate",
     methods: ["GET", "POST", "PUT", "PATCH"],
-    handler: breweriesGenerateHandler,
+    handler: BreweriesController.generateHandler,
   },
   {
     path: "/api/breweries/fields",
     methods: ["GET"],
-    handler: breweriesFieldsHandler,
+    handler: BreweriesController.getFieldsHandler,
   },
   {
     path: "/api/breweries/:id",
     methods: ["GET"],
-    handler: breweriesGetHandler,
+    handler: BreweriesController.getHandler,
   },
   {
     path: "/api/breweries/:id",
     methods: ["DELETE"],
-    handler: breweriesDestroyHandler,
+    handler: BreweriesController.destroyHandler,
   },
 
   // API - DRINKS
@@ -109,7 +99,7 @@ module.exports = [
     handler: DrinksController.destroyHandler,
   },
 
-  // API - Locations
+  // API - Taps
   {
     path: "/api/taps",
     methods: ["GET"],
@@ -148,6 +138,6 @@ module.exports = [
 
   {
     path: "*",
-    handler: dashboardView,
+    handler: MainController.defaultHandler,
   },
 ];

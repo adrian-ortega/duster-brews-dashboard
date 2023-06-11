@@ -16,6 +16,7 @@ class DrinksController extends PaginatedRouteController {
     let { drinks } = app.store.getState();
     drinks = [...this.paginate(drinks, params)];
     let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no Drinks set up, <a data-route="add-drink" class="route-link">create one</a></div></div>`;
+    console.log(drinks);
     if (drinks && drinks.length > 0) {
       gridContent = drinks
         .map(
@@ -65,9 +66,9 @@ class DrinksController extends PaginatedRouteController {
         <div class="grid__actions">
           <div class="grid__action-group">
             <div class="grid__action">
-              <a href="/taps/locations" class="button route-link" data-route="locations" title="Tap locations">
+              <a href="/taps/taps" class="button route-link" data-route="taps" title="Taps">
                 <span class="icon">${ICON_FAUCET}</span>
-                <span class="text">Locations</span>
+                <span class="text">Taps</span>
               </a>
             </div>
             <div class="grid__action">

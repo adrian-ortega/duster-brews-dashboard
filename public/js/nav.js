@@ -35,9 +35,9 @@ class Navigation extends Templateable {
               <span class="icon">${ICON_BEER_OUTLINE}</span>
               <span class="text">Drinks</span>
             </a>
-            <a data-route="locations" class="button nav-button route-link" title="Drink Locations">
+            <a data-route="taps" class="button nav-button route-link" title="Taps">
               <span class="icon">${ICON_FAUCET}</span>
-              <span class="text">Tap Locations</span>
+              <span class="text">Taps</span>
             </a>
             <a data-route="breweries" class="button nav-button route-link" title="Breweries">
               <span class="icon">${ICON_BARLEY}</span>
