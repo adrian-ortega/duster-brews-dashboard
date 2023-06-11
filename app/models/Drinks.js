@@ -3,7 +3,7 @@ const ModelCollection = require("./Collection");
 
 const DRINK_DEFAULTS = {
   brewery_id: null,
-  location_id: null,
+  tap_id: null,
   style: null,
   name: null,
   media: [],
@@ -25,7 +25,7 @@ class Drinks extends ModelCollection {
       "abv",
       "active",
       "brewery_id",
-      "location_id",
+      "tap_id",
       "gravity_start",
       "gravity_end",
       "ibu",

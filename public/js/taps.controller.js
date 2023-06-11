@@ -5,6 +5,7 @@ class TapsController extends PaginatedRouteController {
       this.showSpinner();
       const { store } = getApp();
       await store.dispatch("getTaps");
+      await store.dispatch("getDrinks");
       this.removeSpinner();
       this.loading = false;
     }
@@ -12,7 +13,7 @@ class TapsController extends PaginatedRouteController {
 
   async renderGrid({ app, params, router }) {
     await this.refresh();
-    let { taps } = app.store.getState();
+    let { breweries, drinks, taps } = app.store.getState();
     taps = [...this.paginate(taps, params)];
 
     let gridContent = `<div class="grid__item">
@@ -20,14 +21,24 @@ class TapsController extends PaginatedRouteController {
   </div>`;
 
     if (taps && taps.length > 0) {
-      gridContent = taps
-        .map(
-          (tap) => `<div class="grid__item">
+      const tapItemTemplate = (tap) => {
+        const drink = drinks.find((d) => d.tap_id === tap.id);
+        return `<div class="grid__item">
           <div class="grid__cell name">
             <div class="item">
               <div class="item__content">
                 <h2>${tap.name}</h2>
-                ${tap.drink ? `<p>${tap.dink.name}</p>` : ""}
+                <p>${
+                  drink
+                    ? `<a data-route="edit-drink" data-route-params='${JSON.stringify(
+                        {
+                          id: drink.id,
+                        }
+                      )}' class="route-link">
+                      <strong>${drink.name}</strong>
+                      <span>${drink.brewery_name}</span></a>`
+                    : "Unsasigned"
+                }</p>
               </div>
             </div>
           </div>
@@ -46,9 +57,9 @@ class TapsController extends PaginatedRouteController {
             </div>
           </div>
         </div>
-        `
-        )
-        .join("");
+        `;
+      };
+      gridContent = taps.map(tapItemTemplate).join("");
     }
     const $el = this.createElement(TapsController.TABLE_TEMPLATE);
     $el.querySelector(".page-title").innerHTML = "Taps";
@@ -88,9 +99,7 @@ class TapsController extends PaginatedRouteController {
       this.createElement(`<div class="grid__cell actions">&nbsp;</div>`)
     );
 
-    $el
-      .querySelector(".grid__content")
-      .appendChild(this.createElement(gridContent));
+    $el.querySelector(".grid__content").innerHTML = gridContent;
     $el
       .querySelector(".grid__footer")
       .appendChild(this.createElement(this.getPaginatorFooterTemplate()));

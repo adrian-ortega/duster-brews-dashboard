@@ -456,6 +456,14 @@ figure.image img {
 .grid__cell.name {
   width: 50%;
 }
+.grid__cell .route-link,
+.grid__cell .route-link strong,
+.grid__cell .route-link span {
+  display: block;
+}
+.grid__cell .route-link span {
+  color: var(--gray-bis);
+}
 .item {
   display: grid;
 }

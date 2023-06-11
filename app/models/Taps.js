@@ -5,6 +5,7 @@ const TAP_DEFAULTS = {
   name: null,
   token: null,
   percentage: 0,
+  keg_date: null,
   active: false,
 };
 
@@ -14,7 +15,7 @@ class Taps extends ModelCollection {
   }
 
   fillables() {
-    return ["name", "token", "percentage", "active"];
+    return ["name", "token", "percentage", "keg_date", "active"];
   }
 
   sanitize(data) {

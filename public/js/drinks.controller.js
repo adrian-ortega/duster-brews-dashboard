@@ -3,7 +3,7 @@ class DrinksController extends PaginatedRouteController {
     if (!this.loading) {
       this.loading = true;
       this.showSpinner();
-      const { store } = window[window.APP_NS];
+      const { store } = getApp();
       await store.dispatch("getDrinks");
       await store.dispatch("getBreweries");
       this.removeSpinner();
@@ -16,7 +16,7 @@ class DrinksController extends PaginatedRouteController {
     let { drinks } = app.store.getState();
     drinks = [...this.paginate(drinks, params)];
     let gridContent = `<div class="grid__item"><div class="grid__cell none">You have no Drinks set up, <a data-route="add-drink" class="route-link">create one</a></div></div>`;
-    console.log(drinks);
+
     if (drinks && drinks.length > 0) {
       gridContent = drinks
         .map(
@@ -201,12 +201,9 @@ class DrinksController extends PaginatedRouteController {
     }
 
     const $el = await this.renderCreateForm({ router, app });
+    const fields = await app.store.dispatch("getDrinkFields");
     $el.querySelector(".settings__title").innerHTML = "Edit Drink";
-    app.Forms.fillFields(
-      await app.store.dispatch("getDrinkFields"),
-      drink,
-      $el
-    );
+    app.Forms.fillFields(fields, drink, $el);
 
     $el
       .querySelector(".settings__form")

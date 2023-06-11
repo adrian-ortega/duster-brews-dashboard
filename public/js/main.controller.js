@@ -3,9 +3,10 @@ class MainController extends RouteController {
     if (!this.loading) {
       this.loading = true;
       this.showSpinner();
-      const { store } = window[window.APP_NS];
+      const { store } = getApp();
       await store.dispatch("getDrinks");
       await store.dispatch("getBreweries");
+      await store.dispatch("getTaps");
       this.removeSpinner();
       this.loading = false;
     }
@@ -14,14 +15,27 @@ class MainController extends RouteController {
   renderListItem(drink, app) {
     const image = app.Templates.imageTemplate(drink.image);
     const breweryImage = app.Templates.imageTemplate(drink.brewery_image);
+    const cssClasses = ["drink"];
+
+    if (image !== "") {
+      cssClasses.push("has-image");
+    }
+
+    const tap = app.store.getState().taps.find((t) => t.id === drink.tap_id);
+    let keg_date = tap.keg_date ? tap.keg_date : null;
+    if (keg_date) {
+      const kd = new Date(keg_date);
+      keg_date = `${kd.getMonth() + 1}/${kd.getDate()}/${kd.getFullYear()}`;
+    }
+
     return `
-        <div class="drink">
-          <div class="drink__image">${image}</div>
+        <div class="${cssClasses.join(" ")}">
+          ${image !== "" ? `<div class="drink__image">${image}</div>` : ""}
           <div class="drink__content">
             <div class="drink__content-header">
               <div class="keg__image">${breweryImage}</div>
               <div class="keg__header">
-                <p class="keg__location">KEG LOCATION</p>
+                <p class="keg__location">${tap.name}</p>
                 <h2 class="keg__name">${drink.name}</h2>
                 <p class="keg__brewery">${drink.brewery_name}</p>
               </div>
@@ -30,11 +44,11 @@ class MainController extends RouteController {
               <div class="keg__detail"><h3>${drink.style}</h3></div>
               <div class="keg__detail">
                 <p><span class="icon">${ICON_KEG}</span></p>
-                <h3>0.0%</h3>
+                <h3>${tap.percentage}%</h3>
               </div>
               <div class="keg__detail"><p>ABV</p><h3>${drink.abv}%</h3></div>
               <div class="keg__detail"><p>IBUS</p><h3>${drink.ibu}</h3></div>
-              <div class="keg__detail"><p>Kegged</p><h3>KEG DATE</h3></div>
+              <div class="keg__detail"><p>Kegged</p><h3>${keg_date}</h3></div>
             </div>
           </div>
         </div>
@@ -43,8 +57,10 @@ class MainController extends RouteController {
 
   async renderHome({ app }) {
     await this.refresh();
-    const { drinks, breweries } = app.store.getState();
-    const filteredItems = isArray(drinks) ? drinks.filter((t) => t.active) : [];
+    const { drinks, breweries, taps } = app.store.getState();
+    const filteredItems = isArray(drinks)
+      ? drinks.filter((d) => taps.find((t) => t.id === d.tap_id && t.active))
+      : [];
     const $el = this.createElement(`<div class="drinks"></div>`);
 
     if (filteredItems.length > 0) {

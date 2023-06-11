@@ -57,7 +57,6 @@ class BreweriesController extends PaginatedRouteController {
     const response = await fetch("/api/breweries/generate", { method: "POST" });
     const data = await response.json();
     reset();
-    console.log(data);
   }
 
   async refresh() {
@@ -163,7 +162,6 @@ class BreweriesController extends PaginatedRouteController {
           ? $el
           : $el.closest(".button");
         const id = $btn.getAttribute("data-id");
-        console.log(id);
         if (id) {
           e.preventDefault();
           const action = $btn.getAttribute("data-action");

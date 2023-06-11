@@ -1,10 +1,9 @@
 const Plaato = require("../../api/plaato");
-const Locations = require("../../models/Taps");
+const Taps = require("../../models/Taps");
 const Breweries = require("../../models/Breweries");
 const { isEmpty, objectHasKey } = require("../../util/helpers");
 const locationTransformer = require("./tap-transformer");
 
-const transformDate = (d) => (d ? new Date(d) : null);
 const transformFloat = (a) => (!a || isNaN(a) ? 0 : parseFloat(a));
 
 const {
@@ -16,9 +15,9 @@ const {
 } = Plaato.pins;
 
 module.exports = async (drink) => {
-  let location = Locations.get(drink.location_id);
-  if (location) {
-    location = await locationTransformer(location);
+  let tap = Taps.get(drink.tap_id);
+  if (tap) {
+    tap = await locationTransformer(tap);
   }
 
   const brewery = Breweries.get(drink.brewery_id);
@@ -35,10 +34,9 @@ module.exports = async (drink) => {
     ibu: transformFloat(drink.ibu),
   };
 
-  if (!isEmpty(location) && !isEmpty(location.token)) {
-    Plaato.setToken(location.token);
+  if (!isEmpty(tap) && !isEmpty(tap.token)) {
+    Plaato.setToken(tap.token);
     overrides.abv = await Plaato.get(abvPin, transformFloat);
-    overrides.keg_date = await Plaato.get(kegDatePin, transformDate);
     overrides.gravity_start = await Plaato.get(oGPin, transformFloat);
     overrides.gravity_end = await Plaato.get(fGPin, transformFloat);
     overrides.percent_left = await Plaato.get(percentPin, transformFloat);
