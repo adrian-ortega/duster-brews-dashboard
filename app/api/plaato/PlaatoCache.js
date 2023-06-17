@@ -1,6 +1,6 @@
 const path = require("path");
 const { ONE_MINUTE } = require("../../util/time");
-const { objectHasKey } = require("../../util/helpers");
+const { objectHasKey, stringifyJson } = require("../../util/helpers");
 const JSONFileStorage = require("../../util/storage");
 
 class PlaatoCache {
@@ -10,7 +10,7 @@ class PlaatoCache {
     this.storage = new JSONFileStorage(
       path.resolve("storage/plaato.cache.json")
     );
-    this.storage.parser = (data) => JSON.stringify(data, null, 0);
+    this.storage.parser = (data) => stringifyJson(data, {}, 0);
     this.items = [];
   }
 

@@ -1,12 +1,18 @@
 {
   "logo": {
-    "label": "App Logo",
-    "help": "This is the logo that appears on the app",
+    "label": "Logo",
+    "help": "This is the logo that appears on the app should be square, consider 128x128 pixels.",
+    "type": "image",
+    "category": "appearance"
+  },
+  "logo_large": {
+    "label": "Menu Logo",
+    "help": "This logo is used for the drinks menu.",
     "type": "image",
     "category": "appearance"
   },
   "theme": {
-    "label": "App Theme",
+    "label": "Theme",
     "help": "",
     "type": "select",
     "category": "appearance",

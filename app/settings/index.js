@@ -1,5 +1,5 @@
 const path = require("path");
-const defaults = require("./defaults.json");
+const defaults = require("./settings.defaults.json");
 const JSONFileStorage = require("../util/storage");
 
 module.exports = new JSONFileStorage(
