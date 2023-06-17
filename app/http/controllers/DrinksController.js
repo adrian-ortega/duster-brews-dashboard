@@ -1,10 +1,11 @@
 const formidable = require("formidable");
-const Drinks = require("../../models/Drinks");
+const Taps = require("../../models/Taps");
 const Breweries = require("../../models/Breweries");
+const Drinks = require("../../models/Drinks");
 const Locations = require("../../models/Taps");
 const transformer = require("../transformers/drink-transformer");
 const { validate } = require("../../validation");
-const { isString, objectHasKey } = require("../../util/helpers");
+const { isString, objectHasKey, isEmpty } = require("../../util/helpers");
 const { respondWithJSON } = require("../../util/http");
 const { updateItemPrimaryImage } = require("../../util/models");
 
@@ -76,10 +77,10 @@ const postHandler = (req, res, next) => {
       );
     }
     let drink = {};
-    let status;
+    const meta = { status: null };
 
     if (formData.id) {
-      status = "updated";
+      meta.status = "updated";
       drink = Drinks.get(formData.id);
       Drinks.fillables().forEach((key) => {
         if (objectHasKey(formData, key)) {
@@ -88,7 +89,7 @@ const postHandler = (req, res, next) => {
       });
       Drinks.put(drink);
     } else {
-      status = "created";
+      meta.status = "created";
 
       Drinks.fillables().forEach((key) => {
         if (objectHasKey(formData, key)) {
@@ -102,7 +103,25 @@ const postHandler = (req, res, next) => {
       await updateItemPrimaryImage(drink, files.image, Drinks);
     }
 
-    return respondWithJSON(res, drink, { status });
+    const tkey = "tap_id";
+    if (objectHasKey(formData, tkey)) {
+      const tid =
+        isEmpty(formData[tkey]) || !Taps.has(formData[tkey])
+          ? null
+          : formData[tkey];
+      if (tid) {
+        Drinks.where(tkey, tid).forEach((d) =>
+          Drinks.put({ ...d, tap_id: null })
+        );
+      }
+      drink = {
+        ...drink,
+        [tkey]: tid,
+      };
+      Drinks.put(drink);
+      meta.tap_assigned = drink[tkey] !== null;
+    }
+    return respondWithJSON(res, drink, meta);
   });
 };
 
