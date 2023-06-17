@@ -29,6 +29,10 @@ class ModelCollection extends JSONFileStorage {
     return this.data.items.find((item) => item.id === id);
   }
 
+  getMany(ids, key = "id") {
+    return this.whereIn(key, ids);
+  }
+
   sanitize(item) {
     return sanitizedCopy(item);
   }
@@ -78,6 +82,20 @@ class ModelCollection extends JSONFileStorage {
 
   fillables() {
     return ["id"];
+  }
+
+  where(key, value) {
+    this.refresh();
+    return this.data.items.filter((item) => {
+      return objectHasKey(item, key) && item[key] === value;
+    });
+  }
+
+  whereIn(key, values) {
+    this.refresh();
+    return this.data.items.filter(
+      (item) => objectHasKey(key) && values.inclues(item[key])
+    );
   }
 }
 
