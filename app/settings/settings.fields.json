@@ -1,0 +1,39 @@
+{
+  "logo": {
+    "label": "Logo",
+    "help": "This is the logo that appears on the app should be square, consider 128x128 pixels.",
+    "type": "image",
+    "category": "appearance"
+  },
+  "logo_large": {
+    "label": "Menu Logo",
+    "help": "This logo is used for the drinks menu.",
+    "type": "image",
+    "category": "appearance"
+  },
+  "theme": {
+    "label": "Theme",
+    "help": "",
+    "type": "select",
+    "category": "appearance",
+    "options": ["default", "dark", "chalk"]
+  },
+  "refresh_rate": {
+    "label": "Refresh Rate",
+    "help": "Minutes between refresh calls, defaults to 60 mins.",
+    "category": "general",
+    "type": "number"
+  },
+  "burn_in_guard_refresh_rate": {
+    "label": "Burn-in Guard Refresh Rate",
+    "help": "Minutes between refresh calls, defaults to 15 mins.",
+    "category": "general",
+    "type": "number"
+  },
+  "enable_plaato": {
+    "label": "Enable PLAATO",
+    "help": "Will add PLAATO key inputs to Taps and check the API for values.",
+    "category": "general",
+    "type": "boolean"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "general": {
+    "label": "General",
+    "order": 0
+  },
+  "appearance": {
+    "label": "Appearance",
+    "order": 1
+  }
+}

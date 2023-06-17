@@ -1,0 +1,72 @@
+@keyframes placeholder_shine {
+  0% {
+    background-position: -30em 0;
+  }
+  100% {
+    background-position: 30em 0;
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes lds-ripple {
+  0% {
+    top: 2.25em;
+    left: 2.25em;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  4.9% {
+    top: 2.25em;
+    left: 2.25em;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  5% {
+    top: 2.25em;
+    left: 2.25em;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 4.5em;
+    height: 4.5em;
+    opacity: 0;
+  }
+}
+
+@keyframes fade-from-top-centered {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-15%) translateX(-50%);
+  }
+
+  75% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  90% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5%) translateX(-50%);
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) translateX(-50%);
+  }
+}
