@@ -1,0 +1,7 @@
+{
+  "refresh_rate": 60,
+  "burn_in_guard_refresh_rate": 15,
+  "logo": "/images/logo-duster_brews-dashboard.svg",
+  "theme": "default",
+  "enable_plaato": true
+}

@@ -1,0 +1,199 @@
+class TapsController extends PaginatedRouteController {
+  async refresh() {
+    if (!this.loading) {
+      this.loading = true;
+      this.showSpinner();
+      const { store } = getApp();
+      await store.dispatch("getTaps");
+      await store.dispatch("getDrinks");
+      this.removeSpinner();
+      this.loading = false;
+    }
+  }
+
+  async renderGrid({ app, params, router }) {
+    await this.refresh();
+    let { breweries, drinks, taps } = app.store.getState();
+    taps = [...this.paginate(taps, params)];
+
+    let gridContent = `<div class="grid__item">
+    <div class="grid__cell">No tap, please <a data-route="add-tap" class="route-link">add one</a></div>
+  </div>`;
+
+    if (taps && taps.length > 0) {
+      const tapItemTemplate = (tap) => {
+        const drink = drinks.find((d) => d.tap_id === tap.id);
+        return `<div class="grid__item">
+          <div class="grid__cell name">
+            <div class="item">
+              <div class="item__content">
+                <h2>${tap.name}</h2>
+                <p>${
+                  drink
+                    ? `<a data-route="edit-drink" data-route-params='${JSON.stringify(
+                        {
+                          id: drink.id,
+                        }
+                      )}' class="route-link">
+                      <strong>${drink.name}</strong>
+                      <span>${drink.brewery_name}</span></a>`
+                    : "Unsasigned"
+                }</p>
+              </div>
+            </div>
+          </div>
+          <div class="grid__cell tap-count">${tap.percentage}%</div>
+          <div class="grid__cell actions">
+            <div>
+              <button class="button" data-id="${tap.id}" data-action="edit">
+                <span class="icon"></span>
+                <span class="text">Edit</span>
+              </button>
+              <button class="button is-icon" data-id="${
+                tap.id
+              }" data-action="delete">
+                <span class="icon">${ICON_DELETE}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        `;
+      };
+      gridContent = taps.map(tapItemTemplate).join("");
+    }
+    const $el = this.createElement(TapsController.TABLE_TEMPLATE);
+    $el.querySelector(".page-title").innerHTML = "Taps";
+    $el.querySelector(".grid__actions").appendChild(
+      this.createElement(`
+      <div class="grid__action-group">
+        <div class="grid__action">
+          <a class="button route-link" data-route="drinks" title="Drinks">
+            <span class="icon">${ICON_BEER_OUTLINE}</span>
+            <span class="text">Drinks</span>
+          </a>
+        </div>
+        <div class="grid__action">
+          <a class="button route-link" data-route="breweries" title="breweries">
+            <span class="icon">${ICON_BARLEY}</span>
+            <span class="text">Breweries</span>
+          </a>
+        </div>
+        <div class="grid__action">
+          <a class="button is-success route-link" data-route="add-tap" title="Create Tap">
+            <span class="icon">${ICON_PLUS}</span>
+            <span class="text">Create</span>
+          </a>
+        </div>
+      </div>
+    `)
+    );
+
+    const $header = $el.querySelector(".grid__header");
+    $header.appendChild(
+      this.createElement(`<div class="grid__cell name">Name</div>`)
+    );
+    $header.appendChild(
+      this.createElement(`<div class="grid__cell percentage">Per</div>`)
+    );
+    $header.appendChild(
+      this.createElement(`<div class="grid__cell actions">&nbsp;</div>`)
+    );
+
+    $el.querySelector(".grid__content").innerHTML = gridContent;
+    $el
+      .querySelector(".grid__footer")
+      .appendChild(this.createElement(this.getPaginatorFooterTemplate()));
+
+    $el.addEventListener("click", (e) => {
+      const $el = e.target;
+      if (
+        $el.matches(
+          ".grid__item .button[data-action], .grid__item .button[data-action] *"
+        )
+      ) {
+        const $btn = $el.classList.contains(".button")
+          ? $el
+          : $el.closest(".button");
+        const id = $btn.getAttribute("data-id");
+        if (id) {
+          e.preventDefault();
+          const action = $btn.getAttribute("data-action");
+          switch (action) {
+            case "delete":
+              if (confirm("Are you sure you want to delete this Tap?")) {
+                fetch(`/api/taps/${id}`, { method: "DELETE" })
+                  .then((response) => response.json())
+                  .then(({ data }) => {
+                    if (data.status.toLowerCase() === "success") {
+                      showNotification("Tap was uccessfully deleted.");
+                      router.goTo("taps");
+                    }
+                    s;
+                  });
+              }
+              break;
+            case "edit":
+              router.goTo("edit-tap", { id });
+              break;
+          }
+        }
+      }
+    });
+
+    getDomContainer().appendChild($el);
+
+    return $el;
+  }
+
+  async renderCreateForm({ router, app }) {
+    const $el = this.createElement(TapsController.FORM_TEMPLATE);
+    const fields = await app.store.dispatch("getTapFields");
+    $el.querySelector(".settings__title").innerHTML = "Create Tap";
+    app.Forms.renderFields(fields, $el.querySelector(".settings__view"));
+
+    $el.querySelector(".button.is-cancel").addEventListener("click", (e) => {
+      e.preventDefault();
+      return router.goTo("taps");
+    });
+
+    $el
+      .querySelector(".settings__form")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const response = await fetch("/api/taps", {
+          method: "POST",
+          body: new FormData($el.querySelector(".settings__form")),
+        });
+        const { data, meta } = await response.json();
+        if (data.status === 422) {
+          // @TODO validation failed
+        } else {
+          if (meta && meta.status) {
+            showNotification("Tap saved");
+          }
+          router.goTo("taps");
+        }
+      });
+    getDomContainer().appendChild($el);
+    return $el;
+  }
+
+  async renderEditForm({ router, app, params }) {
+    const tap = await app.store.dispatch("getTap", params.id);
+    if (!tap) {
+      showNotification("Tap not found", "warning");
+      return router.goTo("taps");
+    }
+    const $el = await this.renderCreateForm({ router, app });
+    $el.querySelector(".settings__title").innerHTML = "Edit Tap";
+    app.Forms.fillFields(await app.store.dispatch("getTapFields"), tap, $el);
+
+    $el
+      .querySelector(".settings__form")
+      .appendChild(
+        this.createElement(`<input type="hidden" name="id" value="${tap.id}"/>`)
+      );
+
+    return $el;
+  }
+}
