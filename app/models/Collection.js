@@ -1,6 +1,7 @@
 const {
   objectHasKey,
   parseJson,
+  stringifyJson,
   isObject,
   sanitizedCopy,
   isArray,
@@ -56,7 +57,7 @@ class ModelCollection extends JSONFileStorage {
 
   all() {
     this.refresh();
-    return parseJson(JSON.stringify(this.data.items));
+    return parseJson(stringifyJson(this.data.items));
   }
 
   remove(id) {

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const log = require("./log");
-const { parseJson } = require("./helpers");
+const { parseJson, stringifyJson } = require("./helpers");
 
 const moveUploadedFile = (sourcePath, destinationPath, flags) => {
   return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ const fileExists = (path) => {
  * @param {Function} parser
  * @returns {Boolean}
  */
-const saveFile = (path, data = {}, parser = JSON.stringify) => {
+const saveFile = (path, data = {}, parser = stringifyJson) => {
   try {
     fs.writeFileSync(path, parser(data, null, 4));
     return true;

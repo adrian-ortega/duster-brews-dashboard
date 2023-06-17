@@ -9,8 +9,8 @@ const { objectHasKey, isString } = require("../../util/helpers");
 const getHandler = (req, res) => {
   return respondWithJSON(res, {
     values: Settings.all(),
-    fields: require("../../settings/fields.json"),
-    categories: require("../../settings/categories.json"),
+    fields: require("../../settings/settings.fields.json"),
+    categories: require("../../settings/settings.categories.json"),
   });
 };
 
@@ -39,9 +39,9 @@ const postHandler = (req, res, next) => {
 
     const settings = Settings.all();
     let updated = false;
-    const fields = Object.entries(require("../../settings/fields.json")).map(
-      ([name, field]) => ({ name, ...field })
-    );
+    const fields = Object.entries(
+      require("../../settings/settings.fields.json")
+    ).map(([name, field]) => ({ name, ...field }));
     const entries = Object.entries({ ...formData, ...files });
     for (let i = 0; i < fields.length; i++) {
       const field = fields[i];
@@ -89,8 +89,8 @@ const postHandler = (req, res, next) => {
     return respondWithJSON(res, {
       updated,
       values: Settings.all(),
-      fields: require("../../settings/fields.json"),
-      categories: require("../../settings/categories.json"),
+      fields: require("../../settings/settings.fields.json"),
+      categories: require("../../settings/settings.categories.json"),
     });
   });
 };

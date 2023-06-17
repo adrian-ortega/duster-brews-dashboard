@@ -5,7 +5,7 @@ const Taps = require("../models/Taps");
 const Drinks = require("../models/Drinks");
 const { performance } = require("perf_hooks");
 const { ONE_SECOND } = require("../util/time");
-const { wait, parseJson } = require("../util/helpers");
+const { wait, parseJson, stringifyJson } = require("../util/helpers");
 
 let wss;
 let widgetHeartbeatId = 0;
@@ -56,11 +56,11 @@ const onConnectionMessage = async (data, ws) => {
         break;
       case "refreshSettings":
         response.settings = Settings.all();
-        response.fields = require("../settings/fields.json");
-        response.categories = require("../settings/categories.json");
+        response.fields = require("../settings/settings.fields.json");
+        response.categories = require("../settings/settings.categories.json");
         break;
     }
-    ws.send(JSON.stringify(response));
+    ws.send(stringifyJson(response));
   }
 };
 
@@ -70,7 +70,7 @@ const onConnection = async function (ws) {
 
 const broadcast = (data) =>
   wss.clients.forEach((client) => {
-    client.send(JSON.stringify(data));
+    client.send(stringifyJson(data));
   });
 
 module.exports = (expressServer) => {

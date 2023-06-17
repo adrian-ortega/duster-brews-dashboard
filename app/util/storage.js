@@ -4,6 +4,7 @@ const {
   objectHasKey,
   isObject,
   isFunction,
+  stringifyJson,
 } = require("./helpers");
 const { saveFile, loadFile } = require("./files");
 
@@ -11,7 +12,7 @@ class JSONFileStorage {
   constructor(path, data = {}, autoload = false) {
     this.path = path;
     this.data = data;
-    this.parser = JSON.stringify;
+    this.parser = stringifyJson;
     if (autoload) this.autoload(autoload);
   }
 
@@ -43,7 +44,7 @@ class JSONFileStorage {
 
   all() {
     this.refresh();
-    return parseJson(JSON.stringify(this.data));
+    return parseJson(stringifyJson(this.data));
   }
 
   remove(id) {

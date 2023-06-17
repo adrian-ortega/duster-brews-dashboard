@@ -129,6 +129,26 @@ const parseJson = (jsonString, defaultValue = null) => {
 };
 
 /**
+ * Turns data into a json string
+ * @param {*} obj
+ * @param {Object} defaultValue
+ * @returns {String}
+ */
+const stringifyJson = (obj, defaultValue = {}, ...stringfyArgs) => {
+  try {
+    const replacer = (key, value) =>
+      typeof value === "undefined" ? null : value;
+    return JSON.stringify(obj, replacer, ...stringfyArgs);
+  } catch (e) {
+    console.log("Can't stringify JSON", {
+      obj,
+      error: e,
+    });
+    return defaultValue;
+  }
+};
+
+/**
  * Will return a promise with a true value after x microsecs
  * @param ms
  * @returns {Promise<unknown>}
@@ -178,6 +198,7 @@ module.exports = {
   NOOP: () => {},
   wait,
   parseJson,
+  stringifyJson,
 
   isUndefined,
   isString,
