@@ -1,5 +1,14 @@
 # Duster Brews Dashboard
 
+<hr>
+
+<div style="background-color:#f1d8a5;border:1px solid #d29922;padding: 10px;">
+<h2>NOTE!</h2>
+<p>This project is still being worked on! The current work can be found under <span class="background:#a5d6ff;padding:2px;border:1px solid #79c0ff;">feature/revamp</span></p>
+</div>
+
+<hr>
+
 I make beer with my friends. This is an app to keep tabs on our beer through a locally hosted website.
 
 ## Getting Started
